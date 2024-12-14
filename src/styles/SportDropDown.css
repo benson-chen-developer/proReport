@@ -1,0 +1,60 @@
+/* .TrendingPage {
+    margin-left: 20px;
+} */
+.sport-square {
+    width: 85px;
+    height: 85px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    border: 2px solid #B3B3B3;
+    background: #7A7A7A;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.sport-square:hover {
+    border: 2px solid #F33479;
+    background: #8F3052;
+}
+
+.sport-square.selected {
+    border: 2px solid #F33479;
+    background: #8F3052;
+}
+
+.sport-name {
+    font-size: 13px;
+    color: #fff;
+    margin: 0;
+}
+
+/* Mobile styles */
+.marginSides {
+    margin-left: 100px;
+    margin-right: 100px;
+}
+@media (max-width: 600px) {
+    .marginSides {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sport-square {
+        min-width: 85px; /* Smaller width on mobile */
+        min-height: 75px; /* Smaller height on mobile */
+        margin: 5px; /* Reduce margin */
+    }
+
+    .sport-name {
+        font-size: 0.9rem; /* Slightly smaller font size */
+    }
+}
+
+
+

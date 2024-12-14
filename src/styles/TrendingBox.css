@@ -1,0 +1,19 @@
+.trending-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Adjust the gap between items as needed */
+    justify-content: center; /* Center the items horizontally */
+    margin-top: 30px; margin-bottom: 50px;
+}
+
+.trending-container .trending-box {
+    flex: 1 1 calc(50% - 16px); /* Adjust the width of each box to fit two items per row */
+    box-sizing: border-box;
+    max-width: 100%; /* Ensure the items do not exceed the container width */
+}
+
+@media (max-width: 768px) {
+    .trending-container .trending-box {
+        flex: 1 1 calc(100% - 16px); /* Adjust the width to fit one item per row on smaller screens */
+    }
+}
