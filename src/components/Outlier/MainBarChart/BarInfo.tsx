@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { convertStatName } from '../../../Context/functions/convertStatName'
 import { PGame } from '../../../Context/PlayerTypes'
 import { BarData, Filter, MatchUp } from '../Matches'

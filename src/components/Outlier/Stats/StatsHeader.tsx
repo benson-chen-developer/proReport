@@ -9,7 +9,7 @@ interface CustomLabelProps {
 }
 export const StatsHeader: React.FC<CustomLabelProps> = ({filter, filters, setFilter}) => {
     return (
-        <div style={{width:'500px', display:'flex', marginTop:'10px'}}>
+        <div style={{width:'90%', display:'flex'}}>
             {filters.supportingStats.map((stat, index) => 
                 <div 
                     key={index}

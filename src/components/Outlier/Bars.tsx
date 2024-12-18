@@ -2,60 +2,117 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import { ReferenceLine } from 'recharts';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { PGame, PPlayer } from '../../Context/PlayerTypes';
-import { BarData, Filter } from './Matches';
-import { parseBarData } from './MainBarChart/BarFunctions';
+import { BarData, Filter, MatchUp } from './Matches';
 import { getBarChartTicks } from '../../Context/functions/barchartFuncs';
+import CustomTooltip from './CustomTooltip';
 
 interface Props {
     player: PPlayer,
     filter: Filter,
-    pGames: PGame[],
     barData: BarData[],
-    setBarData: Dispatch<SetStateAction<BarData[]>>
-    seasonAvg: number
+    pGames: PGame[],
+
+    refLineOn: boolean,
+    matchUp: MatchUp
+    chartType: 'support' | 'main'
 }
 
-export const Bars: React.FC<Props> = ({ pGames, player, filter, barData, setBarData, seasonAvg }) => {
+export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartType, refLineOn, pGames}) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [ticks, setTicks] = useState<number[]>([]);
+
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
-    
+    const [seasonAvg, setSeasonAvg] = useState<number>(-1);
+
     const [foundBet, setFoundBet] = useState();
     const [barKey, setBarKey] = useState<number>(0);
+
+    const [barRadiusArr, setBarRadiusArr] = useState<[number, number, number, number][]>([
+        [5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]
+    ])
 
     const { isAway, isHome, lastGame, period, stat } = filter;
     useEffect(() => {
         setLoading(true);
-        // const foundBet = matchUp.bets.find(bet => 
-        //     Object.keys(filter).every(key => 
-        //         key === 'supportingStat' || 
-        //         key === 'lastGame' ||
-        //         key === 'isAway' ||
-        //         key === 'isHome' ||
-        //         bet.filter[key as keyof Filter] === filter[key as keyof Filter]
-        //     )
-        // )
+
+        /* Sees if there is a bet today */
+        const foundBet = matchUp.bets.find(bet => 
+            Object.keys(filter).every(key => 
+                key === 'supportingStat' || 
+                key === 'lastGame' ||
+                key === 'isAway' ||
+                key === 'isHome' ||
+                bet.filter[key as keyof Filter] === filter[key as keyof Filter]
+            )
+        )
+
+        /* 
+            Change the radius of the bars based if we have multiple stats displayed 
+                - PTS+REB ex
+
+            - The [0] (top) is always at least [5, 5, x, x] as it is up top
+            - The [2] (bottom) is always at least [x, x, 5, 5] as it is on bottom
+
+            [x,x,x,x] = topR topL botR botL
+
+            dataOverZero => This tells us how many diff stacked bars we have 
+        */
+        let dataPoint = barData[0];
+        let dataOverZero = [dataPoint.stat1 > 0, dataPoint.stat2 > 0, dataPoint.stat3 > 0]
+            .filter(isTrue => isTrue)
+            .length; 
+        if(dataPoint){
+            if(dataOverZero === 1) setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]])
+            else if(dataOverZero === 2) setBarRadiusArr([[5, 5, 0, 0], [0, 0, 5, 5], [0, 0, 0, 0]])
+            else setBarRadiusArr([[5, 5, 0, 0], [0, 0, 0, 0], [0, 0, 5, 5]])
+        }
+        
+        /* 
+            Get the season avg. 
+                - So if we get Q1 PTS+REBS then we will get their average this
+                season in just Quarter 1 Points and Rebounds
+        */
+        let seasonTotal = 0;
+        let periods = [0, 1, 2, 3];
+        if(filter.period === "H1") periods = [0, 1];
+        else if(filter.period === "H2") periods = [2, 3];
+        else if(filter.period === "Q1") periods = [0];
+        else if(filter.period === "Q2") periods = [1];
+        else if(filter.period === "Q3") periods = [2];
+        else if(filter.period === "Q4") periods = [3];
+        pGames.forEach((game) => {
+            let pickedStats = filter.stat.split('+');
+            let foundP = game.players.find(p => p.name === player.name);
+
+            for(const p of periods){
+                pickedStats.forEach((pickedStatSegment, index) => {
+                    const val = foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
+                    seasonTotal += val === -1 ? 0 : val
+                })
+            }
+        })
+        const seasonAvg = seasonTotal/pGames.length;
+        setSeasonAvg(seasonAvg)
 
         /* Set the y where the reference line will be */
-        // let refLineAmt = -1;
-        // if(foundBet) refLineAmt = foundBet.value;
-        // else refLineAmt = seasonAvg;
-        // setRefLineAmt(refLineAmt);
-        // setFoundBet(foundBet as any);
-
-        /* The barData */
-        const data = parseBarData(pGames, filter, player, matchUp);
-        console.log('mainbar data', data)
-        setBarData(data);
+        let refLineAmt = -1;
+        if(foundBet) refLineAmt = foundBet.value;
+        else refLineAmt = seasonAvg
+        // console.log('seasonAvg;,',seasonAvg)
+        // console.log('reflie;,',refLineAmt)
+        setRefLineAmt(refLineAmt);
+        setFoundBet(foundBet as any);
 
         /* Size of the chart */
-        setTicks(getBarChartTicks(data, refLineAmt));
+        setTicks(getBarChartTicks(barData, refLineAmt));
         
         setLoading(false);
     }, [seasonAvg, isAway, isHome, lastGame, period, stat])
+
     useEffect(() => {
+        console.log('barData', barData)
         setBarKey(prev => prev + 1);
-      }, [mainBarData]);
+      }, [barData]);
 
     interface CustomLabelProps {
         x?: number;
@@ -118,7 +175,7 @@ export const Bars: React.FC<Props> = ({ pGames, player, filter, barData, setBarD
     
     if(loading) return <div>Loading</div>
 
-    if(mainBarData.length === 0){
+    if(barData.length === 0){
         return <div style={{
             color:'#fff', display:'flex', width:'100%', height:'100%',
             alignItems:'center', flexDirection:'column',
@@ -136,48 +193,118 @@ export const Bars: React.FC<Props> = ({ pGames, player, filter, barData, setBarD
                     barCategoryGap="2%"
                     width={500}
                     height={300}
-                    data={mainBarData}
+                    data={barData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
-                    <rect width="100%" height="100%" fill={'#1F1F1F'} /> {/* Background */}
+                    {/* Background */}
+                    <rect width="100%" height="100%" fill={'#1F1F1F'} /> 
 
-                    <CartesianGrid strokeDasharray="0 0" vertical={false} stroke="#245d66"/>
+                    {/* The lines in the backgrond */}
+                    <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
                     <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold' }} tickLine={false} axisLine={false}/>
                     <YAxis 
                         domain={[ticks[0], ticks[-1]]} 
+                        // domain={[0, Math.max(...ticks) + 5]}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 
                         tickLine={false} 
                         ticks={ticks}
                         axisLine={false}
                     />
+
+                    {/* Hovering ToolTip */}
                     <Tooltip content={<CustomTooltip player={player} />} />
 
-                    <Bar 
-                        dataKey="stat1" 
-                        radius={5} 
-                        isAnimationActive={true} 
-                        animationDuration={300} 
-                        activeBar={<Rectangle fill="gold" stroke="purple" radius={5}/>}
-                    >
-                        {mainBarData.map((entry, index) => (
-                            <React.Fragment key={`cell-${index}`} >
-                                <Cell 
-                                    fill={entry.stat1 >= refLineAmt && foundBet ? '#79F4F4' : '#fff'} 
-                                />
-                                <LabelList 
-                                    dataKey="stat1" position="top" 
-                                    style={{ 
-                                        // fill: entry.stat1 >= refLineAmt ? (foundBet ? '#79F4F4' : "#fff") : 'grey',
-                                        fill: entry.stat1 >= refLineAmt && foundBet ? '#79F4F4' : '#fff',
-                                        fontSize: '15px', fontWeight: 'bold' 
-                                    }} 
-                                />
-                            </React.Fragment>
-                        ))}
+                    {/* Bars */}
+                    {/* {['#fff', "#efefef" ,"#d3d3d3"].map((color, i) => 
+                        <Bar 
+                            dataKey={`stat${i+1}`}
+                            radius={barRadiusArr[i]} 
+                            stackId="a"
+                            isAnimationActive={true} 
+                            animationDuration={300} 
+                            activeBar={<Rectangle fill="gold" stroke="purple" radius={5}/>}
+                        >
+                            {barData.map((entry, index) => {
+                                const currStatVal = (entry as any)[`stat${i + 1}`];
+
+                                console.log("currStatVal === 0", currStatVal === 0)
+                                if(index === 0) console.log("index", index) 
+                                // console.log("index", index) 
+
+                                if(currStatVal === 0) return <></>;
+
+                                return <React.Fragment key={`cell-${index}`} >
+                                    <Cell 
+                                        fill={currStatVal >= refLineAmt && foundBet ? '#79F4F4' : color} 
+                                    />
+
+                                    {`stat${i + 1}` === `stat1` ?
+                                        <LabelList 
+                                            dataKey="statTotal" position="top" 
+                                            style={{ 
+                                                fill: (entry as any)[`stat${i + 1}`] >= refLineAmt && foundBet ? '#79F4F4' : '#fff',
+                                                fontSize: '15px', fontWeight: 'bold',
+                                            }} 
+                                        /> : null
+                                    }
+
+                                    {currStatVal > 0 && (entry.name.split('+').length > 1) ?
+                                        <LabelList
+                                            dataKey={`stat${i + 1}Text`}
+                                            position="center" // Centers it inside the bar
+                                            style={{
+                                                fill: 'black', // Text color
+                                                fontSize: '12px',
+                                                fontWeight: 'bold'
+                                            }}
+                                        />
+                                        : null
+                                    }
+                                </React.Fragment>
+                            })}
+                        </Bar>
+                    )} */}
+
+                    {/* Bars */}
+                    <Bar dataKey="stat3" stackId="a" fill="#d3d3d3" radius={barRadiusArr[2]} animationDuration={200}>
+                        <LabelList
+                            dataKey={`stat3Text`}
+                            position="center"
+                            style={{
+                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
+                            }}
+                        />
+                    </Bar>
+                    <Bar dataKey="stat2" stackId="a" fill="#efefef" radius={barRadiusArr[1]} animationDuration={200}>
+                        <LabelList
+                            dataKey={`stat2Text`}
+                            position="center"
+                            style={{
+                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
+                            }}
+                        />
+                    </Bar>
+                    <Bar dataKey="stat1" stackId="a" fill="#fff" radius={barRadiusArr[0]} animationDuration={200}>
+                        {/* The total stat on top of the bar */}
+                        <LabelList 
+                            dataKey="statTotal" position="top" 
+                            style={{ 
+                                // fill: (entry as any)[`stat${i + 1}`] >= refLineAmt && foundBet ? '#79F4F4' : '#fff',
+                                fontSize: '15px', fontWeight: 'bold', fill:'#fff'
+                            }} 
+                        />
+                        <LabelList
+                            dataKey={`stat1Text`}
+                            position="center" // Centers it inside the bar
+                            style={{
+                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
+                            }}
+                        />
                     </Bar>
 
-                    {mainBarData.length > 0 && (
-                        foundBet ? 
+                    {/* The reference lines */}
+                    {/* {refLineOn && barData.length > 0 && (
+                        foundBet ? (
                             <ReferenceLine
                                 y={refLineAmt} 
                                 stroke="grey" 
@@ -185,14 +312,15 @@ export const Bars: React.FC<Props> = ({ pGames, player, filter, barData, setBarD
                                 strokeWidth={1}
                                 label={<CustomLabel value={refLineAmt} />}
                             />
-                            :
+                        ) : (
                             <ReferenceLine 
                                 y={refLineAmt} 
                                 stroke="#E9E9E9" 
                                 strokeDasharray="3 3" 
                                 label={<AvgLabel />}
                             />
-                    )}
+                        )
+                    )} */}
 
                 </BarChart>
             </ResponsiveContainer>

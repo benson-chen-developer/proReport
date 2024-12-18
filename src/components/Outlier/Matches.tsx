@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/PlayerTypes';
-import { Bars } from './MainBarChart/Bars';
-import { SupportBars } from '../Outlier/SupportBars';
-import { StatsHeader } from '../Outlier/Stats/StatsHeader';
 import { DropDownStatsHeader } from '../Outlier/Stats/DropDownStatsHeader';
 import { SecondStatsHeader } from '../Outlier/Stats/SecondStatHeader';
 import { Hero } from '../Outlier/Hero';
@@ -12,12 +9,9 @@ import { PeriodStatsHeader } from '../Outlier/Stats/PeriodStatsHeader';
 import { PSport } from '../Player/SportClass/Psport';
 import { Averages } from './Averages';
 import { SupportCard } from './Support/SupportCard';
-import { BarInfo } from './MainBarChart/BarInfo';
 import { MainBarChart } from './MainBarChart/MainBarChart';
-import { updateFilters } from './MainBarChart/BarFunctions';
 import { useGlobalContext } from '../../Context/store';
-import { positions } from '@mui/system';
-import { Rankings } from './Ranking/Ranking';
+import { updateFilters } from '../../Context/functions/barchartFuncs';
 
 interface Props {
     league: string,
@@ -39,9 +33,13 @@ export type Filters = {
 }
 export type BarData = {
     name: string, 
+    statTotal: number,
     stat1: number,
     stat2: number,
     stat3: number, 
+    stat1Text: string,
+    stat2Text: string,
+    stat3Text: string,
     date: string, 
     score: string,
     against: string,
@@ -88,7 +86,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
     const [filters, setFilters] = useState<Filters>({
         stats: [],
         supportingStats: ["Minutes", "Fouls"],
-        lastGames: ["L5", "L10", "L20", "H2H"],
+        lastGames: matchUp.teams.length > 0 ? ["L5", "L10", "L20", "H2H"] : ["L5", "L10", "L20"],
         periods: []
     })
 
@@ -234,14 +232,14 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                     />
                 </div>
 
-                <SupportCard 
+                {/* <SupportCard 
                     filter={filter} setFilter={setFilter}
-                    // matchUp={currentMatchUp}
+                    matchUp={matchUp}
                     filters={filters}
-                    displayedGames={displayedGames}
+                    pGames={pGames}
                     player={player}
                     barData={barData}
-                />
+                /> */}
             </div>
 
             {/* <Rankings filter={filter}/> */}

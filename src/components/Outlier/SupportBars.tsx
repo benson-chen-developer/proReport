@@ -4,51 +4,54 @@ import CustomTooltip from '../Outlier/CustomTooltip';
 import { ReferenceLine } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import { bgColor } from '../Player/PPlayerPage';
-import { BarData, MatchUp } from './Matches';
+import { BarData, Filter, MatchUp } from './Matches';
 import { Bars } from './Bars';
+import { parseBarData } from './MainBarChart/BarFunctions';
 
 interface Props {
+    filter: Filter,
     data: BarData[],
     player: PlayerType,
-    barData: BarData[]
     matchUp: MatchUp
 }
 
-export const SupportBars: React.FC<Props> = ({data, player, barData, matchUp}) => {
+export const SupportBars: React.FC<Props> = ({data, player, matchUp, filter}) => {
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
     const [foundBet, setFoundBet] = useState();
+    const [barData, setBarData] = useState<BarData[]>([]);
 
-    // useEffect(() => {
-    //     const foundBet = matchUp.bets.find(bet => 
-    //         Object.keys(filter).every(key => 
-    //             key === 'supportingStat' || 
-    //             key === 'lastGame' ||
-    //             key === 'isAway' ||
-    //             key === 'isHome' ||
-    //             bet.filter[key as keyof Filter] === filter[key as keyof Filter]
-    //         )
-    //     )
+    useEffect(() => {
+        const foundBet = matchUp.bets.find(bet => 
+            Object.keys(filter).every(key => 
+                key === 'supportingStat' || 
+                key === 'lastGame' ||
+                key === 'isAway' ||
+                key === 'isHome' ||
+                bet.filter[key as keyof Filter] === filter[key as keyof Filter]
+            )
+        )
 
-    //     /* Set the y where the reference line will be */
-    //     let refLineAmt = -1;
-    //     if(foundBet) refLineAmt = foundBet.value;
-    //     else refLineAmt = seasonAvg;
-    //     setRefLineAmt(refLineAmt);
-    //     setFoundBet(foundBet as any);
+        /* Set the y where the reference line will be */
+        let refLineAmt = -1;
+        if(foundBet) refLineAmt = foundBet.value;
+        // else refLineAmt = seasonAvg;
+        else refLineAmt = 0;
+        setRefLineAmt(refLineAmt);
+        setFoundBet(foundBet as any);
 
-    //     /* The barData */
-    //     const data = parseBarData(pGames, filter, player, matchUp);
-    //     setBarData(data);
-    //     setData(data);
+        /* The barData */
+        const data = parseBarData(pGames, filter, player, matchUp);
+        setBarData(data);
+        setData(data);
 
-    //     /* Size of the chart */
-    //     const middlePart = Math.round(Math.max(...data.map(d => d.stat1), refLineAmt));
-    //     const yAxisMax = Math.round(middlePart * 1.4);
-    //     const yAxisMin = Math.round(Math.min(...data.map(d => d.stat1)) * .8);
-    //     setYAxisMax(yAxisMax)
-    //     setYAxisMin(yAxisMin)
+        /* Size of the chart */
+        const middlePart = Math.round(Math.max(...data.map(d => d.stat1), refLineAmt));
+        const yAxisMax = Math.round(middlePart * 1.4);
+        const yAxisMin = Math.round(Math.min(...data.map(d => d.stat1)) * .8);
+        setYAxisMax(yAxisMax)
+        setYAxisMin(yAxisMin)
         
-    // }, [seasonAvg, isAway, isHome])
+    }, [seasonAvg, isAway, isHome])
 
     if(data.length === 0) return <div style={{color:'#fff'}}>Loading</div>
 
@@ -59,9 +62,9 @@ export const SupportBars: React.FC<Props> = ({data, player, barData, matchUp}) =
                     :
                 <MoreStatBarchart data={data} compareNum={compareNum} player={player} barData={barData}/>
             } */}
-            <Bars 
+            {/* <Bars 
                 player={player}
-            />
+            /> */}
         </div>
     );
 };

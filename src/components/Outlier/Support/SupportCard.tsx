@@ -1,23 +1,27 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { PGame, PlayerType } from '../../../Context/PlayerTypes';
+import { PGame, PlayerType, PPlayer } from '../../../Context/PlayerTypes';
+import { Bars } from '../Bars';
 import { BarData, Filter, Filters, MatchUp } from '../Matches';
 import { StatsHeader } from '../Stats/StatsHeader';
 import { SupportBars } from '../SupportBars';
+import Checkbox from '@mui/material/Checkbox';
+import { parseBarData } from '../../../Context/functions/barchartFuncs';
 
 interface Props {
     filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
     filters: Filters, 
     matchUp: MatchUp,
-    displayedGames: PGame[],
-    player: PlayerType,
+    pGames: PGame[],
+    player: PPlayer,
     barData: BarData[]
 }
 export const SupportCard: React.FC<Props> = ({
-    filter, setFilter, displayedGames, player,
-    filters, barData, matchUp
+    filter, setFilter, pGames, player,
+    filters, matchUp
 }) => {
-    const [data, setData] = useState<BarData[]>([]);
+    const [barData, setBarData] = useState<BarData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [refLineOn, setRefLineOn] = useState<boolean>(false);
 
     useEffect(() => {
         setLoading(true);
@@ -31,69 +35,18 @@ export const SupportCard: React.FC<Props> = ({
         //     )
         // )
 
-        const data = displayedGames.map(game => { 
-            const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
-            const opp = game.team1 === player.team ? game.team2 : game.team1;
-            const against = game.team1 === player.team ? '@' : 'vs';
-            const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
-            let stat1 = 0; let stat2 = -1; let stat3 = -1;
-            
-            let minutes = 0;
-            let seconds = 0;
-            let fouls = 0;
-            let fga = 0; let fgm = 0;
-            let offReb = 0; let defReb = 0;
+        const supportStatsKey = (stat: string): string => {
+            if(stat === 'Minutes') return 'MIN'
+            else if(stat === 'Fouls') return 'PF'
+            else if(stat === 'Field Goals Att.') return 'FGA'
+            else return '';
+        }
 
-            let periods = [0, 1, 2, 3];
-            if(filter.period === "H1") periods = [0, 1];
-            else if(filter.period === "H2") periods = [2, 3];
-            else if(filter.period === "Q1") periods = [0];
-            else if(filter.period === "Q2") periods = [1];
-            else if(filter.period === "Q3") periods = [2];
-            else if(filter.period === "Q4") periods = [3];
-
-            for (let period of periods){
-                let time = foundPlayer?.periods[period].find(stat => stat.name === "MIN")?.value || 0;
-                let minute = Math.floor(time); let second = Number((time - minute).toFixed(2));
-                minutes += minute;
-                seconds += second;
-                
-                fouls += foundPlayer?.periods[period].find(stat => stat.name === "PF")?.value || 0;
-                fga += foundPlayer?.periods[period].find(stat => stat.name === "FGA")?.value || 0;
-                fgm += foundPlayer?.periods[period].find(stat => stat.name === "FGM")?.value || 0;
-                offReb += foundPlayer?.periods[period].find(stat => stat.name === "ORB")?.value || 0;
-                defReb += foundPlayer?.periods[period].find(stat => stat.name === "DRB")?.value || 0;
-            }
-            if(filter.supportingStat === "Minutes"){
-                stat1 = minutes + Math.round((seconds*100)/60);
-            }
-            else if(filter.supportingStat === "Fouls"){
-                stat1 = fouls;
-            }
-            else if(filter.supportingStat === "Field Goals Att."){
-                stat1 = fga-fgm; stat2 = fgm; stat3 = fga;
-            }
-            else if(filter.supportingStat === "OFF/DEF Rebounds"){
-                stat1 = offReb+defReb; stat2 = offReb; stat3 = defReb;
-            }
-        
-            return {
-                name: filter.supportingStat, 
-                stat1: stat1,
-                stat2: stat2,
-                stat3: stat3, 
-                date: date, 
-                score: game.score,
-                against: against,
-                opp: opp,
-                underText: `${date} ${against} ${opp}`,
-                hit: false
-            };
-        }).reverse();
-        setData(data);
+        const newBarData = parseBarData(pGames, filter, player, matchUp, supportStatsKey(filter.supportingStat));
+        setBarData(newBarData);
 
         setLoading(false);
-    }, [displayedGames, filter.supportingStat])
+    }, [pGames, filter.supportingStat])
 
     return (
         <div style={{
@@ -101,7 +54,7 @@ export const SupportCard: React.FC<Props> = ({
             justifyContent:'center', flexDirection:'column', alignItems:'center',
             boxShadow: '0px 0px 20px 5px #fff', borderRadius:'20px', marginTop:'20px'
         }}>
-            <div style={{width:'95%'}}>
+            <div style={{width:'95%', marginBottom:'30px'}}>
                 {/* Supportin Stats and Averages */}
                 <div style={{fontSize:'14px', display:'flex', justifyContent:'space-between', fontWeight:'bold', alignItems:'flex-end', marginTop:'20px'}}>
                     <p style={{color:'#fff', fontSize:'18px', margin:0}}>Supporting Stats</p>
@@ -110,7 +63,7 @@ export const SupportCard: React.FC<Props> = ({
                         <span style={{color:'#808080'}}>
                             Avg: <span style={{color:'#fff', fontSize:'13px'}}>
                                 {barData.length > 0 
-                                    ? (data.reduce((sum, val) => sum + val.stat1, 0) / data.length).toFixed(1) 
+                                    ? (barData.reduce((sum, val) => sum + val.stat1, 0) / barData.length).toFixed(1) 
                                     : 'NA'
                                 }
                             </span>
@@ -119,7 +72,7 @@ export const SupportCard: React.FC<Props> = ({
                             Hits Avg: <span style={{color:'#fff', fontSize:'13px'}}>
                                 {barData.filter(d => d.hit).length > 0 
                                     ? (barData.filter(ogBar => ogBar.hit)
-                                        .reduce((sum, d, index) => sum + data[index].stat1, 0) / barData.filter(ogBar => ogBar.hit).length)
+                                        .reduce((sum, d, index) => sum + barData[index].stat1, 0) / barData.filter(ogBar => ogBar.hit).length)
                                         .toFixed(1) 
                                     : 'NA'
                                 }
@@ -137,18 +90,44 @@ export const SupportCard: React.FC<Props> = ({
                     </div>
                 </div>
 
-                <StatsHeader 
-                    filter={filter} filters={filters}
-                    setFilter={setFilter}
-                />
+                <div style={{width:'100%', marginTop:'10px', display:'flex'}}>
+                    <StatsHeader 
+                        filter={filter} filters={filters}
+                        setFilter={setFilter}
+                    />
+
+                    <div 
+                        style={{
+                            color:'#fff', display:'flex', fontSize:'15px', fontWeight:'bold',
+                            alignItems:'center', cursor:'pointer', userSelect:'none'
+                        }}
+                        onClick={() => setRefLineOn(p => !p)}
+                    >
+                        Line
+                        <Checkbox 
+                            style={{padding: '5px 0px 5px 5px'}}
+                            checked={refLineOn} 
+                            sx={{
+                                color: '#8FC9F9', // Default color
+                                '&.Mui-checked': {
+                                color: '#8FC9F9', // Color when checked
+                                },
+                            }}
+                        />
+                    </div>
+                </div>
+
             </div>
 
             {!loading ?
-                <SupportBars
+                <Bars
+                    filter={filter}
                     matchUp={matchUp}
                     barData={barData}
-                    data={data}
                     player={player} 
+                    refLineOn={refLineOn}
+                    seasonAvg={barData.reduce((sum, item) => sum + item.stat1, 0) / barData.length}
+                    chartType="support"
                 /> : null
             }
         </div>
