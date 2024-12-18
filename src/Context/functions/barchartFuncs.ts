@@ -105,25 +105,52 @@ export const updateFilters = (filters: Filters, filter: Filter): Filters => {
         between will be whole numbers and not decimals
         - Since the max and min are even values we can split them up evenly into 4 parts
 */
+// export const getBarChartTicks = (data: BarData[], refLineAmt: number): number[] => {
+//     const roundToEven = (num: number, direction: 'ceil' | 'floor') => {
+//         const rounded = direction === 'ceil' ? Math.ceil(num) : Math.floor(num);
+//         return rounded % 2 === 0 ? rounded : rounded + (direction === 'ceil' ? 1 : -1);
+//     };
+
+//     const maxData = Math.max(...data.map(d => d.statTotal));
+//     const minData = Math.min(...data.map(d => d.statTotal));
+
+//     const middlePart = Math.round(Math.max(maxData, refLineAmt));
+//     const yAxisMax = roundToEven(middlePart * 1.2, 'ceil');
+//     const yAxisMin = roundToEven(minData * 0.8, 'floor');
+
+//     const minMaxDifference = yAxisMax - yAxisMin;
+//     const tickAmount = minMaxDifference !== 0 ? Math.round(minMaxDifference / 4) : 1;
+//     const ticks = [];
+//     for (let value = yAxisMin; value <= yAxisMax; value += tickAmount) {
+//         ticks.push(value);
+//     }
+
+//     return ticks.length > 1 ? ticks : [0, 1, 2];
+// }
+const roundToEven = (num: number, direction: 'ceil' | 'floor') => {
+    const rounded = direction === 'ceil' ? Math.ceil(num) : Math.floor(num);
+    return rounded % 2 === 0 ? rounded : rounded + (direction === 'ceil' ? 1 : -1);
+};
+
 export const getBarChartTicks = (data: BarData[], refLineAmt: number): number[] => {
-    const roundToEven = (num: number, direction: 'ceil' | 'floor') => {
-        const rounded = direction === 'ceil' ? Math.ceil(num) : Math.floor(num);
-        return rounded % 2 === 0 ? rounded : rounded + (direction === 'ceil' ? 1 : -1);
-    };
-
     const maxData = Math.max(...data.map(d => d.statTotal));
-    const minData = Math.min(...data.map(d => d.statTotal));
+    const yAxisMax = roundToEven(maxData * 1.2, 'ceil');
 
-    const middlePart = Math.round(Math.max(maxData, refLineAmt));
-    const yAxisMax = roundToEven(middlePart * 1.2, 'ceil');
-    const yAxisMin = roundToEven(minData * 0.8, 'floor');
+    // Generate ticks
+    const ticks: number[] = [];
+    const increment = yAxisMax > 5 ? 1 : 0.5; // Use smaller increments for small ranges
 
-    const minMaxDifference = yAxisMax - yAxisMin;
-    const tickAmount = minMaxDifference !== 0 ? Math.round(minMaxDifference / 4) : 1;
-    const ticks = [];
-    for (let value = yAxisMin; value <= yAxisMax; value += tickAmount) {
-        ticks.push(value);
+    for (let tick = 0; tick <= yAxisMax; tick += increment) {
+        ticks.push(tick);
     }
 
     return ticks.length > 1 ? ticks : [0, 1, 2];
+};
+
+export const getYAxisMax = (barData: BarData[]): number => {
+    const maxData = Math.max(...barData.map(d => d.statTotal));
+    const rounded = roundToEven(maxData * 1.2, 'ceil');
+
+    if(rounded === 0) return 1;
+    return rounded;
 }

@@ -74,6 +74,7 @@ export const MainBarChart: React.FC<Props> = ({
 
             <Bars
                 refLineOn={refLineOn}
+                seasonAvg={seasonAvg}
                 filter={filter}
                 matchUp={matchUp}
                 pGames={pGames}

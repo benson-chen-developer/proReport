@@ -3,7 +3,7 @@ import { ReferenceLine } from 'recharts';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { PGame, PPlayer } from '../../Context/PlayerTypes';
 import { BarData, Filter, MatchUp } from './Matches';
-import { getBarChartTicks } from '../../Context/functions/barchartFuncs';
+import { getBarChartTicks, getYAxisMax } from '../../Context/functions/barchartFuncs';
 import CustomTooltip from './CustomTooltip';
 
 interface Props {
@@ -14,15 +14,17 @@ interface Props {
 
     refLineOn: boolean,
     matchUp: MatchUp
+    seasonAvg: number,
     chartType: 'support' | 'main'
 }
 
-export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartType, refLineOn, pGames}) => {
+export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartType, seasonAvg, refLineOn, pGames}) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [ticks, setTicks] = useState<number[]>([]);
+    const [yAxisMax, setYAxisMax] = useState<number>(0);
 
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
-    const [seasonAvg, setSeasonAvg] = useState<number>(-1);
+    // const [seasonAvg, setSeasonAvg] = useState<number>(-1);
 
     const [foundBet, setFoundBet] = useState();
     const [barKey, setBarKey] = useState<number>(0);
@@ -31,7 +33,6 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
         [5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]
     ])
 
-    const { isAway, isHome, lastGame, period, stat } = filter;
     useEffect(() => {
         setLoading(true);
 
@@ -58,41 +59,15 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
             dataOverZero => This tells us how many diff stacked bars we have 
         */
         let dataPoint = barData[0];
-        let dataOverZero = [dataPoint.stat1 > 0, dataPoint.stat2 > 0, dataPoint.stat3 > 0]
-            .filter(isTrue => isTrue)
-            .length; 
         if(dataPoint){
+            let dataOverZero = [dataPoint.stat1 > 0, dataPoint.stat2 > 0, dataPoint.stat3 > 0]
+                .filter(isTrue => isTrue)
+                .length; 
+
             if(dataOverZero === 1) setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]])
             else if(dataOverZero === 2) setBarRadiusArr([[5, 5, 0, 0], [0, 0, 5, 5], [0, 0, 0, 0]])
             else setBarRadiusArr([[5, 5, 0, 0], [0, 0, 0, 0], [0, 0, 5, 5]])
         }
-        
-        /* 
-            Get the season avg. 
-                - So if we get Q1 PTS+REBS then we will get their average this
-                season in just Quarter 1 Points and Rebounds
-        */
-        let seasonTotal = 0;
-        let periods = [0, 1, 2, 3];
-        if(filter.period === "H1") periods = [0, 1];
-        else if(filter.period === "H2") periods = [2, 3];
-        else if(filter.period === "Q1") periods = [0];
-        else if(filter.period === "Q2") periods = [1];
-        else if(filter.period === "Q3") periods = [2];
-        else if(filter.period === "Q4") periods = [3];
-        pGames.forEach((game) => {
-            let pickedStats = filter.stat.split('+');
-            let foundP = game.players.find(p => p.name === player.name);
-
-            for(const p of periods){
-                pickedStats.forEach((pickedStatSegment, index) => {
-                    const val = foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
-                    seasonTotal += val === -1 ? 0 : val
-                })
-            }
-        })
-        const seasonAvg = seasonTotal/pGames.length;
-        setSeasonAvg(seasonAvg)
 
         /* Set the y where the reference line will be */
         let refLineAmt = -1;
@@ -104,10 +79,12 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
         setFoundBet(foundBet as any);
 
         /* Size of the chart */
+        setYAxisMax(getYAxisMax(barData))
         setTicks(getBarChartTicks(barData, refLineAmt));
         
         setLoading(false);
-    }, [seasonAvg, isAway, isHome, lastGame, period, stat])
+    }, [barData])
+    // }, [seasonAvg, isAway, isHome, lastGame, period, stat])
 
     useEffect(() => {
         console.log('barData', barData)
@@ -203,11 +180,11 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
                     <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
                     <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold' }} tickLine={false} axisLine={false}/>
                     <YAxis 
-                        domain={[ticks[0], ticks[-1]]} 
+                        domain={[0, yAxisMax]} 
                         // domain={[0, Math.max(...ticks) + 5]}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 
                         tickLine={false} 
-                        ticks={ticks}
+                        // ticks={ticks}
                         axisLine={false}
                     />
 
