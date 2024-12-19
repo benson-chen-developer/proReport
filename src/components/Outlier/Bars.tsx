@@ -87,7 +87,7 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
     // }, [seasonAvg, isAway, isHome, lastGame, period, stat])
 
     useEffect(() => {
-        console.log('barData', barData)
+        // console.log('barData', barData)
         setBarKey(prev => prev + 1);
       }, [barData]);
 

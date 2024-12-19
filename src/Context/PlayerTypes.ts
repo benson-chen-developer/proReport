@@ -50,7 +50,7 @@ export type PGamePlayer =  {
     team: string,
     position? :string,
     playerId: string,
-    periods: {name: string, value: number}[][]
+    periods: Record<string, number>[]
 }
 
 /* */

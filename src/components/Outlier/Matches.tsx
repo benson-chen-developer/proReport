@@ -12,6 +12,7 @@ import { SupportCard } from './Support/SupportCard';
 import { MainBarChart } from './MainBarChart/MainBarChart';
 import { useGlobalContext } from '../../Context/store';
 import { updateFilters } from '../../Context/functions/barchartFuncs';
+import { Rankings } from './Ranking/Ranking';
 
 interface Props {
     league: string,
@@ -125,18 +126,19 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
             });
 
             /* Get the season averages for fantasy stats */
-            let newSeasonAvg =  PSport.getFantasyStats(league).map((stat) => ({
-                ...stat, value: 0, 
+            let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
+                ...stat,
+                value: 0,
             }));
             allGames.forEach((game) => {
                 const playerPeriods = game.players.find((p) => p.name === player?.name);
             
                 playerPeriods?.periods.forEach((period) => {
-                    period.forEach((stat) => {
-                        const matchingStat = newSeasonAvg.find((s) => s.name === stat.name);
+                    Object.entries(period).forEach(([statName, statValue]) => {
+                        const matchingStat = newSeasonAvg.find((s) => s.name === statName);
             
-                        if (matchingStat && stat.value > 0) {
-                            matchingStat.value += stat.value;
+                        if (matchingStat && statValue > 0) {
+                            matchingStat.value += statValue;
                         }
                     });
                 });
@@ -242,7 +244,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 /> */}
             </div>
 
-            {/* <Rankings filter={filter}/> */}
+            <Rankings filter={filter}/>
         </div>
     )
 

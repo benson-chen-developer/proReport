@@ -39,9 +39,11 @@ export const MainBarChart: React.FC<Props> = ({
         pGames.forEach((game) => {
             let pickedStats = filter.stat.split('+');
             let foundP = game.players.find(p => p.name === player.name);
+
             for(const p of periods){
                 pickedStats.forEach((pickedStatSegment, index) => {
-                    const val = foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
+                    const val = foundP?.periods[p][pickedStatSegment]!;
+                    // foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
                     seasonTotal += val === -1 ? 0 : val
                 })
             }

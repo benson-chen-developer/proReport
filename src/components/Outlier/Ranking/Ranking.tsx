@@ -87,7 +87,7 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
             newData.push(calcRank(rankings, filter.period, pickedPosition, 'cleveland', filter.stat));
         }
 
-        // console.log('newdata', newData)
+        console.log('newdata', newData)
         setData(newData);
     }, [selectedOption, filter.stat, filter.period])
 
@@ -95,7 +95,7 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
         setSelectedOption(option);
     };
 
-    if(data.length < 0) return <div>Loading</div>
+    if(data.length === 0) return <div>Loading</div>
 
     return (
         <div style={{color:'#fff', width:'350px', height: '300px', background:'#2B2B2B', display:'flex', alignItems:'center', borderRadius:'10px', marginTop:'180px', flexDirection:'column'}}>

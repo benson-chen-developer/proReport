@@ -8,6 +8,11 @@ export type Ranking = {
     };
     games: number;
 }
+
+/* 
+    This is the actual row in the rankin card
+        - EX (PTS Allowed 3rd(Rank) 124.5(Avg)) 
+*/
 export type RankDisplay = {
     statAllowed: string, rank: string, avg: number, color:string
 }
@@ -70,21 +75,33 @@ export const getTeamStatRanking = (
                 const rankingsTeam = rankings.find(r => r.team.toLowerCase() === oppTeam.toLowerCase());
     
                 if(rankingsTeam){
-                    pStat.periods.forEach((period, index) => {
-                        period.forEach(s => {
-                            const positions = playerPos.split('-');
+                    // pStat.periods.forEach((period, index) => {
+                    //     period.forEach(s => {
+                    //         const positions = playerPos.split('-');
                             
+                    //         positions.forEach(position => {
+                    //             // console.log(`${position} ${foundPlayer?.name}`)
+                    //             rankingsTeam.stats[s.name][index][position] += s.value > 0 ? s.value : 0;
+    
+                    //             if(index === 0 && position === 'G' && s.name === "PTS" && s.value > 0){
+                    //                 // console.log(`1st Q ${foundPlayer!.name} on tea ${foundPlayer?.team}`, s.value)
+                    //             }
+                    //         })
+                    //     })
+                    // })
+                    pStat.periods.forEach((period, index) => {
+                        Object.entries(period).forEach(([statName, statValue]) => {
+                            const positions = playerPos.split('-');
+                    
                             positions.forEach(position => {
-                                // console.log(`${position} ${foundPlayer?.name}`)
-                                rankingsTeam.stats[s.name][index][position] += s.value > 0 ? s.value : 0;
-    
-                                if(index === 0 && position === 'G' && s.name === "PTS" && s.value > 0){
-                                    // console.log(`1st Q ${foundPlayer!.name} on tea ${foundPlayer?.team}`, s.value)
+                                rankingsTeam.stats[statName][index][position] += statValue > 0 ? statValue : 0;
+                    
+                                if (index === 0 && position === 'G' && statName === "PTS" && statValue > 0) {
+                                    console.log(`1st Q ${foundPlayer!.name} on team ${foundPlayer?.team}`, statValue);
                                 }
-                            })
-                        })
-                    })
-    
+                            });
+                        });
+                    });
                 }
             }
         })
@@ -160,16 +177,18 @@ export const calcRank = (
     /* Pick the color */
     let total = teamStats.length;
     let percent = foundIndex / total;
-    console.log(foundIndex)
 
-    if(percent >= .3){
-        retRank.color = '#ff0000';
+    console.log("foundIndex", foundIndex)
+    console.log("percent", percent)
+
+    if(percent <= .67){
+        retRank.color = '#14EE9D';
     }
-    else if (percent >= .5){
+    else if (percent <= .7){
         retRank.color = '#ede515';
     }
-    else if (percent >= .7){
-        retRank.color = '#14EE9D';
+    else {
+        retRank.color = '#ff0000';
     }
 
     return retRank;

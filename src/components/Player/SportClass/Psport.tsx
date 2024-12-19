@@ -172,8 +172,10 @@ export class PSport {
         const allGames = await res.json();
         const gamesPlayed = allGames.filter((game: PGame) => {
             const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
-            return foundPlayer?.periods.some(period =>
-                period.some(stat => stat.name === "MIN" && stat.value > 0)
+            
+            console.log(foundPlayer)
+            return foundPlayer?.periods.some(period => period['MIN'] > 0
+                // period.some(stat => stat.name === "MIN" && stat.value > 0)
             );
         });
         const sortedGames = gamesPlayed.sort((a: { date: string }, b: { date: string }) => {

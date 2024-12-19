@@ -32,7 +32,8 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
             let pickedStats = pickedStat.split('+');
 
             pickedStats.forEach((pickedStatSegment, index) => {
-                const val = foundPlayer?.periods[period].find(stat => stat.name === pickedStatSegment)?.value || 0;
+                // const val = foundPlayer?.periods[period].find(stat => stat.name === pickedStatSegment)?.value || 0;
+                const val = foundPlayer?.periods[period][pickedStatSegment]!;
                 let statVal = val === -1 ? 0 : val;
 
                 statTotal += statVal;
