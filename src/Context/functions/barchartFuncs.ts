@@ -19,14 +19,15 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
         let statTotal: number = 0;
         let stats: number[] = [0, 0, 0];
+        console.log(game)
         
-        let periods = [0, 1, 2, 3];
+        let periods = Array.from({ length: game.periodsPlayed }, (_, index) => index);
         if(filter.period === "H1") periods = [0, 1];
-        else if(filter.period === "H2") periods = [2, 3];
+        else if(filter.period === "H2") periods = periods.slice(2);
         else if(filter.period === "Q1") periods = [0];
         else if(filter.period === "Q2") periods = [1];
         else if(filter.period === "Q3") periods = [2];
-        else if(filter.period === "Q4") periods = [3];
+        else if(filter.period === "Q4") periods = periods.slice(3);
 
         for (let period of periods){
             let pickedStats = pickedStat.split('+');

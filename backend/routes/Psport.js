@@ -75,12 +75,7 @@ router.get("/matches/nba/:playerName", async (req, res) => {
             },
             {
                 $project: {
-                    url: 1,
-                    team1: 1,
-                    team2: 1,
-                    score: 1,
-                    date: 1,
-                    players: 1
+                    _id: 0 // Exclude the `_id` field
                 }
             }
         ]);

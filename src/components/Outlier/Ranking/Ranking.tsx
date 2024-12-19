@@ -86,8 +86,7 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
         if(filter.period !== 'All'){
             newData.push(calcRank(rankings, filter.period, pickedPosition, 'cleveland', filter.stat));
         }
-
-        console.log('newdata', newData)
+        
         setData(newData);
     }, [selectedOption, filter.stat, filter.period])
 
@@ -104,8 +103,9 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
 
                 {/* Positions Selection */}
                 <div style={{display:'flex'}}>
-                    {['All', 'vs G', 'vs F', 'vs C'].map((option) => (
+                    {['All', 'vs G', 'vs F', 'vs C'].map((option, i) => (
                         <div 
+                            key={i}
                             style={{
                                 cursor:'pointer', color:'#fff', paddingRight:'20px', alignItems:'center',
                                 display:'flex', flexDirection:'column', justifyContent:'space-between',

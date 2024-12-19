@@ -173,7 +173,6 @@ export class PSport {
         const gamesPlayed = allGames.filter((game: PGame) => {
             const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             
-            console.log(foundPlayer)
             return foundPlayer?.periods.some(period => period['MIN'] > 0
                 // period.some(stat => stat.name === "MIN" && stat.value > 0)
             );

@@ -75,20 +75,6 @@ export const getTeamStatRanking = (
                 const rankingsTeam = rankings.find(r => r.team.toLowerCase() === oppTeam.toLowerCase());
     
                 if(rankingsTeam){
-                    // pStat.periods.forEach((period, index) => {
-                    //     period.forEach(s => {
-                    //         const positions = playerPos.split('-');
-                            
-                    //         positions.forEach(position => {
-                    //             // console.log(`${position} ${foundPlayer?.name}`)
-                    //             rankingsTeam.stats[s.name][index][position] += s.value > 0 ? s.value : 0;
-    
-                    //             if(index === 0 && position === 'G' && s.name === "PTS" && s.value > 0){
-                    //                 // console.log(`1st Q ${foundPlayer!.name} on tea ${foundPlayer?.team}`, s.value)
-                    //             }
-                    //         })
-                    //     })
-                    // })
                     pStat.periods.forEach((period, index) => {
                         Object.entries(period).forEach(([statName, statValue]) => {
                             const positions = playerPos.split('-');
@@ -96,9 +82,9 @@ export const getTeamStatRanking = (
                             positions.forEach(position => {
                                 rankingsTeam.stats[statName][index][position] += statValue > 0 ? statValue : 0;
                     
-                                if (index === 0 && position === 'G' && statName === "PTS" && statValue > 0) {
-                                    console.log(`1st Q ${foundPlayer!.name} on team ${foundPlayer?.team}`, statValue);
-                                }
+                                // if (index === 0 && position === 'G' && statName === "PTS" && statValue > 0) {
+                                //     console.log(`1st Q ${foundPlayer!.name} on team ${foundPlayer?.team}`, statValue);
+                                // }
                             });
                         });
                     });
@@ -119,8 +105,8 @@ export const calcRank = (
     teamStats: Ranking[], period: string, position: string, teamParam: string,
     pickedStat: string,
 ): RankDisplay => {
-    console.log('Selected Position', position)
-    console.log('Selected Period', period)
+    // console.log('Selected Position', position)
+    // console.log('Selected Period', period)
     let retRank = {statAllowed: '', rank: '', avg: 0, color: ''};
     let periods = PSport.getPeriods(period, "nba");
 
@@ -177,9 +163,6 @@ export const calcRank = (
     /* Pick the color */
     let total = teamStats.length;
     let percent = foundIndex / total;
-
-    console.log("foundIndex", foundIndex)
-    console.log("percent", percent)
 
     if(percent <= .67){
         retRank.color = '#14EE9D';

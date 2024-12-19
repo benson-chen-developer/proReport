@@ -28,7 +28,7 @@ export type Game = {
     team1: string,
     team2: string,
     url: string,
-    date: string
+    date: string,
 }
 export type EGame = Game & {
     maps: {
@@ -42,6 +42,7 @@ export type EGame = Game & {
     }[]
 }
 export type PGame = Game & {
+    periodsPlayed: number
     score: string,
     players : PGamePlayer[]
 }
