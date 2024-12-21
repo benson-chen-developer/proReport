@@ -13,6 +13,8 @@ import { MainBarChart } from './MainBarChart/MainBarChart';
 import { useGlobalContext } from '../../Context/store';
 import { updateFilters } from '../../Context/functions/barchartFuncs';
 import { Rankings } from './Ranking/Ranking';
+import {WithOutPlayers} from './Stats/WithoutPlayers';
+import { DaysOfRest } from './Stats/DaysOfRest';
 
 interface Props {
     league: string,
@@ -22,9 +24,11 @@ export type Filter = {
     isHome: boolean,
     isAway: boolean,
     stat: string, //Points, Asts,
-    supportingStat: string, //Minutes, fouls,
     lastGame: string, //L10, H2H,
     period: string, //Q1, H1,
+    supportingStat: string, //Minutes, fouls,
+    withOutPlayers: string[],
+    daysRested: number
 }
 export type Filters = {
     stats: string[][], //[PTS, PTS+REBS]
@@ -82,7 +86,9 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         stat: "PTS", 
         lastGame: "L10", 
         period: "All",
+        withOutPlayers: [],
         supportingStat: "Minutes", 
+        daysRested: 0
     });
     const [filters, setFilters] = useState<Filters>({
         stats: [],
@@ -163,22 +169,6 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
     }, [playerName]);
 
     useEffect(() => {
-        // let displayedGames: PGame[] = [];
-
-        // let homeGames = pGames.filter(game => game.team1 === player.team);
-        // let awayGames = pGames.filter(game => game.team2 === player.team);
-        // if(filter.isHome) displayedGames.push(...homeGames);
-        // if(filter.isAway) displayedGames.push(...awayGames);
-
-        // if(filter.lastGame[0] === "L"){
-        //     let length = Number(filter.lastGame.slice(1, filter.lastGame.length));
-        //     displayedGames = displayedGames.slice(-length);
-        // }
-        // else if(filter.lastGame === "H2H"){
-        //     displayedGames = displayedGames.filter(game => game.team1 === currentMatchUp.oppTeam || game.team2 === currentMatchUp.oppTeam);
-        // }
-
-        // setDisplayedGames(displayedGames);
         setFilters(updateFilters(filters, filter))
     }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
 
@@ -221,6 +211,13 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                             filter={filter} filters={filters} setFilter={setFilter}
                         />
                         <PeriodStatsHeader
+                            setFilter={setFilter} filter={filter}
+                        />
+                        <WithOutPlayers 
+                            ourPlayer={player}
+                            setFilter={setFilter} filter={filter}
+                        />
+                        <DaysOfRest 
                             setFilter={setFilter} filter={filter}
                         />
                     </div>

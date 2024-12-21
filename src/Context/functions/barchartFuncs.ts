@@ -37,7 +37,10 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
             : matchUp.teams[0].toLowerCase();
     }
 
-    const displayedGames = getDisplayGames(games, filter, oppTeam, player.city);
+    /* Here we filter the games from the game criteria */
+    const displayedGames = getDisplayGames(games, filter, oppTeam, player);
+
+    /* Here we get the stats from the game via criteria */
     const data = displayedGames.map((game, index) => { 
         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
         const opp: string = game.team1 === player.team ? game.team2 : game.team1;
@@ -105,13 +108,40 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
     return data;
 }
 
-export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: string, playerCity: string): PGame[] => {
+/* Filter the aviable games to get stats from */
+export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: string, player: PPlayer): PGame[] => {
     let displayedGames: PGame[] = [];
+
+    /* Get all games without these players */
+    displayedGames = allGames.filter(game => 
+        !game.players.some(p => filter.withOutPlayers.includes(p.name))
+    );
+
+    /* Get all games with this much rest */
+    let gamesWithCorrectFilter: PGame[] = [];
+    let lastDate: Date;
+    displayedGames.forEach((game) => {
+        const date = new Date(game.date);
+        const dateWithTimeAsZero = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    let homeGames = allGames.filter(game => game.team1 === playerCity);
-    let awayGames = allGames.filter(game => game.team2 === playerCity);
-    if(filter.isHome) displayedGames.push(...homeGames);
-    if(filter.isAway) displayedGames.push(...awayGames);
+        if (lastDate) {
+            const daysRested = (lastDate.getTime() - dateWithTimeAsZero.getTime()) / (1000 * 60 * 60 * 24);
+            // console.log('LAST TWO DATES', lastDate, dateWithTimeAsZero, 'daysRested', daysRested,)
+            
+            /* Back to back will be one day apart so -1 */
+            if (daysRested-1 === filter.daysRested) {
+                gamesWithCorrectFilter.push(game);
+            }
+        }
+    
+        lastDate = dateWithTimeAsZero;
+    });
+    // console.log('games with days rested', gamesWithCorrectFilter)
+    displayedGames = gamesWithCorrectFilter;
+    
+    /* Get all home or away games */
+    if(filter.isHome && !filter.isAway) displayedGames = displayedGames.filter(game => game.team1 === player.city);
+    else if(filter.isAway && !filter.isHome) displayedGames.filter(game => game.team2 === player.city);
     
     if(filter.lastGame[0] === "L"){
         let length = Number(filter.lastGame.slice(1, filter.lastGame.length));
