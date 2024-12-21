@@ -1,6 +1,34 @@
 import { BarData, Filter, Filters, MatchUp } from "../../components/Outlier/Matches";
 import { PGame, PPlayer } from "../PlayerTypes";
 
+/*
+    Takes 5.55 (5:55) + 6.21 (6:21) and spits out 12.17(12:17)
+*/
+export const timeAdd = (t1: number, t2: number): number => {
+    const t1Min = Math.floor(t1);
+    const t1Sec = t1 - t1Min;
+    const t2Min = Math.floor(t2);
+    const t2Sec = t2 - t2Min;
+
+    const t3Min = t1Min + t2Min;
+    
+    const totalSec = t1Sec + t2Sec;
+    const minutesFromSeconds = Math.floor(totalSec / 60);
+    const remainingSeconds = totalSec % 60;
+
+    return (minutesFromSeconds+t3Min) + remainingSeconds;
+}
+
+/*
+    Our MIN field is stored as seconds (300 = 5 minutes)
+*/
+export const convertSecondsToMinutes = (totalSeconds: number): number => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return minutes + (seconds/100);
+}
+
 export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp, pickedStat: string): BarData[] => {
     let oppTeam = '';
     if(matchUp.teams.length > 0){
@@ -19,7 +47,6 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
         let statTotal: number = 0;
         let stats: number[] = [0, 0, 0];
-        console.log(game)
         
         let periods = Array.from({ length: game.periodsPlayed }, (_, index) => index);
         if(filter.period === "H1") periods = [0, 1];
@@ -31,24 +58,38 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
 
         for (let period of periods){
             let pickedStats = pickedStat.split('+');
+            // console.log(pickedStat, 'pickedStat')
 
             pickedStats.forEach((pickedStatSegment, index) => {
-                // const val = foundPlayer?.periods[period].find(stat => stat.name === pickedStatSegment)?.value || 0;
-                const val = foundPlayer?.periods[period][pickedStatSegment]!;
-                let statVal = val === -1 ? 0 : val;
+                let val = foundPlayer?.periods[period][pickedStatSegment]!;
 
-                statTotal += statVal;
-                stats[index] += statVal;
+                if(val)
+                statTotal += val;
+                stats[index] += val;
             })
         }
+        // console.log("statTotal", statTotal)
+        // console.log("parseFloat(statTotal.toFixed(1))", parseFloat(statTotal.toFixed(1)))
     
+        /* 
+            Convert the values to minutes if needed 
+                - else just round the numbers
+        */
+        if(pickedStat === "MIN"){
+            statTotal = convertSecondsToMinutes(statTotal);
+            stats = stats.map(stat => convertSecondsToMinutes(stat));
+        } else {
+            statTotal = parseFloat(statTotal.toFixed(1));
+            stats = stats.map(stat => Number(stat.toFixed(1)));
+        }
+
         let pickedStatSplit = pickedStat.split('+');
         return {
             name: pickedStat, 
-            statTotal: parseFloat(statTotal.toFixed(1)),
-            stat1: parseFloat(stats[0].toFixed(1)), 
-            stat2: parseFloat(stats[1].toFixed(1)),
-            stat3: parseFloat(stats[2].toFixed(1)),
+            statTotal: statTotal,
+            stat1: stats[0], 
+            stat2: stats[1],
+            stat3: stats[2],
             stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]} ${stats[0]}` : '',
             stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]} ${stats[1]}` : '',
             stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',

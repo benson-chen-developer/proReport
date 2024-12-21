@@ -144,7 +144,7 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
 
                 {/* Actual Data (Points Allowed     23rd     101.1) */}
                 {data.map((d, index) => (
-                    <div style={{width:'100%', justifyContent:'space-between', display:'flex', marginBottom:'15px'}}>
+                    <div key={index} style={{width:'100%', justifyContent:'space-between', display:'flex', marginBottom:'15px'}}>
                         <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff', width:'60%' }}> 
                             {d.statAllowed}
                         </div>

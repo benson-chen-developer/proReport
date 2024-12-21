@@ -234,14 +234,14 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                     />
                 </div>
 
-                {/* <SupportCard 
+                <SupportCard 
                     filter={filter} setFilter={setFilter}
                     matchUp={matchUp}
                     filters={filters}
                     pGames={pGames}
                     player={player}
                     barData={barData}
-                /> */}
+                />
             </div>
 
             <Rankings filter={filter}/>

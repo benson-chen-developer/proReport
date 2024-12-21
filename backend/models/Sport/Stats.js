@@ -35,7 +35,7 @@ const WNBAStatsSchema = new mongoose.Schema({
     STL: { type: Number, default: 0 },
     PF: { type: Number, default: 0 },
     TOV: { type: Number, default: 0 },
-    MIN: { type: String, default: '0.00' },
+    MIN: { type: Number, default: 0 },
 });
 
 module.exports = {
