@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import Image from 'next/image';
 import { PlayerType } from '../../../Context/PlayerTypes';
 
 interface Props {
     similarPlayers: PlayerType[], 
 }
-export const SuggestedPlayers: React.FC<Props>  = ({similarPlayers}) => {
+export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers }, ref) => {
     return (
         <div
+            ref={ref}
             style={{
                 borderRadius: "10px",
                 minHeight:'100px', maxHeight: "400px", 
-                width:'100%', //2b2b2b
+                width:'130%', //2b2b2b
                 overflowY: "auto", border:'1px solid #A2A2A2',
-                backgroundColor: "#1E1E1E", marginTop:'5px'
+                backgroundColor: "#1E1E1E", marginTop:'5px', zIndex:3
             }}
         >
             {similarPlayers.length > 0 ? (
@@ -61,4 +62,4 @@ export const SuggestedPlayers: React.FC<Props>  = ({similarPlayers}) => {
             )}
         </div>
     )
-}
+})
