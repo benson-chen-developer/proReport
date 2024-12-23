@@ -42,9 +42,7 @@ export const Search = () => {
     }, [searchQuery])
 
     return (
-        <div style={{ 
-            width: "300px", display:'flex', flexDirection:'column'
-        }}>
+        <div style={{ width: "300px", display:'flex', flexDirection:'column'}}>
             <SearchingBar 
                 ref={searchRef}
                 setIsPopUp={setIsPopUp}
