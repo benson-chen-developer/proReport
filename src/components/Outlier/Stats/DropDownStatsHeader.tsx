@@ -11,7 +11,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{width:'100%',display:'flex'}}>
+        <div style={{width:'100%',display:'flex', margin:'5px 0px'}}>
             {filters.stats.map((category, index) => (
                 <div 
                     key={index} 

@@ -12,7 +12,7 @@ export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({
     const stats = ['All', "H1", "H2", "Q1", "Q2", "Q3", "Q4"]
 
     return (
-        <div style={{display:'flex', width:'100%'}}>
+        <div style={{display:'flex', width:'100%', marginBottom:'20px',}}>
             {stats.map((stat, index) => 
                 <div 
                     key={index}

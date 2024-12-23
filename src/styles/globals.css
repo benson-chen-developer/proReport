@@ -13,6 +13,11 @@ body {
     /* Prevent horizontal scrolling */
 }
 
+/* Helper class that turns background grey when hovered */
+.hoverBg:hover{
+  background: #2B2B2B;
+}
+
 /* TableHeader.tsx */
 .dropdown-container {
   position: relative;

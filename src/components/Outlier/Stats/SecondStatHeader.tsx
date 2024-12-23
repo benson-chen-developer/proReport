@@ -29,7 +29,7 @@ interface CustomLabelProps {
 export const SecondStatsHeader: React.FC<CustomLabelProps> = ({filters, filter, setFilter}) => {
     return (
         <div style={{
-            width:'100%', alignItems:'center',
+            width:'100%', alignItems:'center', marginBottom:'5px',
             display:'flex', justifyContent:'space-between'
         }}>
             <div style={{width:'80%', display:'flex'}}>

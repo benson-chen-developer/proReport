@@ -15,6 +15,7 @@ import { updateFilters } from '../../Context/functions/barchartFuncs';
 import { Rankings } from './Ranking/Ranking';
 import {WithOutPlayers} from './Stats/WithoutPlayers';
 import { DaysOfRest } from './Stats/DaysOfRest';
+import { MinutesSlider } from './Stats/MinutesSlider';
 
 interface Props {
     league: string,
@@ -28,13 +29,15 @@ export type Filter = {
     period: string, //Q1, H1,
     supportingStat: string, //Minutes, fouls,
     withOutPlayers: string[],
-    daysRested: number
+    daysRested: number,
+    minutes: [number, number]
 }
 export type Filters = {
     stats: string[][], //[PTS, PTS+REBS]
     supportingStats: string[], //Minutes, fouls,
     lastGames: string[], //L10, H2H,
     periods: string[], //Q1, H1,
+    minutes: [number, number]
 }
 export type BarData = {
     name: string, 
@@ -88,13 +91,15 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         period: "All",
         withOutPlayers: [],
         supportingStat: "Minutes", 
-        daysRested: 0
+        daysRested: 0,
+        minutes: [15, 45]
     });
     const [filters, setFilters] = useState<Filters>({
         stats: [],
         supportingStats: ["Minutes", "Fouls"],
         lastGames: matchUp.teams.length > 0 ? ["L5", "L10", "L20", "H2H"] : ["L5", "L10", "L20"],
-        periods: []
+        periods: [],
+        minutes: [15, 45]
     })
 
     // const currentMatchUp = {
@@ -191,8 +196,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 }}>
                     {/* Stats Header */}
                     <div style={{
-                        width:'95%', height:'200px', display:'flex', justifyContent:'space-evenly',
-                        flexDirection:'column',
+                        width:'95%', height:'300px', display:'flex', flexDirection:'column',
                     }}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24">
@@ -213,13 +217,23 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                         <PeriodStatsHeader
                             setFilter={setFilter} filter={filter}
                         />
-                        <WithOutPlayers 
-                            ourPlayer={player}
-                            setFilter={setFilter} filter={filter}
-                        />
-                        <DaysOfRest 
-                            setFilter={setFilter} filter={filter}
-                        />
+                        
+                        <div style={{width:'95%', display:'flex', alignItems:'center'}}>
+                            <WithOutPlayers 
+                                ourPlayer={player}
+                                setFilter={setFilter} filter={filter}
+                            />
+                            <DaysOfRest 
+                                setFilter={setFilter} filter={filter}
+                            />
+                        </div>
+
+                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'175px'}}>
+                            <MinutesSlider 
+                                filter={filter} setFilter={setFilter}
+                                filters={filters}
+                            />
+                        </div>
                     </div>
 
                     <MainBarChart 

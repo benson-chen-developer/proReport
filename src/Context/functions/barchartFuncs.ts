@@ -44,7 +44,7 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
     const data = displayedGames.map((game, index) => { 
         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
         const opp: string = game.team1 === player.team ? game.team2 : game.team1;
-        const against = game.team1 === player.team ? '@' : 'vs';
+        const against: string = game.team1 === player.team ? '@' : 'vs';
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
@@ -120,7 +120,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
     /* Get all games with this much rest */
     let gamesWithCorrectFilter: PGame[] = [];
     let lastDate: Date;
-    displayedGames.forEach((game) => {
+    displayedGames.forEach((game, i) => {
         const date = new Date(game.date);
         const dateWithTimeAsZero = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
@@ -130,7 +130,12 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
             
             /* Back to back will be one day apart so -1 */
             if (daysRested-1 === filter.daysRested) {
+                /* This is for making sure the inital day (Day 0) is also added */
+                if(gamesWithCorrectFilter.length === 0) {
+                    gamesWithCorrectFilter.push(displayedGames[i-1]);
+                }
                 gamesWithCorrectFilter.push(game);
+                
             }
         }
     
@@ -138,6 +143,26 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
     });
     // console.log('games with days rested', gamesWithCorrectFilter)
     displayedGames = gamesWithCorrectFilter;
+
+    /* Get all games with at least this range of minutes played */
+    displayedGames = displayedGames.filter((game, index) => {
+        const foundPlayer = game.players.find(p => p.name === player.name);
+
+        if(foundPlayer){
+            let totalMinutes = 0;
+            foundPlayer.periods.forEach(period => {
+                totalMinutes += period['MIN'];
+            })
+            totalMinutes = convertSecondsToMinutes(totalMinutes);
+
+            const lower = filter.minutes[0];
+            const upper = filter.minutes[1];
+
+            return (totalMinutes >= lower && totalMinutes <= upper)
+        } else {
+            return false;
+        }
+    })
     
     /* Get all home or away games */
     if(filter.isHome && !filter.isAway) displayedGames = displayedGames.filter(game => game.team1 === player.city);
