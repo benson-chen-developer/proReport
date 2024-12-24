@@ -5,7 +5,10 @@ import { findSimilarNamesNew } from '../../Player/Componenets/NotFound';
 import { SearchingBar } from './SearchingBar';
 import { SuggestedPlayers } from './SuggestedPlayers';
 
-export const Search = () => {
+interface Props {
+    length?: string, 
+}
+export const Search: React.FC<Props> = ({length}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [similarPlayers, setSimilarPlayers] = useState<PlayerType[]>([]);
     const {fetchNbaPlayers} = useGlobalContext();
@@ -42,7 +45,7 @@ export const Search = () => {
     }, [searchQuery])
 
     return (
-        <div style={{ width: "300px", display:'flex', flexDirection:'column'}}>
+        <div style={{ width: length ? length : "300px", display:'flex', flexDirection:'column'}}>
             <SearchingBar 
                 ref={searchRef}
                 setIsPopUp={setIsPopUp}
