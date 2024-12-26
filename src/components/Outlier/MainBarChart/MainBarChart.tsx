@@ -63,9 +63,8 @@ export const MainBarChart: React.FC<Props> = ({
 
     return (
         <div style={{
-            height:'400px', width:'100%', background:'#1F1F1F',
+            height:'100%', width:'65%', background:'#1F1F1F'
             // borderTopLeftRadius:'25px', borderTopRightRadius:'25px'
-            borderRadius:'25px'
         }}>
             <BarInfo 
                 avg={avg} 

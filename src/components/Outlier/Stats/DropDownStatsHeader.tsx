@@ -11,7 +11,10 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{width:'100%',display:'flex', margin:'5px 0px'}}>
+        <div style={{
+            width:'100%',display:'flex', margin:'0px 0px 15px 0px', 
+            overflow: 'scroll'
+        }}>
             {filters.stats.map((category, index) => (
                 <div 
                     key={index} 
@@ -25,7 +28,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
                             cursor:'pointer', color:'#fff', paddingRight:'20px', alignItems:'center',
                             display:'flex', flexDirection:'column', justifyContent:'space-between',
                         }}
-                        onClick={() => setFilter(p => ({...p, stat: category[0], barKey: p.barKey+1})) }
+                        onClick={() => setFilter(p => ({...p, stat: category[0]})) }
                     >
                         <div style={{
                             color: category[0] === filter.stat ? '#fff' : 'grey', marginTop:'5px',
@@ -58,7 +61,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
                             {category.slice(1).map((stat, statIndex) => (
                                 <div 
                                     key={statIndex} style={{ padding: '5px 10px' }} 
-                                    onClick={() => setFilter(p => ({...p, stat: stat, barKey: p.barKey+1}))}
+                                    onClick={() => setFilter(p => ({...p, stat: stat}))}
                                 >
                                     {stat}
                                 </div>

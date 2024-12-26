@@ -4,7 +4,7 @@ import { ClipLoader } from 'react-spinners';
 import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/PlayerTypes';
 import { DropDownStatsHeader } from '../Outlier/Stats/DropDownStatsHeader';
 import { SecondStatsHeader } from '../Outlier/Stats/SecondStatHeader';
-import { Hero } from '../Outlier/Hero';
+// import { Hero } from '../Outlier/Hero';
 import { PeriodStatsHeader } from '../Outlier/Stats/PeriodStatsHeader';
 import { PSport } from '../Player/SportClass/Psport';
 import { Averages } from './Averages';
@@ -16,6 +16,8 @@ import { Rankings } from './Ranking/Ranking';
 import {WithOutPlayers} from './Stats/WithoutPlayers';
 import { DaysOfRest } from './Stats/DaysOfRest';
 import { MinutesSlider } from './Stats/MinutesSlider';
+import { Hero } from './Hero/Hero';
+import { HomeSwitches } from './Stats/HomeSwitches';
 
 interface Props {
     league: string,
@@ -178,27 +180,33 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
     }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
 
     if(!loading) return (
-        <div style={{background: bgColor, width:'75%', display:'flex'}}>
+        <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
+            <Hero 
+                player={player}
+                matchUp={matchUp}
+            />
+            {/* <div style={{width:'100%', display:'flex', alignItems:'flex-end', margin:'30px 0px 20px 0px'}}>
+                <Averages averages={seasonAvg} pGames={pGames}/>
+            </div> */}
+            
+            <div style={{
+                width:'100%', display:'flex', borderRadius:'20px',
+            }}>
+                <MainBarChart 
+                    player={player}
+                    filter={filter}
+                    matchUp={matchUp}
+                    setBarData={setBarData}
+                    pGames={pGames}
+                />
 
-            <div>
-                <div style={{width:'100%', display:'flex', alignItems:'flex-end', margin:'30px 0px 20px 0px'}}>
-                    <Hero 
-                        player={player}
-                        matchUp={matchUp}
-                    />
-                    <Averages averages={seasonAvg} pGames={pGames}/>
-                </div>
-                
                 <div style={{
-                    width:'705px', background:'#2B2B2B', display:'flex',
-                    flexDirection:'column', alignItems:'center', borderRadius:'20px',
-                    boxShadow: '0px 0px 50px 5px #79F4F4'
+                    width:'35%', //height:'300px', 
+                    display:'flex', flexDirection:'column', background:'#2B2B2B',
+                    alignItems:'flex-end', borderLeft:'1px solid #808080'
                 }}>
-                    {/* Stats Header */}
-                    <div style={{
-                        width:'95%', height:'300px', display:'flex', flexDirection:'column',
-                    }}>
-                        <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
+                    <div style={{width:'95%', height:'auto'}}>
+                        {/* <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24">
                                 <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
                             </svg>
@@ -206,7 +214,8 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                             <span style={{fontSize:'15px', color:'#a2a2a2', marginLeft:'5px'}}>
                                 {filter.stat}+{filter.lastGame}{filter.period !== "All" ? `+${filter.period}` : ''}
                             </span>
-                        </div>
+                        </div> */}
+                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'20px 0px 10px 0px'}}>Stats Filter</p>
                         <DropDownStatsHeader 
                             filter={filter} filters={filters}
                             setFilter={setFilter}
@@ -217,7 +226,9 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                         <PeriodStatsHeader
                             setFilter={setFilter} filter={filter}
                         />
-                        
+
+                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'0px 0px 5px 0px'}}>Games Filter</p>
+                        <HomeSwitches filter={filter} setFilter={setFilter} />
                         <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                             <WithOutPlayers 
                                 ourPlayer={player}
@@ -227,35 +238,28 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                                 setFilter={setFilter} filter={filter}
                             />
                         </div>
-
-                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'175px'}}>
+                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'100px'}}>
                             <MinutesSlider 
                                 filter={filter} setFilter={setFilter}
                                 filters={filters}
                             />
                         </div>
                     </div>
+                    
 
-                    <MainBarChart 
-                        player={player}
-                        filter={filter}
-                        matchUp={matchUp}
-                        setBarData={setBarData}
-                        pGames={pGames}
-                    />
                 </div>
-
-                <SupportCard 
-                    filter={filter} setFilter={setFilter}
-                    matchUp={matchUp}
-                    filters={filters}
-                    pGames={pGames}
-                    player={player}
-                    barData={barData}
-                />
             </div>
 
-            <Rankings filter={filter}/>
+            <SupportCard 
+                filter={filter} setFilter={setFilter}
+                matchUp={matchUp}
+                filters={filters}
+                pGames={pGames}
+                player={player}
+                barData={barData}
+            />
+
+            {/* <Rankings filter={filter}/> */}
         </div>
     )
 

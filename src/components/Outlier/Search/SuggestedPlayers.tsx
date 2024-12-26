@@ -26,9 +26,10 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                             padding: "15px", cursor: "pointer", width:'95%', display:'flex',
                             height:'40px', color:'#fff', alignItems:'center'
                         }}
-                        onClick={() =>
-                            (window.location.href = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/p/nba/${player.name}`)
-                        }
+                        onClick={() => {
+                            const playerDash = player.name.replace(' ', '_');
+                            (window.location.href = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/nba/${playerDash}`)
+                        }}
                     >
                         <div style={{
                             width:"40px", height:'40px', borderRadius: 100, border:'1px solid #fff', 

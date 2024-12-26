@@ -50,9 +50,9 @@ export const SupportCard: React.FC<Props> = ({
 
     return (
         <div style={{
-            width:'705px', background:'#1E1E1E', display:'flex',
+            width:'65%', background:'#1E1E1E', display:'flex',
             justifyContent:'center', flexDirection:'column', alignItems:'center',
-            boxShadow: '0px 0px 20px 5px #fff', borderRadius:'20px', marginTop:'20px'
+            borderTop:'1px solid #fff'
         }}>
             <div style={{width:'95%', marginBottom:'30px'}}>
                 {/* Supportin Stats and Averages */}
@@ -121,6 +121,7 @@ export const SupportCard: React.FC<Props> = ({
 
             {!loading ?
                 <Bars
+                    pGames={pGames}
                     filter={filter}
                     matchUp={matchUp}
                     barData={barData}

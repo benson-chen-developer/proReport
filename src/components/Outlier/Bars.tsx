@@ -171,7 +171,7 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
                     width={500}
                     height={300}
                     data={barData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 5, right: 30, left: 0, bottom: 0 }}
                 >
                     {/* Background */}
                     <rect width="100%" height="100%" fill={'#1F1F1F'} /> 

@@ -73,7 +73,7 @@ interface Props {
 }
 export const HomeSwitches: React.FC<Props> = ({filter, setFilter}) => {
   return (
-      <div style={{display:'flex'}}>
+      <div style={{display:'flex', margin: '0px 0px 10px -10px'}}>
         <div
           style={{display:'flex', alignItems:'center', cursor:'pointer'}}
           onClick={() => {
@@ -89,7 +89,7 @@ export const HomeSwitches: React.FC<Props> = ({filter, setFilter}) => {
           />
           <p style={{
               color: filter.isHome ? '#fff' : 'grey',
-              fontSize:'14px', fontWeight:'bold'
+              fontSize:'14px', fontWeight:'bold',
           }}>
               Home
           </p>
