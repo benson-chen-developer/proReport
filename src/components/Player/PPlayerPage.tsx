@@ -12,7 +12,7 @@ export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
     return (
-        <div style={{display:'flex', width:'100%', background: bgColor}}>
+        <div style={{display:'flex', width:'100%', background: '#000'}}>
             <SideBar />
 
             <PMatches league={league} playerName={playerName}/>

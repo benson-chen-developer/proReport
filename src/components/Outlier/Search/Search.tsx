@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
-import { PlayerType } from '../../../Context/PlayerTypes';
+import { PlayerType } from '../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../Context/store';
 import { findSimilarNamesNew } from '../../Player/Componenets/NotFound';
 import { SearchingBar } from './SearchingBar';
 import { SuggestedPlayers } from './SuggestedPlayers';
 
 interface Props {
-    length?: string, 
+    length: string, 
 }
 export const Search: React.FC<Props> = ({length}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -45,7 +45,7 @@ export const Search: React.FC<Props> = ({length}) => {
     }, [searchQuery])
 
     return (
-        <div style={{ width: length ? length : "300px", display:'flex', flexDirection:'column'}}>
+        <div style={{ width: length, display:'flex', flexDirection:'column'}}>
             <SearchingBar 
                 ref={searchRef}
                 setIsPopUp={setIsPopUp}

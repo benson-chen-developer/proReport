@@ -1,5 +1,5 @@
 import { PSport } from "../../components/Player/SportClass/Psport";
-import { PGame, PPlayer } from "../PlayerTypes"
+import { PGame, PPlayer } from "../Types/PlayerTypes"
 
 export type Ranking = {
     team: string;

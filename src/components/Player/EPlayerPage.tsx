@@ -6,7 +6,7 @@ import { Hero } from './Componenets/Hero';
 import { TableHeader } from './Componenets/TableHeader';
 import { Row } from './Componenets/Row';
 import { NotFound } from './Componenets/NotFound';
-import { Game, LolGame, PGame, PlayerType } from '../../Context/PlayerTypes';
+import { Game, LolGame, PGame, PlayerType } from '../../Context/Types/PlayerTypes';
 import { EGame2 } from '../../Context/ESport';
 import { ESport } from './SportClass/Esport';
 import { DisplayedGame } from './Componenets/DisplayedGame';

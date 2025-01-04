@@ -17,6 +17,14 @@ export const convertNBATeamName = (teamName: string, param: number): string => {
         else if(param === 1) return "Charlotte";
         else if(param === 2) return "Charlotte Hornets";
     }
+    else if(str === 'boston' || str === 'bos'){
+        if(param === 0) return "BOS";
+        else if(param === 1) return "Boston";
+    }
+    else if(str === 'new york' || str === 'bos'){
+        if(param === 0) return "NYC";
+        else if(param === 1) return "New York";
+    }
 
     return '';
 }

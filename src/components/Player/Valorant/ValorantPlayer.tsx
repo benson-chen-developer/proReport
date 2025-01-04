@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { useGlobalContext } from '../../../Context/store';
-import { ValorantGame, ValorantPlayer } from '../../../Context/PlayerTypes';
+import { ValorantGame, ValorantPlayer } from '../../../Context/Types/PlayerTypes';
 import { Hero } from '../Componenets/Hero';
 import { Row } from '../Componenets/Row';
 import { StatComparator } from '../Componenets/StatComparator';

@@ -1,5 +1,5 @@
 import React from 'react'
-import { PGame } from '../../Context/PlayerTypes';
+import { PGame } from '../../Context/Types/PlayerTypes';
 
 interface Props {
     averages: {name:string, value: number}[]

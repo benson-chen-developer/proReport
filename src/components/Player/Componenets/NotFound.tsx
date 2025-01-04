@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { useEffect } from 'react';
-import { PlayerType, PPlayer, WNBAPlayer } from '../../../Context/PlayerTypes';
+import { PlayerType, PPlayer, WNBAPlayer } from '../../../Context/Types/PlayerTypes';
 import { searchPlayer } from '../../Nav/SearchBar/SearchBar';
 // import { PlayerPic } from '../../Nav/SearchBar/DropDown/PlayerDropDown';
 

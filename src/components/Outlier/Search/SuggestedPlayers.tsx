@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 import Image from 'next/image';
-import { PlayerType } from '../../../Context/PlayerTypes';
+import { PlayerType } from '../../../Context/Types/PlayerTypes';
 
 interface Props {
     similarPlayers: PlayerType[], 

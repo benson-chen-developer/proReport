@@ -1,4 +1,4 @@
-import { EGame, LolGame, PlayerType } from "../../../Context/PlayerTypes";
+import { EGame, LolGame, PlayerType } from "../../../Context/Types/PlayerTypes";
 
 export class League {
     static allPickedBtns = ["All Maps", "Map 1", "Map 2", "Map 3", "Map 1+2", "Map 1+2+3", "Map 4", "Map 5"];

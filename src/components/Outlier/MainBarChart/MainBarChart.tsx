@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { parseBarData } from '../../../Context/functions/barchartFuncs'
-import { PGame, PlayerType, PPlayer } from '../../../Context/PlayerTypes'
+import { PGame, PlayerType, PPlayer } from '../../../Context/Types/PlayerTypes'
+import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { Bars } from '../Bars'
 import { BarData, Filter, MatchUp } from '../Matches'
 import { BarInfo } from './BarInfo'
@@ -10,18 +11,23 @@ interface Props {
     filter: Filter,
     matchUp: MatchUp
     setBarData: Dispatch<SetStateAction<BarData[]>>
-    pGames: PGame[]
+    pGames: PGame[],
+    projections: Projection[]
 }
 export const MainBarChart: React.FC<Props> = ({
     player, filter, matchUp, setBarData,
-    pGames
+    pGames, projections
 }) => {
     const [avg, setAvg] = useState<number>(-1);
     const [seasonAvg, setSeasonAvg] = useState<number>(-1);
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
+
+    /* This is the projection value */
     const [refLineOn, setRefLineOn] = useState<boolean>(true);
+    const [refLine, setRefLine] = useState<number>();
 
     useEffect(() => {
+        // console.log('mainbarcahr', projections)
         let periods = [0, 1, 2, 3];
         if(filter.period === "H1") periods = [0, 1];
         else if(filter.period === "H2") periods = [2, 3];
@@ -57,16 +63,15 @@ export const MainBarChart: React.FC<Props> = ({
 
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes } = filter;
     useEffect(() => {
-        const newData = parseBarData(pGames, filter, player, matchUp, filter.stat);
+        // console.log('mainbarcahr', projections)
+        const newData = parseBarData(pGames, filter, player, matchUp, filter.stat, projections);
         setMainBarData(newData);
     }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes])
 
     return (
-        <div style={{
-            height:'100%', width:'65%', background:'#1F1F1F'
-            // borderTopLeftRadius:'25px', borderTopRightRadius:'25px'
-        }}>
+        <div style={{width:'100%'}}>
             <BarInfo 
+                projections={projections}
                 avg={avg} 
                 seasonAvg={seasonAvg}
                 filter={filter}
@@ -78,10 +83,10 @@ export const MainBarChart: React.FC<Props> = ({
                 seasonAvg={seasonAvg}
                 filter={filter}
                 matchUp={matchUp}
-                pGames={pGames}
                 barData={mainBarData}
                 player={player} 
                 chartType="main"
+                barColorIsWhite={false}
             />
         </div>
     )

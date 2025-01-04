@@ -1,4 +1,4 @@
-import { CSGame, EGame, PlayerType } from "../../../Context/PlayerTypes";
+import { CSGame, EGame, PlayerType } from "../../../Context/Types/PlayerTypes";
 
 export class CS {
     static allPickedBtns = ["All Maps", "Map 1", "Map 2", "Map 3", "Map 1+2"];

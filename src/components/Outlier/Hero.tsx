@@ -1,6 +1,6 @@
 import React from 'react'
 import { convertNBATeamName } from '../../Context/functions/convertNbaName'
-import { PPlayer } from '../../Context/PlayerTypes'
+import { PPlayer } from '../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../Context/store'
 import { bgColor } from '../Player/PPlayerPage'
 import { MatchUp } from './Matches'

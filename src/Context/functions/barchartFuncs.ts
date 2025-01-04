@@ -1,5 +1,7 @@
 import { BarData, Filter, Filters, MatchUp } from "../../components/Outlier/Matches";
-import { PGame, PPlayer } from "../PlayerTypes";
+import { PGame, PPlayer } from "../Types/PlayerTypes";
+import { Projection } from "../Types/ProjectionTypes";
+import { convertNBATeamName } from "./convertNbaName";
 
 /*
     Takes 5.55 (5:55) + 6.21 (6:21) and spits out 12.17(12:17)
@@ -29,7 +31,10 @@ export const convertSecondsToMinutes = (totalSeconds: number): number => {
     return minutes + (seconds/100);
 }
 
-export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp, pickedStat: string): BarData[] => {
+export const parseBarData = (
+    games: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp, 
+    pickedStat: string, projections: Projection[]
+): BarData[] => {
     let oppTeam = '';
     if(matchUp.teams.length > 0){
         player.city.toLowerCase() === matchUp.teams[0].toLowerCase() 
@@ -41,10 +46,13 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
     const displayedGames = getDisplayGames(games, filter, oppTeam, player);
 
     /* Here we get the stats from the game via criteria */
+
+    /* Set a refline for the projections */
+    const foundProjection = projections.find(p => p.name === filter.stat);
     const data = displayedGames.map((game, index) => { 
         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
-        const opp: string = game.team1 === player.team ? game.team2 : game.team1;
-        const against: string = game.team1 === player.team ? '@' : 'vs';
+        const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
+        const isHome: boolean = game.team1 === player.team;
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
@@ -98,10 +106,10 @@ export const parseBarData = (games: PGame[], filter: Filter, player: PPlayer, ma
             stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',
             date: date, 
             score: game.score,
-            against: against,
+            isHome: isHome,
             opp: opp,
-            hit: stats[0] >= 25.5, /* What is this hit thing */
-            underText: `${date}\n ${against} ${opp}`
+            hit: foundProjection ? statTotal >= foundProjection.value : false,
+            underText: `${date}\n ${convertNBATeamName(opp, 0)}`
         };
     }).reverse();
 

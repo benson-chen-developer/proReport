@@ -1,7 +1,7 @@
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList, Cell } from 'recharts';
 import { ReferenceLine } from 'recharts';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { PGame, PPlayer } from '../../Context/PlayerTypes';
+import { PGame, PPlayer } from '../../Context/Types/PlayerTypes';
 import { BarData, Filter, MatchUp } from './Matches';
 import { getBarChartTicks, getYAxisMax } from '../../Context/functions/barchartFuncs';
 import CustomTooltip from './CustomTooltip';
@@ -10,15 +10,18 @@ interface Props {
     player: PPlayer,
     filter: Filter,
     barData: BarData[],
-    pGames: PGame[],
 
     refLineOn: boolean,
     matchUp: MatchUp
     seasonAvg: number,
-    chartType: 'support' | 'main'
+    chartType: 'support' | 'main',
+    barColorIsWhite: boolean
 }
 
-export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartType, seasonAvg, refLineOn, pGames}) => {
+export const Bars: React.FC<Props> = ({ 
+    player, filter, barData, matchUp, chartType, seasonAvg, refLineOn,
+    barColorIsWhite
+}) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [ticks, setTicks] = useState<number[]>([]);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
@@ -192,92 +195,60 @@ export const Bars: React.FC<Props> = ({ player, filter, barData, matchUp, chartT
                     <Tooltip content={<CustomTooltip player={player} />} />
 
                     {/* Bars */}
-                    {/* {['#fff', "#efefef" ,"#d3d3d3"].map((color, i) => 
-                        <Bar 
-                            dataKey={`stat${i+1}`}
-                            radius={barRadiusArr[i]} 
-                            stackId="a"
-                            isAnimationActive={true} 
-                            animationDuration={300} 
-                            activeBar={<Rectangle fill="gold" stroke="purple" radius={5}/>}
-                        >
-                            {barData.map((entry, index) => {
-                                const currStatVal = (entry as any)[`stat${i + 1}`];
-
-                                console.log("currStatVal === 0", currStatVal === 0)
-                                if(index === 0) console.log("index", index) 
-                                // console.log("index", index) 
-
-                                if(currStatVal === 0) return <></>;
-
-                                return <React.Fragment key={`cell-${index}`} >
-                                    <Cell 
-                                        fill={currStatVal >= refLineAmt && foundBet ? '#79F4F4' : color} 
-                                    />
-
-                                    {`stat${i + 1}` === `stat1` ?
-                                        <LabelList 
-                                            dataKey="statTotal" position="top" 
-                                            style={{ 
-                                                fill: (entry as any)[`stat${i + 1}`] >= refLineAmt && foundBet ? '#79F4F4' : '#fff',
-                                                fontSize: '15px', fontWeight: 'bold',
-                                            }} 
-                                        /> : null
-                                    }
-
-                                    {currStatVal > 0 && (entry.name.split('+').length > 1) ?
-                                        <LabelList
-                                            dataKey={`stat${i + 1}Text`}
-                                            position="center" // Centers it inside the bar
-                                            style={{
-                                                fill: 'black', // Text color
-                                                fontSize: '12px',
-                                                fontWeight: 'bold'
-                                            }}
-                                        />
-                                        : null
-                                    }
-                                </React.Fragment>
-                            })}
-                        </Bar>
-                    )} */}
-
-                    {/* Bars */}
-                    <Bar dataKey="stat3" stackId="a" fill="#d3d3d3" radius={barRadiusArr[2]} animationDuration={200}>
+                    <Bar dataKey="stat1" stackId="a" radius={barRadiusArr[0]} animationDuration={200}>
+                        {barData.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                            />
+                        ))}
                         <LabelList
-                            dataKey={`stat3Text`}
+                            dataKey="stat1Text"
                             position="center"
                             style={{
-                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
+                                fill: 'black', fontSize: '12px', fontWeight: 'bold',
                             }}
                         />
                     </Bar>
-                    <Bar dataKey="stat2" stackId="a" fill="#efefef" radius={barRadiusArr[1]} animationDuration={200}>
+                    <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
+                        {barData.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                            />
+                        ))}
                         <LabelList
-                            dataKey={`stat2Text`}
+                            dataKey="stat2Text"
                             position="center"
                             style={{
-                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
+                                fill: 'black', fontSize: '12px', fontWeight: 'bold',
                             }}
                         />
                     </Bar>
-                    <Bar dataKey="stat1" stackId="a" fill="#fff" radius={barRadiusArr[0]} animationDuration={200}>
-                        {/* The total stat on top of the bar */}
-                        <LabelList 
-                            dataKey="statTotal" position="top" 
-                            style={{ 
-                                // fill: (entry as any)[`stat${i + 1}`] >= refLineAmt && foundBet ? '#79F4F4' : '#fff',
-                                fontSize: '15px', fontWeight: 'bold', fill:'#fff'
-                            }} 
-                        />
+                    <Bar dataKey="stat3" stackId="a" radius={barRadiusArr[2]} animationDuration={200}>
+                        {barData.map((entry, index) => (
+                            <React.Fragment key={`fragment-${index}`}>
+                                <LabelList
+                                    dataKey="statTotal"  //Number floating up top
+                                    position="top"
+                                    style={{
+                                        fontSize: '15px', fontWeight: 'bold',
+                                        color: barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2',
+                                    }}
+                                />
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                                />
+                            </React.Fragment>
+                        ))}
                         <LabelList
-                            dataKey={`stat1Text`}
-                            position="center" // Centers it inside the bar
-                            style={{
-                                fill: 'black', fontSize: '12px', fontWeight: 'bold'
-                            }}
+                            dataKey="stat3Text"
+                            position="center"
+                            style={{fill: 'black', fontSize: '12px', fontWeight: 'bold'}}
                         />
                     </Bar>
+
 
                     {/* The reference lines */}
                     {/* {refLineOn && barData.length > 0 && (

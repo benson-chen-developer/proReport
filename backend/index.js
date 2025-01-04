@@ -7,11 +7,11 @@ require('dotenv').config();
 
 const ValorantRoute = require('./routes/Valorant');
 const CSRoute = require('./routes/CS');
-const WNBARoute = require('./routes/WNBA');
 const RainbowRoute = require('./routes/Rainbow');
 const TrendingRoute = require('./routes/Trending');
 const EsportRoute = require('./routes/Esport');
 const PsportRoute = require('./routes/Psport');
+const ProjectionRoute = require('./routes/Projection');
 
 const app = express();
 app.use(cors());
@@ -19,10 +19,10 @@ app.use(express.json());
 app.use("/trending", TrendingRoute);
 app.use("/cs", CSRoute);
 app.use("/valorant", ValorantRoute);
-app.use("/wnba", WNBARoute);
 app.use('/rainbow', RainbowRoute);
 app.use('/esport', EsportRoute);
 app.use('/psport', PsportRoute);
+app.use('/projections', ProjectionRoute);
 
 app.get('/mlbSchedule', async (req, res) => {
     const startDate = req.headers.startdate;

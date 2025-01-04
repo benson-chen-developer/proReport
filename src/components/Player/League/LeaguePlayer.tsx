@@ -6,7 +6,7 @@ import { StatComparator } from '../Componenets/StatComparator';
 import { Hero } from '../Componenets/Hero';
 import { EverythingLoaded } from '../Componenets/EverythingLoaded';
 import { TableHeader } from '../Componenets/TableHeader';
-import { LolGame, LolPlayer } from '../../../Context/PlayerTypes';
+import { LolGame, LolPlayer } from '../../../Context/Types/PlayerTypes';
 import { Row } from '../Componenets/Row';
 import { NotFound } from '../Componenets/NotFound';
 

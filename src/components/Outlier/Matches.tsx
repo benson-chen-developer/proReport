@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
-import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/PlayerTypes';
+import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/Types/PlayerTypes';
 import { DropDownStatsHeader } from '../Outlier/Stats/DropDownStatsHeader';
 import { SecondStatsHeader } from '../Outlier/Stats/SecondStatHeader';
 // import { Hero } from '../Outlier/Hero';
@@ -18,6 +18,7 @@ import { DaysOfRest } from './Stats/DaysOfRest';
 import { MinutesSlider } from './Stats/MinutesSlider';
 import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
+import { Projection } from '../../Context/Types/ProjectionTypes';
 
 interface Props {
     league: string,
@@ -52,7 +53,7 @@ export type BarData = {
     stat3Text: string,
     date: string, 
     score: string,
-    against: string,
+    isHome: boolean,
     opp: string,
     underText: string,
     hit: boolean
@@ -104,20 +105,8 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         minutes: [15, 45]
     })
 
-    // const currentMatchUp = {
-    //     league: '',
-    //     oppTeam: 'Indiana',
-    //     time: '9:00 PM EST',
-    //     bets: [{filter:{
-    //         isHome: true,
-    //         isAway: true,
-    //         stat: "PTS", 
-    //         lastGame: "L10", 
-    //         period: "All",
-    //         supportingStat: "Minutes", 
-    //     }, value: 25.5}]
-    // }
-    const {fetchNbaPlayers, fetchMatchUps} = useGlobalContext();
+    const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
+    const {fetchNbaPlayers, fetchProjections} = useGlobalContext();
 
     const [loading, setLoading] = useState<boolean>(true);
     
@@ -137,6 +126,9 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 position: player!.position,
                 city: player!.city
             });
+
+            const projections = await fetchProjections();
+            setProjections(projections);
 
             /* Get the season averages for fantasy stats */
             let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
@@ -165,10 +157,6 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 stats: PSport.getAllPickedStats('nba')
             }))
 
-            const matchUps = await fetchMatchUps(league);
-            const foundMatchUp = matchUps.find(m => m.teams.includes(player!.city));
-            if(foundMatchUp) setMatchUp(foundMatchUp);
-
             setLoading(false);
         };
       
@@ -183,38 +171,41 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
             <Hero 
                 player={player}
-                matchUp={matchUp}
+                projections={projections}
             />
             {/* <div style={{width:'100%', display:'flex', alignItems:'flex-end', margin:'30px 0px 20px 0px'}}>
                 <Averages averages={seasonAvg} pGames={pGames}/>
             </div> */}
             
-            <div style={{
-                width:'100%', display:'flex', borderRadius:'20px',
-            }}>
-                <MainBarChart 
-                    player={player}
-                    filter={filter}
-                    matchUp={matchUp}
-                    setBarData={setBarData}
-                    pGames={pGames}
-                />
+            {/* The stuff below the Hero */}
+            <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
+                {/* Bar Charts */}
+                <div style={{width:'65%'}}>
+                    <MainBarChart 
+                        projections={projections}
+                        player={player}
+                        filter={filter}
+                        matchUp={matchUp}
+                        setBarData={setBarData}
+                        pGames={pGames}
+                    />
+                    <SupportCard 
+                        filter={filter} setFilter={setFilter}
+                        matchUp={matchUp}
+                        filters={filters}
+                        pGames={pGames}
+                        player={player}
+                        barData={barData}
+                        projections={projections}
+                    />
+                </div>
 
+                {/* Filters */}
                 <div style={{
                     width:'35%', //height:'300px', 
-                    display:'flex', flexDirection:'column', background:'#2B2B2B',
-                    alignItems:'flex-end', borderLeft:'1px solid #808080'
+                    background:'#2B2B2B', borderLeft:'1px solid #808080'
                 }}>
-                    <div style={{width:'95%', height:'auto'}}>
-                        {/* <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24">
-                                <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
-                            </svg>
-                            <span style={{fontSize:'25px', marginLeft:'8px'}}> {player.name}</span>
-                            <span style={{fontSize:'15px', color:'#a2a2a2', marginLeft:'5px'}}>
-                                {filter.stat}+{filter.lastGame}{filter.period !== "All" ? `+${filter.period}` : ''}
-                            </span>
-                        </div> */}
+                    <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
                         <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'20px 0px 10px 0px'}}>Stats Filter</p>
                         <DropDownStatsHeader 
                             filter={filter} filters={filters}
@@ -238,26 +229,19 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                                 setFilter={setFilter} filter={filter}
                             />
                         </div>
-                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'100px'}}>
+                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
                             <MinutesSlider 
                                 filter={filter} setFilter={setFilter}
                                 filters={filters}
                             />
                         </div>
                     </div>
-                    
 
+                    <div style={{paddingLeft:'5%', background:'#1F1F1F'}}>
+                        <Rankings filter={filter}/>
+                    </div>
                 </div>
             </div>
-
-            <SupportCard 
-                filter={filter} setFilter={setFilter}
-                matchUp={matchUp}
-                filters={filters}
-                pGames={pGames}
-                player={player}
-                barData={barData}
-            />
 
             {/* <Rankings filter={filter}/> */}
         </div>

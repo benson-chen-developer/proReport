@@ -1,4 +1,4 @@
-import { PGame } from "../../../Context/PlayerTypes";
+import { PGame } from "../../../Context/Types/PlayerTypes";
 
 export class PSport {
     static getAllPickedBtns = (league?: string): string[] => {

@@ -6,8 +6,11 @@ export const SideBar = () => {
         <div style={{
             width:'20%', height:'100%', display:'flex',
             flexDirection:'column', alignItems:'center'
+            // borderRight:' 1px solid #808080'
         }}>
-            <Search />
+            <div style={{height:'40px'}}/>
+
+            <Search length='90%'/>
         </div>
     )
 }

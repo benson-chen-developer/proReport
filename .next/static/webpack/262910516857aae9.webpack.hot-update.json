@@ -1,1 +1,0 @@
-{"c":["pages/player/[paramSport]/[paramLeague]/[paramPlayer]","webpack"],"r":[],"m":["./src/Context/functions/convertStatName.ts","./src/components/Outlier/MainBarChart/BarInfo.tsx","./src/components/Outlier/MainBarChart/MainBarChart.tsx"]}

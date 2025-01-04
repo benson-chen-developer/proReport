@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { PGame, PlayerType, PPlayer } from '../../../Context/PlayerTypes';
+import { PGame, PlayerType, PPlayer } from '../../../Context/Types/PlayerTypes';
 import { Bars } from '../Bars';
 import { BarData, Filter, Filters, MatchUp } from '../Matches';
 import { StatsHeader } from '../Stats/StatsHeader';
-import { SupportBars } from '../SupportBars';
 import Checkbox from '@mui/material/Checkbox';
 import { parseBarData } from '../../../Context/functions/barchartFuncs';
+import { Projection } from '../../../Context/Types/ProjectionTypes';
 
 interface Props {
     filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
@@ -13,11 +13,12 @@ interface Props {
     matchUp: MatchUp,
     pGames: PGame[],
     player: PPlayer,
-    barData: BarData[]
+    barData: BarData[],
+    projections: Projection[]
 }
 export const SupportCard: React.FC<Props> = ({
     filter, setFilter, pGames, player,
-    filters, matchUp
+    filters, matchUp, projections
 }) => {
     const [barData, setBarData] = useState<BarData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -42,7 +43,7 @@ export const SupportCard: React.FC<Props> = ({
             else return '';
         }
 
-        const newBarData = parseBarData(pGames, filter, player, matchUp, supportStatsKey(filter.supportingStat));
+        const newBarData = parseBarData(pGames, filter, player, matchUp, supportStatsKey(filter.supportingStat), projections);
         setBarData(newBarData);
 
         setLoading(false);
@@ -50,14 +51,16 @@ export const SupportCard: React.FC<Props> = ({
 
     return (
         <div style={{
-            width:'65%', background:'#1E1E1E', display:'flex',
+            width:'100%', background:'#1E1E1E', display:'flex',
             justifyContent:'center', flexDirection:'column', alignItems:'center',
-            borderTop:'1px solid #fff'
         }}>
             <div style={{width:'95%', marginBottom:'30px'}}>
                 {/* Supportin Stats and Averages */}
                 <div style={{fontSize:'14px', display:'flex', justifyContent:'space-between', fontWeight:'bold', alignItems:'flex-end', marginTop:'20px'}}>
-                    <p style={{color:'#fff', fontSize:'18px', margin:0}}>Supporting Stats</p>
+                    <div style={{display:'flex', alignItems:'center'}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="#fff" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg>
+                        <p style={{color:'#fff', fontSize:'18px', margin: '0px 0px 0px 5px'}}>Supporting Stats</p>
+                    </div>
 
                     <div>
                         <span style={{color:'#808080'}}>
@@ -121,7 +124,7 @@ export const SupportCard: React.FC<Props> = ({
 
             {!loading ?
                 <Bars
-                    pGames={pGames}
+                    barColorIsWhite={true}
                     filter={filter}
                     matchUp={matchUp}
                     barData={barData}

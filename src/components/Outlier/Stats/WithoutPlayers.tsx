@@ -8,7 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Filter } from '../Matches';
 import { useGlobalContext } from '../../../Context/store';
-import { PPlayer } from '../../../Context/PlayerTypes';
+import { PPlayer } from '../../../Context/Types/PlayerTypes';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

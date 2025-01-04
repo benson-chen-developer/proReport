@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { calcRank, getTeamStatRanking, RankDisplay, Ranking } from '../../../Context/functions/rankFunctins'
-import { PGame } from '../../../Context/PlayerTypes'
+import { PGame } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
 import { PSport } from '../../Player/SportClass/Psport'
 import { Filter } from '../Matches'
@@ -94,15 +94,26 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
         setSelectedOption(option);
     };
 
+    const convertPositionAbr = (str: string): string => {
+        let ret = '';
+        str = str.toLowerCase();
+
+        if(str === "g") ret = 'Guards';
+        else if(str === "f") ret = 'Forwards';
+        else if(str === "c") ret = 'Centers';
+
+        return ret;
+    }
+
     if(data.length === 0) return <div>Loading</div>
 
     return (
-        <div style={{color:'#fff', width:'350px', height: '300px', background:'#2B2B2B', display:'flex', alignItems:'center', borderRadius:'10px', marginTop:'180px', flexDirection:'column'}}>
-            <div style={{width:'85%', height:'90%'}}>
+        <div style={{color:'#fff', width:'100%', height: '300px', background:'#1F1F1F', display:'flex', alignItems:'center', flexDirection:'column'}}>
+            <div style={{width:'95%', height:'90%'}}>
                 <p>{oppTeam} Points Allowed</p>
 
                 {/* Positions Selection */}
-                <div style={{display:'flex'}}>
+                <div style={{display:'flex', marginBottom:'-10px'}}>
                     {['All', 'vs G', 'vs F', 'vs C'].map((option, i) => (
                         <div 
                             key={i}
@@ -161,9 +172,9 @@ const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => 
                 ))}
             </div>
 
-            <div style={{fontSize:'12px', fontWeight:'normal', color:'#B1B1B1', marginBottom:'20px', width:'85%'}}>
-                {oppTeam} is <span style={{color:'#fff'}}>{data[0].rank} in {data[0].statAllowed}</span>, averaging <span style={{color:'#fff'}}>{data[0].avg} {filter.stat}</span> per game <span style={{color:'#fff'}}>({selectedOption})</span>
-            </div>
+            {/* <div style={{fontSize:'12px', fontWeight:'normal', color:'#B1B1B1', marginBottom:'20px', width:'85%'}}>
+                {oppTeam} is <span style={{color:'#fff'}}>{data[0].rank} in {data[0].statAllowed}</span>, averaging <span style={{color:'#fff'}}>{data[0].avg} {filter.stat}</span> per game <span style={{color:'#fff'}}>(vs {convertPositionAbr(selectedOption[3])})</span>
+            </div> */}
         </div>
     )
 }
