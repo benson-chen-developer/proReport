@@ -44,7 +44,6 @@ export const parseBarData = (
 
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, oppTeam, player);
-
     /* Here we get the stats from the game via criteria */
 
     /* Set a refline for the projections */
@@ -128,29 +127,31 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
     /* Get all games with this much rest */
     let gamesWithCorrectFilter: PGame[] = [];
     let lastDate: Date;
-    displayedGames.forEach((game, i) => {
-        const date = new Date(game.date);
-        const dateWithTimeAsZero = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-        if (lastDate) {
-            const daysRested = (lastDate.getTime() - dateWithTimeAsZero.getTime()) / (1000 * 60 * 60 * 24);
-            // console.log('LAST TWO DATES', lastDate, dateWithTimeAsZero, 'daysRested', daysRested,)
-            
-            /* Back to back will be one day apart so -1 */
-            if (daysRested-1 === filter.daysRested) {
-                /* This is for making sure the inital day (Day 0) is also added */
-                if(gamesWithCorrectFilter.length === 0) {
-                    gamesWithCorrectFilter.push(displayedGames[i-1]);
-                }
-                gamesWithCorrectFilter.push(game);
+
+    if(filter.daysRested !== -1){
+        displayedGames.forEach((game, i) => {
+            const date = new Date(game.date);
+            const dateWithTimeAsZero = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+            if (lastDate) {
+                const daysRested = (lastDate.getTime() - dateWithTimeAsZero.getTime()) / (1000 * 60 * 60 * 24);
+                // console.log('LAST TWO DATES', lastDate, dateWithTimeAsZero, 'daysRested', daysRested,)
                 
+                /* Back to back will be one day apart so -1 */
+                if (daysRested-1 === filter.daysRested) {
+                    /* This is for making sure the inital day (Day 0) is also added */
+                    if(gamesWithCorrectFilter.length === 0) {
+                        gamesWithCorrectFilter.push(displayedGames[i-1]);
+                    }
+                    gamesWithCorrectFilter.push(game);
+                    
+                }
             }
-        }
-    
-        lastDate = dateWithTimeAsZero;
-    });
-    // console.log('games with days rested', gamesWithCorrectFilter)
-    displayedGames = gamesWithCorrectFilter;
+        
+            lastDate = dateWithTimeAsZero;
+        });
+        displayedGames = gamesWithCorrectFilter;
+    }
 
     /* Get all games with at least this range of minutes played */
     displayedGames = displayedGames.filter((game, index) => {

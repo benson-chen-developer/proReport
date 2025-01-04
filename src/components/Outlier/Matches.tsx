@@ -94,7 +94,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         period: "All",
         withOutPlayers: [],
         supportingStat: "Minutes", 
-        daysRested: 0,
+        daysRested: -1,
         minutes: [15, 45]
     });
     const [filters, setFilters] = useState<Filters>({
@@ -237,9 +237,9 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                         </div>
                     </div>
 
-                    <div style={{paddingLeft:'5%', background:'#1F1F1F'}}>
+                    {/* <div style={{paddingLeft:'5%', background:'#1F1F1F'}}>
                         <Rankings filter={filter}/>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

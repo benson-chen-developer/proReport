@@ -31,7 +31,7 @@ export const Bars: React.FC<Props> = ({
 
     const [foundBet, setFoundBet] = useState();
     const [barKey, setBarKey] = useState<number>(0);
-
+    
     const [barRadiusArr, setBarRadiusArr] = useState<[number, number, number, number][]>([
         [5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]
     ])
@@ -92,7 +92,7 @@ export const Bars: React.FC<Props> = ({
     useEffect(() => {
         // console.log('barData', barData)
         setBarKey(prev => prev + 1);
-      }, [barData]);
+    }, [barData]);
 
     interface CustomLabelProps {
         x?: number;
@@ -181,7 +181,7 @@ export const Bars: React.FC<Props> = ({
 
                     {/* The lines in the backgrond */}
                     <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
-                    <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold' }} tickLine={false} axisLine={false}/>
+                    <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold', fontSize:'12px' }} tickLine={false} axisLine={false}/>
                     <YAxis 
                         domain={[0, yAxisMax]} 
                         // domain={[0, Math.max(...ticks) + 5]}
@@ -227,20 +227,20 @@ export const Bars: React.FC<Props> = ({
                     </Bar>
                     <Bar dataKey="stat3" stackId="a" radius={barRadiusArr[2]} animationDuration={200}>
                         {barData.map((entry, index) => (
-                            <React.Fragment key={`fragment-${index}`}>
-                                <LabelList
-                                    dataKey="statTotal"  //Number floating up top
-                                    position="top"
-                                    style={{
-                                        fontSize: '15px', fontWeight: 'bold',
-                                        color: barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2',
-                                    }}
-                                />
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
-                                />
-                            </React.Fragment>
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                            />
+                        ))}
+                        {barData.slice(0,1).map((entry, index) => (
+                            <LabelList
+                                dataKey="statTotal"  //Number floating up top
+                                position="top"
+                                style={{
+                                    fontSize: '15px', fontWeight: 'bold',
+                                    color: barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2',
+                                }}
+                            />
                         ))}
                         <LabelList
                             dataKey="stat3Text"
@@ -248,7 +248,6 @@ export const Bars: React.FC<Props> = ({
                             style={{fill: 'black', fontSize: '12px', fontWeight: 'bold'}}
                         />
                     </Bar>
-
 
                     {/* The reference lines */}
                     {/* {refLineOn && barData.length > 0 && (

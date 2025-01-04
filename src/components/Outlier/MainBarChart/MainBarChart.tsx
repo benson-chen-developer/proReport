@@ -40,7 +40,6 @@ export const MainBarChart: React.FC<Props> = ({
         mainBarData.forEach((barData) => {
             totalStat += barData.stat1;
         })
-
         let seasonTotal = 0;
         pGames.forEach((game) => {
             let pickedStats = filter.stat.split('+');
