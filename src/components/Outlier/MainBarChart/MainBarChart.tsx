@@ -85,7 +85,7 @@ export const MainBarChart: React.FC<Props> = ({
                 barData={mainBarData}
                 player={player} 
                 chartType="main"
-                barColorIsWhite={false}
+                barColorIsWhite={projections.find(p => p.name === filter.stat) === undefined}
             />
         </div>
     )

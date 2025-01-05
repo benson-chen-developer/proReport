@@ -179,7 +179,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
     
     if(filter.lastGame[0] === "L"){
         let length = Number(filter.lastGame.slice(1, filter.lastGame.length));
-        displayedGames = displayedGames.slice(-length);
+        displayedGames = displayedGames.reverse().slice(-length).reverse();
     }
     else if(filter.lastGame === "H2H"){
         displayedGames = displayedGames.filter(game => game.team1 === oppTeam || game.team2 === oppTeam);

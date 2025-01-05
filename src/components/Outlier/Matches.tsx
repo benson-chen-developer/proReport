@@ -218,7 +218,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                             setFilter={setFilter} filter={filter}
                         />
 
-                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'0px 0px 5px 0px'}}>Games Filter</p>
+                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'25px 0px 5px 0px'}}>Games Filter</p>
                         <HomeSwitches filter={filter} setFilter={setFilter} />
                         <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                             <WithOutPlayers 
