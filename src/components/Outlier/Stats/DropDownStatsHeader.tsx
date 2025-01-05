@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Projection } from '../../../Context/Types/ProjectionTypes';
 import { bgColor } from '../../Player/PPlayerPage';
 import { Filter, Filters } from '../Matches';
 
@@ -6,8 +7,13 @@ interface CustomLabelProps {
     filter: Filter,
     filters: Filters,
     setFilter: Dispatch<SetStateAction<Filter>>
+    setFilters: Dispatch<SetStateAction<Filters>>
+    projections: Projection[],
+    showAllStats: boolean
 }
-export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters, setFilter}) => {
+export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
+    filter, filters, setFilter, setFilters, projections, showAllStats
+}) => {
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
@@ -15,7 +21,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
             width: '100%',
             display: 'flex',
             margin: '0px 0px 15px 0px',
-            overflow: 'auto', // Allow horizontal scrolling
+            // overflow: 'auto', 
         }}>
             {filters.stats.map((category, index) => (
                 <div 
@@ -35,7 +41,18 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({filter, filters
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                         }}
-                        onClick={() => setFilter(p => ({...p, stat: category[0]}))}
+                        onClick={() => {
+                            if(!showAllStats){
+                                const periods: string[] = projections
+                                    .filter((proj) => proj.name === filter.stat) 
+                                    .map((proj) => proj.period);
+                                setFilters(p => ({
+                                    ...p,
+                                    periods: periods
+                                }))
+                            }
+                            setFilter(p => ({...p, stat: category[0]}))
+                        }}
                     >
                         <div style={{
                             color: category[0] === filter.stat ? '#fff' : 'grey',

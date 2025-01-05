@@ -2,25 +2,24 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import { ReferenceLine } from 'recharts';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { PGame, PPlayer } from '../../Context/Types/PlayerTypes';
-import { BarData, Filter, MatchUp } from './Matches';
+import { BarData, Filter } from './Matches';
 import { getBarChartTicks, getYAxisMax } from '../../Context/functions/barchartFuncs';
 import CustomTooltip from './CustomTooltip';
+import { Projection } from '../../Context/Types/ProjectionTypes';
 
 interface Props {
     player: PPlayer,
-    filter: Filter,
     barData: BarData[],
 
     refLineOn: boolean,
-    matchUp: MatchUp
+    foundProjection: Projection | undefined,
     seasonAvg: number,
     chartType: 'support' | 'main',
-    barColorIsWhite: boolean
 }
 
 export const Bars: React.FC<Props> = ({ 
-    player, filter, barData, matchUp, chartType, seasonAvg, refLineOn,
-    barColorIsWhite
+    player, barData, chartType, seasonAvg, refLineOn,
+    foundProjection
 }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [ticks, setTicks] = useState<number[]>([]);
@@ -29,7 +28,6 @@ export const Bars: React.FC<Props> = ({
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
     // const [seasonAvg, setSeasonAvg] = useState<number>(-1);
 
-    const [foundBet, setFoundBet] = useState();
     const [barKey, setBarKey] = useState<number>(0);
     
     const [barRadiusArr, setBarRadiusArr] = useState<[number, number, number, number][]>([
@@ -38,18 +36,6 @@ export const Bars: React.FC<Props> = ({
 
     useEffect(() => {
         setLoading(true);
-
-        /* Sees if there is a bet today */
-        const foundBet = matchUp.bets.find(bet => 
-            Object.keys(filter).every(key => 
-                key === 'supportingStat' || 
-                key === 'lastGame' ||
-                key === 'isAway' ||
-                key === 'isHome' ||
-                bet.filter[key as keyof Filter] === filter[key as keyof Filter]
-            )
-        )
-
         /* 
             Change the radius of the bars based if we have multiple stats displayed 
                 - PTS+REB ex
@@ -68,18 +54,17 @@ export const Bars: React.FC<Props> = ({
                 .length; 
 
             if(dataOverZero === 1) setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]])
-            else if(dataOverZero === 2) setBarRadiusArr([[5, 5, 0, 0], [0, 0, 5, 5], [0, 0, 0, 0]])
-            else setBarRadiusArr([[5, 5, 0, 0], [0, 0, 0, 0], [0, 0, 5, 5]])
+            else if(dataOverZero === 2) setBarRadiusArr([[0, 0, 5, 5], [5, 5, 0, 0], [0, 0, 0, 0]])
+            else setBarRadiusArr([[0, 0, 5, 5], [0, 0, 0, 0], [5, 5, 0, 0]])
         }
 
         /* Set the y where the reference line will be */
         let refLineAmt = -1;
-        if(foundBet) refLineAmt = foundBet.value;
+        if(foundProjection) refLineAmt = foundProjection.value;
         else refLineAmt = seasonAvg
         // console.log('seasonAvg;,',seasonAvg)
         // console.log('reflie;,',refLineAmt)
         setRefLineAmt(refLineAmt);
-        setFoundBet(foundBet as any);
 
         /* Size of the chart */
         setYAxisMax(getYAxisMax(barData))
@@ -199,22 +184,30 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#79F4F4' : '#A2A2A2' : '#fff'}
                             />
                         ))}
                         <LabelList
-                            dataKey="stat1Text"
-                            position="center"
+                            dataKey="statTotal"  // Number floating up top
+                            position="top"
                             style={{
-                                fill: 'black', fontSize: '12px', fontWeight: 'bold',
+                                fontSize: '15px', 
+                                fontWeight: 'bold',
                             }}
                         />
+                        {barData[0].name.includes('+') ?
+                            <LabelList
+                                dataKey="stat1Text"
+                                position="center"
+                                style={{fill: 'black', fontSize: '12px', fontWeight: 'bold'}}
+                            /> : null
+                        }
                     </Bar>
                     <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#65c7c7' : '#A2A2A2' : '#EEEEEE'}
                             />
                         ))}
                         <LabelList
@@ -229,23 +222,13 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2'}
-                            />
-                        ))}
-                        {barData.slice(0,1).map((entry, index) => (
-                            <LabelList
-                                dataKey="statTotal"  //Number floating up top
-                                position="top"
-                                style={{
-                                    fontSize: '15px', fontWeight: 'bold',
-                                    color: barColorIsWhite ? '#fff' : entry.statTotal > 22.5 ? '#79F4F4' : '#A2A2A2',
-                                }}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#529b9b' : '#A2A2A2' : '#BDBDBD'}
                             />
                         ))}
                         <LabelList
                             dataKey="stat3Text"
                             position="center"
-                            style={{fill: 'black', fontSize: '12px', fontWeight: 'bold'}}
+                            style={{ fill: 'black', fontSize: '12px', fontWeight: 'bold' }}
                         />
                     </Bar>
 

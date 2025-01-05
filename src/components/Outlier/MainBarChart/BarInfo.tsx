@@ -43,16 +43,16 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
                         {fullStatName}
                     </span>
                     <span style={{color:"#B1B1B1", fontWeight:'normal', fontSize:'14px', margin:'1px 0px 0px 3px'}}> Last 10</span>
-                </div>
+                </div> 
 
-                {isNaN(percentHit) ?
-                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold'}}>
-                        No Games
-                    </div>
-                        :
-                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold'}}>
+                {projections.find(p => p.name === filter.stat) ?
+                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
                         {percentHit.toFixed(0)}%
                         <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
+                    </div>
+                        :
+                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
+                        No Projection
                     </div>
                 }
             </div>

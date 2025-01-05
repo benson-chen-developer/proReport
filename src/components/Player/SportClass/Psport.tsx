@@ -26,6 +26,13 @@ export class PSport {
 
         return periods;
     }
+    static getAllPeriods = (league: string): string[] => {
+        if(league === 'nba'){
+            return ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4']
+        }
+
+        return [];
+    }
 
     static getStatsHeader = (league: string): {name: string, underName: string}[] => {
         if(league === "nba"){
@@ -65,6 +72,37 @@ export class PSport {
                 ["FGM", "3PM", "FTM"], 
                 ["FGA", "3PA", "FTA"], 
             ];
+        }
+        else {
+            return [];
+        }
+    }
+    static sortStats = (league: string, unsortedStats: string[]): string[][] => {
+        if (league === "nba") {
+            const model = [
+                ["PTS", "PTS+REB", "PTS+AST", "PTS+REB+AST"],
+                ["REB", "ORB", "DRB"],
+                ["AST"],
+                ["BLK"],
+                ["STL"],
+                ["PF"],
+                ["TOV"],
+                ["FGM", "3PM", "FTM"],
+                ["FGA", "3PA", "FTA"],
+            ];
+        
+            const sortedStats: string[][] = model.map(() => []); // Initialize an array of arrays
+        
+            // Iterate through each model category and add stats in the same order
+            model.forEach((category, index) => {
+                category.forEach(stat => {
+                    if (unsortedStats.includes(stat)) {
+                        sortedStats[index].push(stat);
+                    }
+                });
+            });
+        
+            return sortedStats.filter(subArray => subArray.length > 0);;
         }
         else {
             return [];

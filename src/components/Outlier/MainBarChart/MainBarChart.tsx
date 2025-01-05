@@ -80,12 +80,10 @@ export const MainBarChart: React.FC<Props> = ({
             <Bars
                 refLineOn={refLineOn}
                 seasonAvg={seasonAvg}
-                filter={filter}
-                matchUp={matchUp}
+                foundProjection={projections.find(p => p.name === filter.stat && p.period === filter.period)}
                 barData={mainBarData}
                 player={player} 
                 chartType="main"
-                barColorIsWhite={projections.find(p => p.name === filter.stat) === undefined}
             />
         </div>
     )

@@ -1,19 +1,17 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { bgColor } from '../../Player/PPlayerPage'
-import { Filter } from '../Matches'
+import { Filter, Filters } from '../Matches'
 
 interface CustomLabelProps {
-    filter: Filter,
+    filter: Filter, filters: Filters,
     setFilter: Dispatch<SetStateAction<Filter>>
 }
 export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({
-    filter, setFilter
+    filter, setFilter, filters
 }) => {
-    const stats = ['All', "H1", "H2", "Q1", "Q2", "Q3", "Q4"]
-
     return (
-        <div style={{display:'flex', width:'100%', marginBottom:'20px',}}>
-            {stats.map((stat, index) => 
+        <div style={{display:'flex', width:'100%', marginBottom:'20px'}}>
+            {filters.periods.map((stat, index) => 
                 <div 
                     key={index}
                     style={{

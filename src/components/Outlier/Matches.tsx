@@ -19,6 +19,7 @@ import { MinutesSlider } from './Stats/MinutesSlider';
 import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
+import { StatsFilterHeader } from './Stats/StatsFilterHeader';
 
 interface Props {
     league: string,
@@ -105,7 +106,24 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         minutes: [15, 45]
     })
 
+    const [showAllStats, setShowAllStats] = useState<boolean>(false);
+
     const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
+    const getProjectionStats = (projections:Projection[]): string[][] => {
+        const statsInProjections: string[] = [];
+        const stats = PSport.getAllPickedStats('nba');
+
+        projections.forEach((proj) => {
+            const foundProjStat = stats.flatMap(stat => stat).find(s => s === proj.name);
+
+            if(foundProjStat){
+                statsInProjections.push(foundProjStat);
+            }
+        })
+
+        return PSport.sortStats(league, statsInProjections);
+    }
+
     const {fetchNbaPlayers, fetchProjections} = useGlobalContext();
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -152,9 +170,13 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
             }])
 
+            const periods: string[] = projections
+                .filter((proj) => proj.name === filter.stat) 
+                .map((proj) => proj.period);
             setFilters(p => ({
                 ...p, 
-                stats: PSport.getAllPickedStats('nba')
+                periods: periods,
+                stats: getProjectionStats(projections)
             }))
 
             setLoading(false);
@@ -163,9 +185,27 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
         fetchData();
     }, [playerName]);
 
+    // useEffect(() => {
+    //     setFilters(updateFilters(filters, filter))
+    // }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
     useEffect(() => {
-        setFilters(updateFilters(filters, filter))
-    }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
+        if(showAllStats) {
+            setFilters(p => ({
+                ...p,
+                periods: PSport.getAllPeriods('nba'),
+                stats: PSport.getAllPickedStats('nba')
+            }));
+        } else {
+            const periods: string[] = projections
+                .filter((proj) => proj.name === filter.stat) 
+                .map((proj) => proj.period);
+            setFilters(p => ({
+                ...p, 
+                periods: periods,
+                stats: getProjectionStats(projections)
+            }));
+        }
+    }, [showAllStats])
 
     if(!loading) return (
         <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
@@ -206,16 +246,22 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                     background:'#2B2B2B', borderLeft:'1px solid #808080'
                 }}>
                     <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
-                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'20px 0px 10px 0px'}}>Stats Filter</p>
+                        <StatsFilterHeader 
+                            showAllStats={showAllStats}
+                            setShowAllStats={setShowAllStats}
+                        />
                         <DropDownStatsHeader 
-                            filter={filter} filters={filters}
-                            setFilter={setFilter}
+                            filter={filter} setFilter={setFilter}
+                            filters={filters} setFilters={setFilters}
+                            projections={projections}
+                            showAllStats={showAllStats}
                         />
                         <SecondStatsHeader 
                             filter={filter} filters={filters} setFilter={setFilter}
                         />
                         <PeriodStatsHeader
                             setFilter={setFilter} filter={filter}
+                            filters={filters}
                         />
 
                         <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'25px 0px 5px 0px'}}>Games Filter</p>
