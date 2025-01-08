@@ -1,1 +1,0 @@
-{"c":["pages/index","pages/player/[paramLeague]/[paramPlayer]","webpack"],"r":[],"m":["./src/components/Outlier/Search/Search.tsx","./src/components/Outlier/Search/SearchingBar.tsx","./src/components/Outlier/Search/SuggestedPlayers.tsx","./src/components/Outlier/Search/SideBar.tsx"]}
