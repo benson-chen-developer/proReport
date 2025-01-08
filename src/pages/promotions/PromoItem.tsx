@@ -79,3 +79,5 @@ export const PromoItem: React.FC<Props> = ({promo, toastFunc}) => {
         </div>
     )
 }
+
+export default PromoItem;

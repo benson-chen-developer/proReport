@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { SideBar } from '../../components/Outlier/Sidebar/SideBar';
-import { PromoItem } from './PromoItem';
+import PromoItem from './PromoItem';
 import Button from '@mui/material/Button';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
