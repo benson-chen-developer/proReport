@@ -52,6 +52,7 @@ export const parseBarData = (
         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
         const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
         const isHome: boolean = game.team1 === player.team;
+        console.log('gmae', game)
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
@@ -67,17 +68,17 @@ export const parseBarData = (
         else if(filter.period === "Q4") periods = periods.slice(3);
 
         for (let period of periods){
-            console.log('peropds', periods)
-            console.log('foundPlayer', foundPlayer)
             let pickedStats = pickedStat.split('+');
             // console.log(pickedStat, 'pickedStat')
 
             pickedStats.forEach((pickedStatSegment, index) => {
-                let val = foundPlayer?.periods[period][pickedStatSegment]!;
+                let currPeriod = foundPlayer?.periods[period];
+                let val = currPeriod ? currPeriod[pickedStatSegment] : null;
 
-                if(val)
-                statTotal += val;
-                stats[index] += val;
+                if(val){
+                    statTotal += val;
+                    stats[index] += val;
+                }
             })
         }
         // console.log("statTotal", statTotal)
