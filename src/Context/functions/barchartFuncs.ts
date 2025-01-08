@@ -67,6 +67,8 @@ export const parseBarData = (
         else if(filter.period === "Q4") periods = periods.slice(3);
 
         for (let period of periods){
+            console.log('peropds', periods)
+            console.log('foundPlayer', foundPlayer)
             let pickedStats = pickedStat.split('+');
             // console.log(pickedStat, 'pickedStat')
 

@@ -35,13 +35,15 @@ export const Search: React.FC<Props> = ({length}) => {
     useEffect(() => {
         const searchForPlayer = async () => {
             const players = await fetchNbaPlayers();
-            const playerNames = players;
             
-            const similarPlayers = findSimilarNamesNew(playerNames, searchQuery)
+            // const similarPlayers = findSimilarNamesNew(players, searchQuery)
+            const similarPlayers = players
+                .filter(p => p.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+                .slice(0, 5);
             setSimilarPlayers(similarPlayers);
         }
 
-        searchForPlayer();
+        if(searchQuery.trim().length > 0) searchForPlayer();
     }, [searchQuery])
 
     return (
@@ -52,7 +54,7 @@ export const Search: React.FC<Props> = ({length}) => {
                 searchQuery={searchQuery} setSearchQuery={setSearchQuery} 
             />
             
-            {isPopUp ? 
+            {isPopUp && searchQuery.trim().length > 0? 
                 <SuggestedPlayers
                     ref={popupRef} 
                     similarPlayers={similarPlayers}

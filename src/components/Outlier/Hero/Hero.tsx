@@ -21,7 +21,7 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
             <div style={{ left: -40, top: -40, position:'absolute'}}>
                 <img
                     alt={'Team Logo'}
-                    src={`/logos/nba/${player.city}.png`}
+                    src={`/logos/nba/${player.city.replace(' ', '_')}.png`}
                     style={{
                         width: '175px',
                         height: '175px',

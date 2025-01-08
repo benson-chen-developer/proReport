@@ -11,7 +11,7 @@ export const teamColors = (name: string) => {
     /* Central */
     if (name === "chicago") return "#F00A3F";
     if (name === "cleveland") return "#CC9659";
-    if (name === "detroit") return "#00408D>";
+    if (name === "detroit") return "#00408D";
     if (name === "indiana") return "#FFBC0E";
     if (name === "milwaukee") return "#004C26";
 
@@ -24,7 +24,7 @@ export const teamColors = (name: string) => {
 
     /* Pacific */
     if (name === "golden state") return "#E4AE12";
-    if (name === "los angeles") return "#050F3B";
+    if (name === "los angeles") return "#512683";
     if (name === "la") return "#3F0F6C";
     if (name === "phoenix") return "#FF6011";
     if (name === "sacramento") return "#6D348A";

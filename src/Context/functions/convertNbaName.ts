@@ -78,11 +78,11 @@ export const convertNBATeamName = (teamName: string, param: number): string => {
         if (param === 0) return "HOU";
         else if (param === 1) return "Houston";
         else if (param === 2) return "Houston Rockets";
-    } else if (str === 'los angeles clippers' || str === 'lac' || str === 'clippers') {
+    } else if (str === 'la' || str === 'lac' || str === 'clippers') {
         if (param === 0) return "LAC";
         else if (param === 1) return "Los Angeles Clippers";
         else if (param === 2) return "Los Angeles Clippers";
-    } else if (str === 'los angeles lakers' || str === 'lal' || str === 'lakers') {
+    } else if (str === 'los angeles' || str === 'lal' || str === 'lakers') {
         if (param === 0) return "LAL";
         else if (param === 1) return "Los Angeles Lakers";
         else if (param === 2) return "Los Angeles Lakers";
