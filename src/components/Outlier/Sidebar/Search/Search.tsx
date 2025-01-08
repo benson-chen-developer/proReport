@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
-import { PlayerType } from '../../../../Context/Types/PlayerTypes';
+import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../../Context/store';
 import { findSimilarNamesNew } from '../../../Player/Componenets/NotFound';
 import { SearchingBar } from './SearchingBar';
@@ -10,7 +10,7 @@ interface Props {
 }
 export const Search: React.FC<Props> = ({length}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [similarPlayers, setSimilarPlayers] = useState<PlayerType[]>([]);
+    const [similarPlayers, setSimilarPlayers] = useState<PPlayer[]>([]);
     const {fetchNbaPlayers} = useGlobalContext();
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
@@ -35,12 +35,21 @@ export const Search: React.FC<Props> = ({length}) => {
     useEffect(() => {
         const searchForPlayer = async () => {
             const players = await fetchNbaPlayers();
+            let query = searchQuery.trim().toLowerCase();
             
             // const similarPlayers = findSimilarNamesNew(players, searchQuery)
             const similarPlayers = players
-                .filter(p => p.name.toLowerCase().startsWith(searchQuery.toLowerCase()))
+                .filter(p => {
+                    let [firstName, lastName] = p.name.split(' ');
+
+                    return (
+                        (firstName && firstName.toLowerCase().startsWith(query)) ||
+                        (lastName && lastName.toLowerCase().startsWith(query)) ||
+                        (p.name.toLowerCase().startsWith(query))
+                    );
+                })
                 .slice(0, 5);
-            setSimilarPlayers(similarPlayers);
+            setSimilarPlayers(similarPlayers)
         }
 
         if(searchQuery.trim().length > 0) searchForPlayer();
