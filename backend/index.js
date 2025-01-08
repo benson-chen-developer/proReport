@@ -13,6 +13,8 @@ const EsportRoute = require('./routes/Esport');
 const PsportRoute = require('./routes/Psport');
 const ProjectionRoute = require('./routes/Projection');
 
+const { Promo } = require("./models/Promos/PromoModel");
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -23,6 +25,17 @@ app.use('/rainbow', RainbowRoute);
 app.use('/esport', EsportRoute);
 app.use('/psport', PsportRoute);
 app.use('/projections', ProjectionRoute);
+
+app.get("/promo", async (req, res) => {
+    try {
+        const promos = await Promo.find({});
+
+        res.status(200).json(promos);
+    } catch (err) {
+        console.error("Error fetching players", err);
+        res.status(500).send({ message: "Error fetching players" });
+    }
+});
 
 app.get('/mlbSchedule', async (req, res) => {
     const startDate = req.headers.startdate;

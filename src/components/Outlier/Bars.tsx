@@ -33,6 +33,7 @@ export const Bars: React.FC<Props> = ({
     const [barRadiusArr, setBarRadiusArr] = useState<[number, number, number, number][]>([
         [5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]
     ])
+    const [barColorArr, setBarColorArr] = useState<string[]>([]);
 
     useEffect(() => {
         setLoading(true);
@@ -53,9 +54,15 @@ export const Bars: React.FC<Props> = ({
                 .filter(isTrue => isTrue)
                 .length; 
 
-            if(dataOverZero === 1) setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]])
+            if(dataOverZero === 1){
+                setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]]);
+                setBarColorArr(["#79F4F4", '#79F4F4', '#79F4F4'])
+            } 
             else if(dataOverZero === 2) setBarRadiusArr([[0, 0, 5, 5], [5, 5, 0, 0], [0, 0, 0, 0]])
-            else setBarRadiusArr([[0, 0, 5, 5], [0, 0, 0, 0], [5, 5, 0, 0]])
+            else {
+                setBarRadiusArr([[0, 0, 5, 5], [0, 0, 0, 0], [5, 5, 0, 0]])
+                setBarColorArr(['#529b9b', '#65c7c7', "#79F4F4"])
+            }
         }
 
         /* Set the y where the reference line will be */
@@ -142,8 +149,8 @@ export const Bars: React.FC<Props> = ({
 
     if(barData.length === 0){
         return <div style={{
-            color:'#fff', display:'flex', width:'100%', height:'100%',
-            alignItems:'center', flexDirection:'column',
+            color:'#fff', display:'flex', width:'100%',
+            alignItems:'center', flexDirection:'column', height:'300px'
         }}>
             <p style={{fontSize:'25px', fontWeight:'bold'}}>No Games</p>
             <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2m-1.832 13.445a1 1 0 0 0 1.664 1.11c.799-1.199 2.391-1.969 3.925-1.585a1 1 0 1 0 .486-1.94c-2.466-.616-4.874.614-6.075 2.415M9.5 8a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3m6-1a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3"/></g></svg>
@@ -184,17 +191,9 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#79F4F4' : '#A2A2A2' : '#fff'}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[0] : '#A2A2A2' : '#fff'}
                             />
                         ))}
-                        <LabelList
-                            dataKey="statTotal"  // Number floating up top
-                            position="top"
-                            style={{
-                                fontSize: '15px', 
-                                fontWeight: 'bold',
-                            }}
-                        />
                         {barData[0].name.includes('+') ?
                             <LabelList
                                 dataKey="stat1Text"
@@ -207,7 +206,7 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#65c7c7' : '#A2A2A2' : '#EEEEEE'}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
                             />
                         ))}
                         <LabelList
@@ -222,13 +221,18 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? '#529b9b' : '#A2A2A2' : '#BDBDBD'}
+                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[2] : '#A2A2A2' : '#BDBDBD'}
                             />
                         ))}
                         <LabelList
                             dataKey="stat3Text"
                             position="center"
                             style={{ fill: 'black', fontSize: '12px', fontWeight: 'bold' }}
+                        />
+                        <LabelList
+                            dataKey="statTotal"  // Number floating up top
+                            position="top"
+                            style={{fontSize: '15px', fontWeight: 'bold'}}
                         />
                     </Bar>
 

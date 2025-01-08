@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import { Search } from '../../Outlier/Search/Search'
+import { Search } from '../../Outlier/Sidebar/Search/Search'
 
 export const Landing = () => {
     return (

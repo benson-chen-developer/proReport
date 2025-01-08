@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { PMatches } from '../Outlier/Matches';
-import { SideBar } from '../Outlier/Search/SideBar';
+import { SideBar } from '../Outlier/Sidebar/SideBar';
 
 interface Props {
     league: string,
