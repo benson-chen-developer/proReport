@@ -124,9 +124,7 @@ export const SupportCard: React.FC<Props> = ({
 
             {!loading ?
                 <Bars
-                    barColorIsWhite={true}
-                    filter={filter}
-                    matchUp={matchUp}
+                    foundProjection={undefined}
                     barData={barData}
                     player={player} 
                     refLineOn={refLineOn}
