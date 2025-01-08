@@ -112,81 +112,81 @@ export const LeaguePlayer = () => {
     }
 
     useEffect(() => {
-        const fetchPlayer = async () => {
-            const allPlayers = await fetchLolPlayers();
+        // const fetchPlayer = async () => {
+        //     const allPlayers = await fetchLolPlayers();
         
-            let foundPlayer = allPlayers.find(player => player.firstName.toLowerCase() === (paramPlayer as string).toLowerCase());
+        //     let foundPlayer = allPlayers.find(player => player.firstName.toLowerCase() === (paramPlayer as string).toLowerCase());
 
-            if(foundPlayer){
-                const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/lol/player/${foundPlayer.id}`)
-                const allGames = await res.json();
+        //     if(foundPlayer){
+        //         const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/lol/player/${foundPlayer.id}`)
+        //         const allGames = await res.json();
 
-                let team = GetTeamName(allGames);
-                if(team) foundPlayer.team = team;
-                setPlayer(foundPlayer);
-                setAllGames(allGames);
-                compareFunction('All Maps', allGames);
-            }
+        //         let team = GetTeamName(allGames);
+        //         if(team) foundPlayer.team = team;
+        //         setPlayer(foundPlayer);
+        //         setAllGames(allGames);
+        //         compareFunction('All Maps', allGames);
+        //     }
 
-            setLoading(false);
-        }
+        //     setLoading(false);
+        // }
 
-        if(paramLeague && paramPlayer) fetchPlayer();
+        // if(paramLeague && paramPlayer) fetchPlayer();
     }, [])
 
     useEffect(() => {
         compareFunction(pickedBtn, allGames)
     }, [pickedBtn, setPickedBtn])
 
-    if(!loading && player) return (
-        <div>
-            <Hero 
-                playerName={player?.firstName as string}
-                picUrl=""
-                team={player?.team as string}
-                number=""
-                position=''
-                pickedBtn={pickedBtn}
-                setPickedBtn={setPickedBtn}
-                allPickedBtns={allPickedBtns}
-            />
+    // if(!loading && player) return (
+    //     <div>
+    //         <Hero 
+    //             playerName={player?.firstName as string}
+    //             picUrl=""
+    //             team={player?.team as string}
+    //             number=""
+    //             position=''
+    //             pickedBtn={pickedBtn}
+    //             setPickedBtn={setPickedBtn}
+    //             allPickedBtns={allPickedBtns}
+    //         />
 
-            <p className="playerPageGamesHeader">Games</p>
+    //         <p className="playerPageGamesHeader">Games</p>
 
-            <div className="tableWrapper">
-                <table style={{ width: '50%', borderCollapse: "collapse"}}>
-                    <thead>
-                        <StatComparator compareTo={compareTo} setCompareTo={setCompareTo} hasMaps={true}/>
-                        <TableHeader statsHeader={statsHeader} hasMaps={true}/>
-                    </thead>
-                    <tbody className="rowTable">
-                        {allGames.map((game, index) => {
-                            let firstName = game.game.split("vs")[0].trim();
-                            let secondName = game.game.split("vs")[1].trim();
-                            let oppTeam = firstName.toLocaleLowerCase() !== player?.team.toLocaleLowerCase() ? firstName : secondName;
-                            oppTeam = oppTeam.split(" ")[0].toLocaleLowerCase() === 'team' ? oppTeam.split(" ")[1] : oppTeam;
+    //         <div className="tableWrapper">
+    //             <table style={{ width: '50%', borderCollapse: "collapse"}}>
+    //                 <thead>
+    //                     <StatComparator compareTo={compareTo} setCompareTo={setCompareTo} hasMaps={true}/>
+    //                     <TableHeader statsHeader={statsHeader} hasMaps={true}/>
+    //                 </thead>
+    //                 <tbody className="rowTable">
+    //                     {allGames.map((game, index) => {
+    //                         let firstName = game.game.split("vs")[0].trim();
+    //                         let secondName = game.game.split("vs")[1].trim();
+    //                         let oppTeam = firstName.toLocaleLowerCase() !== player?.team.toLocaleLowerCase() ? firstName : secondName;
+    //                         oppTeam = oppTeam.split(" ")[0].toLocaleLowerCase() === 'team' ? oppTeam.split(" ")[1] : oppTeam;
                         
-                            return (
-                                <Row 
-                                    key={index} 
-                                    compareTo={compareTo}
-                                    displayedStats={displayedStats[index]}
-                                    team={oppTeam}
-                                    date={game.date}
-                                    mapsPlayed={game.scores.length}
-                                    extraText={allGames[index].scores.length === 1 ? 'DNP (Best of 1)' : 'DNP (Best of 3)'}
-                                />
-                            );
-                        })}
-                    </tbody>
+    //                         return (
+    //                             <Row 
+    //                                 key={index} 
+    //                                 compareTo={compareTo}
+    //                                 displayedStats={displayedStats[index]}
+    //                                 team={oppTeam}
+    //                                 date={game.date}
+    //                                 mapsPlayed={game.scores.length}
+    //                                 extraText={allGames[index].scores.length === 1 ? 'DNP (Best of 1)' : 'DNP (Best of 3)'}
+    //                             />
+    //                         );
+    //                     })}
+    //                 </tbody>
 
-                </table>
+    //             </table>
 
-                <div className='rowBottomSpace'/> 
-            </div>
+    //             <div className='rowBottomSpace'/> 
+    //         </div>
 
-        </div>
-    )
+    //     </div>
+    // )
 
     if(!loading && !player) return(
         <NotFound />
