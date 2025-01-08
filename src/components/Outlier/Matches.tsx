@@ -20,6 +20,7 @@ import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { StatsFilterHeader } from './Stats/StatsFilterHeader';
+import e from 'express';
 
 interface Props {
     league: string,
@@ -145,7 +146,14 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 city: player!.city
             });
 
-            const projections = await fetchProjections();
+            /* Intial Projections and Intial Stats Filters set up */
+            const projections = await fetchProjections(player!.name);
+            if(projections.length === 0) {
+                editShownStats(true, []);
+                setShowAllStats(true)
+            } else {
+                editShownStats(false, projections);
+            }
             setProjections(projections);
 
             /* Get the season averages for fantasy stats */
@@ -170,15 +178,6 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
             }])
 
-            const periods: string[] = projections
-                .filter((proj) => proj.name === filter.stat) 
-                .map((proj) => proj.period);
-            setFilters(p => ({
-                ...p, 
-                periods: periods,
-                stats: getProjectionStats(projections)
-            }))
-
             setLoading(false);
         };
       
@@ -188,14 +187,8 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
     // useEffect(() => {
     //     setFilters(updateFilters(filters, filter))
     // }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
-    useEffect(() => {
-        if(showAllStats) {
-            setFilters(p => ({
-                ...p,
-                periods: PSport.getAllPeriods('nba'),
-                stats: PSport.getAllPickedStats('nba')
-            }));
-        } else {
+    const editShownStats = (showAllStats: boolean, projections: Projection[]): void => {
+        if(!showAllStats && projections.length > 0) {
             const periods: string[] = projections
                 .filter((proj) => proj.name === filter.stat) 
                 .map((proj) => proj.period);
@@ -204,7 +197,17 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 periods: periods,
                 stats: getProjectionStats(projections)
             }));
+            setFilter(p => ({...p, stat: projections[0].name}))
+        } else {
+            setFilters(p => ({
+                ...p,
+                periods: PSport.getAllPeriods('nba'),
+                stats: PSport.getAllPickedStats('nba')
+            }));
         }
+    }
+    useEffect(() => {
+        editShownStats(showAllStats, projections)
     }, [showAllStats])
 
     if(!loading) return (
@@ -247,6 +250,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
                 }}>
                     <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
                         <StatsFilterHeader 
+                            hasProjections={projections.length > 0}
                             showAllStats={showAllStats}
                             setShowAllStats={setShowAllStats}
                         />

@@ -21,7 +21,7 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
     const getColor = (percent: number): string => {
         if(percent >= 80){
             return '#79F4F4';
-        } else if(percent >= 60){
+        } else if(percent >= 70){
             return '#c9e8e8';
         } else {
             return '#A2A2A2'
@@ -57,9 +57,11 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
                 }
             </div>
 
-            <div style={{marginRight:'40px'}}>
-                <ProjectionSquare projection={projections[1]}/>
-            </div>
+            {projections.length > 0 ?
+                <div style={{marginRight:'40px'}}>
+                    <ProjectionSquare projection={projections[1]}/>
+                </div> : null
+            }
         </div>
     )
 }

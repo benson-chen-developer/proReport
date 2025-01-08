@@ -9,7 +9,7 @@ import { Projection } from './Types/ProjectionTypes';
 interface ContextProps {
   projections: Projection[];
   setProjections: Dispatch<SetStateAction<Projection[]>>;
-  fetchProjections: () => Promise<Projection[]>;
+  fetchProjections: (playerName: string) => Promise<Projection[]>;
   
   nbaPlayers: PPlayer[];
   setNbaPlayers: Dispatch<SetStateAction<PPlayer[]>>;
@@ -40,7 +40,7 @@ interface ContextProps {
 const GlobalContext = createContext<ContextProps>({
   projections: [],
   setProjections: (): Projection[] => [],
-  fetchProjections: async (): Promise<Projection[]> => [],
+  fetchProjections: async (playerName: string): Promise<Projection[]> => [],
 
   nbaPlayers: [],
   setNbaPlayers: (): PPlayer[] => [],
@@ -203,20 +203,26 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       return matchUps[league];
     }
   }
-  const fetchProjections = async (): Promise<Projection[]> => {
+  const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
+    let newProjections: Projection[] = [];
     if(projections.length > 0){
-      return projections;
+      newProjections = projections;
     } else {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections`);
         if (!response.ok) throw new Error('Failed to fetch Projections');
         const data = await response.json();
         setProjections(data);
-        return data;
+        newProjections = data;
       } catch (error) {
         console.error('Error fetching Lol players:', error);
-        return [];
       }
+    }
+
+    if(playerName) {
+      return newProjections.filter(p => p.playerName === playerName);
+    } else {
+      return newProjections;
     }
   }
   

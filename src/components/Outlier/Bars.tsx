@@ -94,21 +94,21 @@ export const Bars: React.FC<Props> = ({
     const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, value }) => (
         <svg>
             <rect
-                x={35}
-                y={100}
+                x={x} // Center the rect around the x coordinate
+                y={y} // Center the rect around the y coordinate
                 width="50"
                 height="25"
                 rx="12"
                 strokeWidth="2"
-                // fill="#8FC9F9"
+                fill="#79F4F4"
             />
             <text
-                x={35 + 50 / 2} // x + width
-                y={100 + 25 / 2} // y + height
+                x={0} // Center the text
+                y={y} // Middle of the rect
                 fill="#fff"
-                fontSize="15px"
-                textAnchor="middle" // Center text horizontally
-                dominantBaseline="middle" // Center text vertically
+                fontSize="14px"
+                textAnchor="middle"
+                dominantBaseline="middle"
                 fontWeight="bold"
             >
                 {value}
@@ -237,14 +237,19 @@ export const Bars: React.FC<Props> = ({
                     </Bar>
 
                     {/* The reference lines */}
-                    {/* {refLineOn && barData.length > 0 && (
-                        foundBet ? (
+                    {refLineOn && barData.length > 0 && (
+                        foundProjection ? (
                             <ReferenceLine
-                                y={refLineAmt} 
+                                y={foundProjection.value} 
                                 stroke="grey" 
-                                strokeDasharray="4 4" 
+                                strokeDasharray="6 6" 
                                 strokeWidth={1}
-                                label={<CustomLabel value={refLineAmt} />}
+                                label={
+                                    <CustomLabel 
+                                        value={foundProjection.value} 
+                                        y={foundProjection.value}
+                                    />
+                                }
                             />
                         ) : (
                             <ReferenceLine 
@@ -254,7 +259,7 @@ export const Bars: React.FC<Props> = ({
                                 label={<AvgLabel />}
                             />
                         )
-                    )} */}
+                    )}
 
                 </BarChart>
             </ResponsiveContainer>
