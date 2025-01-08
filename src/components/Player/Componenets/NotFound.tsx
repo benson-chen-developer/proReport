@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { useEffect } from 'react';
 import { PlayerType, PPlayer, WNBAPlayer } from '../../../Context/Types/PlayerTypes';
-import { searchPlayer } from '../../Nav/SearchBar/SearchBar';
 // import { PlayerPic } from '../../Nav/SearchBar/DropDown/PlayerDropDown';
 
 interface Props{
@@ -139,7 +138,7 @@ export const findSimilarNamesNew = (players: PlayerType[], searchQuery: string):
 */
 export const NotFound: React.FC<Props> = ({}) => {
     const {
-        fetchWnbaPlayer, fetchLolPlayers, fetchValorantPlayers, fetchCSPlayers,
+        fetchLolPlayers, fetchValorantPlayers, fetchCSPlayers,
         fetchRainbowPlayers
     } = useGlobalContext();
     const router = useRouter();
@@ -161,9 +160,9 @@ export const NotFound: React.FC<Props> = ({}) => {
             else if((paramLeague as string).toLowerCase() === 'valorant') {
                 players = await fetchValorantPlayers();
             }
-            else if((paramLeague as string).toLowerCase() === 'wnba') {
-                players = await fetchWnbaPlayer();
-            }
+            // else if((paramLeague as string).toLowerCase() === 'wnba') {
+            //     players = await fetchWnbaPlayer();
+            // }
             else if((paramLeague as string).toLowerCase() === 'cs') {
                 players = await fetchCSPlayers();
             }
