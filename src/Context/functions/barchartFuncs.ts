@@ -52,7 +52,6 @@ export const parseBarData = (
         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
         const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
         const isHome: boolean = game.team1 === player.team;
-        console.log('gmae', game)
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
