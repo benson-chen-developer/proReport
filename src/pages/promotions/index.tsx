@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { SideBar } from '../../components/Outlier/Sidebar/SideBar';
-import PromoItem from './PromoItem';
+import {PromoItem} from './PromoItem';
 import Button from '@mui/material/Button';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
@@ -25,6 +25,7 @@ const Index = () => {
     useEffect(() => {
         const func = async () => {
             const promos = await fetchPromos();
+            console.log(promos)
             setPromos(promos)
         }
 
@@ -98,13 +99,9 @@ const Index = () => {
                 </div>
 
                 {/* Promo Items */}
-                <div style={{width: '90%', marginTop: '30px'}}>
-                    {promos && promos.length > 0 ? (
-                        promos.map((promo, i) => 
-                            <PromoItem promo={promo} toastFunc={handleClick} key={i} />
-                        )
-                    ) : (
-                        <p>No promotions available</p>
+                <div style={{width:'90%', marginTop:'30px'}}>
+                    {promos.map((promo, i) => 
+                        <PromoItem promo={promo} toastFunc={handleClick} key={i}/>
                     )}
                 </div>
 
