@@ -20,7 +20,7 @@ export const teamColors = (name: string) => {
     if (name === "minnesota") return "#266092";
     if (name === "oklahoma city") return "#FF381C";
     if (name === "portland") return "#FF373C";
-    if (name === "utah") return "#254A33";
+    if (name === "utah") return "#FBE123";
 
     /* Pacific */
     if (name === "golden state") return "#E4AE12";
