@@ -98,9 +98,13 @@ const Index = () => {
                 </div>
 
                 {/* Promo Items */}
-                <div style={{width:'90%', marginTop:'30px'}}>
-                    {promos.map((promo, i) => 
-                        <PromoItem promo={promo} toastFunc={handleClick} key={i}/>
+                <div style={{width: '90%', marginTop: '30px'}}>
+                    {promos && promos.length > 0 ? (
+                        promos.map((promo, i) => 
+                            <PromoItem promo={promo} toastFunc={handleClick} key={i} />
+                        )
+                    ) : (
+                        <p>No promotions available</p>
                     )}
                 </div>
 
