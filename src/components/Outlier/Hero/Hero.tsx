@@ -29,7 +29,14 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
                 />
                 <Image
                     alt={'Team Logo'}
-                    src={`/ppPromo.png`}
+                    src={`/logos/nba/atlanta.png`}
+                    width={175}
+                    height={175}
+                    style={{ opacity: 0.3 }}
+                />
+                <Image
+                    alt={'Team Logo'}
+                    src={`/san_antonio.png`}
                     width={175}
                     height={175}
                     style={{ opacity: 0.3 }}
