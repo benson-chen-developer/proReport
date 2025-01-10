@@ -19,7 +19,7 @@ export const DaysOfRest: React.FC<Props> = ({filter, setFilter, ourPlayer}) => {
       {value: 2, text:'2 Day Rest'}
     ]);
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
-    const [selectedText, setSelectedText] = useState<string>('');
+    const [selectedText, setSelectedText] = useState<string>('Days Rested');
     
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ export const DaysOfRest: React.FC<Props> = ({filter, setFilter, ourPlayer}) => {
                 style={{height:'100%', width:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}
               >
                 <p style={{color:'#B1B1B1', fontSize:'12px', fontWeight:'bold'}}>
-                  {selectedText ? selectedText :'Days Rested'}
+                  {selectedText}
                 </p>
               </div>
 
@@ -98,7 +98,8 @@ export const DaysOfRest: React.FC<Props> = ({filter, setFilter, ourPlayer}) => {
                       return <div 
                         style={{
                           width:'100%', display:'flex', alignItems:'center', cursor:'pointer',
-                          height:'50px', justifyContent:'center'
+                          height:'50px', justifyContent:'center',
+                          background: popUp.value === filter.daysRested ? '#2B2B2B' : ''
                         }} 
                         key={i}
                         className='hoverBg'
