@@ -27,6 +27,13 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
                     height={175}
                     style={{ opacity: 0.3 }}
                 />
+                <Image
+                    alt={'Team Logo'}
+                    src={`/ppPromo.png`}
+                    width={175}
+                    height={175}
+                    style={{ opacity: 0.3 }}
+                />
             </div>
             
                 {/* Headshot */}
