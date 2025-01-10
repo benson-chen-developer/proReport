@@ -131,6 +131,7 @@ export const PMatches: React.FC<Props> = ({league, playerName}) => {
     
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             const allGames = await PSport.fetchMatches(playerName, league);
             setPGames(allGames);
             setDisplayedGames(allGames);
