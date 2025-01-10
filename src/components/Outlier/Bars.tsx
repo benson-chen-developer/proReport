@@ -1,8 +1,8 @@
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList, Cell } from 'recharts';
 import { ReferenceLine } from 'recharts';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { PGame, PPlayer } from '../../Context/Types/PlayerTypes';
-import { BarData, Filter } from './Matches';
+import React, { useEffect, useState } from 'react';
+import { PPlayer } from '../../Context/Types/PlayerTypes';
+import { BarData } from './Matches';
 import { getBarChartTicks, getYAxisMax } from '../../Context/functions/barchartFuncs';
 import CustomTooltip from './CustomTooltip';
 import { Projection } from '../../Context/Types/ProjectionTypes';

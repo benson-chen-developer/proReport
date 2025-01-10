@@ -1,5 +1,4 @@
 import React, { Dispatch, forwardRef, SetStateAction } from 'react'
-import Image from 'next/image';
 import Link from 'next/link';
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { convertNBATeamName } from '../../../../Context/functions/convertNbaName';
@@ -24,19 +23,10 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
             {similarPlayers.length > 0 ? (
                 similarPlayers.map((player, index) => {
                     const playerDash = player.name.replace(' ', '_');
+                    
                     return (
-                        // <Link 
-                        //     href={`${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/nba/${playerDash}`} 
-                        //     key={index}
-                        //     passHref
-                        //     onClick={() => setIsPopUp(false)}
-                        //     style={{textDecoration:'none'}}
-                        // >
                         <Link 
-                            href={{
-                                pathname: `/player/nba/[playerName]`,
-                                query: { playerName: playerDash },
-                            }}
+                            href={`/player/nba/${playerDash}`}
                             key={index}
                             passHref
                             onClick={() => setIsPopUp(false)}

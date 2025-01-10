@@ -24,7 +24,6 @@ export const MainBarChart: React.FC<Props> = ({
 
     /* This is the projection value */
     const [refLineOn, setRefLineOn] = useState<boolean>(true);
-    const [refLine, setRefLine] = useState<number>();
 
     useEffect(() => {
         // console.log('mainbarcahr', projections)
