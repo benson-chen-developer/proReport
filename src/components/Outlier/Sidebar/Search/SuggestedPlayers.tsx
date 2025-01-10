@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { Dispatch, forwardRef, SetStateAction } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
@@ -6,9 +6,10 @@ import { convertNBATeamName } from '../../../../Context/functions/convertNbaName
 
 interface Props {
     similarPlayers: PPlayer[], 
+    setIsPopUp: Dispatch<SetStateAction<boolean>>
 }
 
-export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers }, ref) => {
+export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers, setIsPopUp }, ref) => {
     return (
         <div
             ref={ref}
@@ -24,13 +25,25 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                 similarPlayers.map((player, index) => {
                     const playerDash = player.name.replace(' ', '_');
                     return (
+                        // <Link 
+                        //     href={`${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/nba/${playerDash}`} 
+                        //     key={index}
+                        //     passHref
+                        //     onClick={() => setIsPopUp(false)}
+                        //     style={{textDecoration:'none'}}
+                        // >
                         <Link 
-                            href={`${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/nba/${playerDash}`} 
+                            href={{
+                                pathname: `${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/[paramLeague]/[playerName]`,
+                                query: { paramLeague: 'nba', playerName: playerDash },
+                            }}
                             key={index}
                             passHref
+                            onClick={() => setIsPopUp(false)}
                             style={{textDecoration:'none'}}
                         >
                             <div
+                                onClick={() => {}}
                                 className='suggestedPlayer'
                                 style={{
                                     padding: "15px", cursor: "pointer", width: '95%', display: 'flex',

@@ -41,7 +41,9 @@ export const SearchingBar = forwardRef<HTMLDivElement, Props>(({ searchQuery, se
                 style={{
                     marginRight:'10px', fill: "white", cursor: "pointer",
                 }}
-                onClick={() => setSearchQuery('')}
+                onClick={() => {
+                    setSearchQuery('')
+                }}
             >
                 <path
                     fill="none"

@@ -65,6 +65,7 @@ export const Search: React.FC<Props> = ({length}) => {
             
             {isPopUp && searchQuery.trim().length > 0? 
                 <SuggestedPlayers
+                    setIsPopUp={setIsPopUp}
                     ref={popupRef} 
                     similarPlayers={similarPlayers}
                 />
