@@ -34,8 +34,8 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                         // >
                         <Link 
                             href={{
-                                pathname: `${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/[paramLeague]/[playerName]`,
-                                query: { paramLeague: 'nba', playerName: playerDash },
+                                pathname: `${process.env.NEXT_PUBLIC_LOCAL_ROUTE_FRONT}/player/nba/[playerName]`,
+                                query: { playerName: playerDash },
                             }}
                             key={index}
                             passHref
