@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
-import { Promo } from '.'
+import { Promo } from '../../../pages/promotions'
 
 interface Props {
     promo: Promo
