@@ -1,25 +1,9 @@
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Filter } from '../Matches';
 import { useGlobalContext } from '../../../Context/store';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import Image from 'next/image';
 
 interface Props {
     ourPlayer: PPlayer,
@@ -27,8 +11,8 @@ interface Props {
     setFilter: Dispatch<SetStateAction<Filter>>
 }
 export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) => {
-    const [names, setNames] = useState<string[]>([]);
     const {fetchNbaPlayers} = useGlobalContext();
+    const [players, setPlayers] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
@@ -36,9 +20,8 @@ export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) 
     useEffect(() => {
         const func = async () => {
             const players = await fetchNbaPlayers();
-            setNames(players
+            setPlayers(players
                 .filter(player => player.city === ourPlayer.city && player.name !== ourPlayer.name)
-                .map(p => p.name)
             );
         }
 
@@ -130,32 +113,35 @@ export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) 
                     alignItems:'center', flexDirection:'column', zIndex:2, cursor:'pointer',
                     maxHeight:'300px', overflow:'auto'
                 }} ref={popupRef}>
-                    {names.map((name, i) => {
+                    {players.map((player, i) => {
                         return <div 
                             style={{width:'100%', display:'flex', justifyContent:'center'}}
-                            className='hoverBg'
+                            className='hoverBg' key={i}
                         >
                             <div 
-                                key={i}
                                 style={{
                                     width:'100%', height:'50px', display:'flex', alignItems:'center', 
-                                    background: filter.withOutPlayers.includes(name) ? '#2B2B2B' : '',
+                                    background: filter.withOutPlayers.includes(player.name) ? '#2B2B2B' : '',
                                     padding: '0px 20px'
                                 }}
                                 onClick={() => {
-                                    const foundPlayer = filter.withOutPlayers.find(n => n === name);
+                                    const foundPlayer = filter.withOutPlayers.find(n => n === player.name);
                                     setFilter((prev) => ({
                                         ...prev,
                                         withOutPlayers: foundPlayer
-                                          ? prev.withOutPlayers.filter((n) => n !== name)
-                                          : [...prev.withOutPlayers, name],
+                                          ? prev.withOutPlayers.filter((n) => n !== player.name)
+                                          : [...prev.withOutPlayers, player.name],
                                     }));
                                 }}
                             >
-                                <p style={{
-                                    fontWeight:'bold', color:'#fff', fontSize:'13px', 
-                                }}>
-                                    {name}
+                                <Image
+                                    alt="Player Headshot"
+                                    width={25} height={25}
+                                    src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
+                                    style={{ objectFit: 'cover', marginLeft:'-5px', marginRight:'5px' }}
+                                />
+                                <p style={{fontWeight:'bold', color:'#fff', fontSize:'13px', marginLeft:'10px'}}>
+                                    {player.name}
                                 </p>
                             </div>
                         </div>
