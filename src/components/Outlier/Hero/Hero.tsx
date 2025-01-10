@@ -2,6 +2,7 @@ import React from 'react'
 import { teamColors } from '../../../Context/functions/colors/colors'
 import { PPlayer } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
+import Image from 'next/image'
 
 interface Props {
     player: PPlayer
@@ -19,14 +20,12 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
         >
             {/* Logo */}
             <div style={{ left: -40, top: -40, position:'absolute'}}>
-                <img
+                 <Image
                     alt={'Team Logo'}
                     src={`/logos/nba/${player.city.replace(' ', '_')}.png`}
-                    style={{
-                        width: '175px',
-                        height: '175px',
-                        opacity: 0.3,
-                    }}
+                    width={175}
+                    height={175}
+                    style={{ opacity: 0.3 }}
                 />
             </div>
             
