@@ -61,7 +61,6 @@ export const MainBarChart: React.FC<Props> = ({
 
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes } = filter;
     useEffect(() => {
-        // console.log('mainbarcahr', projections)
         const newData = parseBarData(pGames, filter, player, matchUp, filter.stat, projections);
         setMainBarData(newData);
     }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes])

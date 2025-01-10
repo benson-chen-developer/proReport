@@ -20,12 +20,7 @@ import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { StatsFilterHeader } from './Stats/StatsFilterHeader';
-import e from 'express';
 
-interface Props {
-    league: string,
-    playerName: string
-}
 export type Filter = {
     isHome: boolean,
     isAway: boolean,
@@ -69,7 +64,12 @@ export type MatchUp = {
 
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
-export const PMatches: React.FC<Props> = ({league, playerName}) => {
+export const PMatches = () => {
+    const router = useRouter();
+    const { paramPlayer, paramLeague } = router.query;
+    const playerName = (paramPlayer as string).replace(/_/g, ' ');
+    const league = paramLeague as string;
+    
     const [displayedGames, setDisplayedGames] = useState<PGame[]>([]);
     const [barData, setBarData] = useState<BarData[]>([]);
     const [seasonAvg, setSeasonAvg] = useState<{ name: string; value: number }[]>([]);

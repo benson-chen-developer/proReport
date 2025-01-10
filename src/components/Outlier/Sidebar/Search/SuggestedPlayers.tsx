@@ -22,8 +22,8 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
         >
             {similarPlayers.length > 0 ? (
                 similarPlayers.map((player, index) => {
-                    const playerDash = player.name.replace(' ', '_');
-                    
+                    const playerDash = player.name.replace(/ /g, '_');
+
                     return (
                         <Link 
                             href={`/player/nba/${playerDash}`}

@@ -65,9 +65,8 @@ router.get("/matchUps/:league", async (req, res) => {
 });
 
 router.get("/matches/nba/:playerName", async (req, res) => {
-    //Looks like Cade_CunningHam (req.params) but is Cade Cunningham in player obj in db
-    const playerName = `${req.params.playerName.split('_')[0]} ${req.params.playerName.split('_')[1]}`; 
-    
+    const playerName = req.params.playerName; 
+
     try {
         const playerMatches = await NBAMatch.aggregate([
             {

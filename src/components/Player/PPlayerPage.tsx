@@ -15,7 +15,7 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
         <div style={{display:'flex', width:'100%', background: '#000'}}>
             <SideBar />
 
-            <PMatches league={league} playerName={playerName}/>
+            <PMatches />
         </div>
     )
     // if(!loading && !player) return(

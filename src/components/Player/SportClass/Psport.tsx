@@ -195,10 +195,7 @@ export class PSport {
 
 
     static fetchMatches = async (playerName: string, league: string): Promise<PGame[]> => {
-        const parsedName = playerName
-            .split(' ') 
-            .map(section => section.charAt(0).toUpperCase() + section.slice(1).toLowerCase())
-            .join('_');
+        const parsedName = playerName.replace(/_/g, ' ');
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/${league}/${parsedName}`, {
             method: 'GET', 
