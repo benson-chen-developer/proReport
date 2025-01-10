@@ -9,6 +9,8 @@ interface Props {
     projections: Projection[]
 }
 export const Hero: React.FC<Props> = ({player, projections}) => {
+    if(!player) return null;
+
     return (
         <div
             style={{
@@ -20,7 +22,7 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
         >
             {/* Logo */}
             <div style={{ left: -40, top: -40, position:'absolute'}}>
-                 <Image
+                <Image
                     alt={'Team Logo'}
                     src={`/logos/nba/${player.city.replace(' ', '_')}.png`}
                     width={175}
@@ -30,13 +32,6 @@ export const Hero: React.FC<Props> = ({player, projections}) => {
                 <Image
                     alt={'Team Logo'}
                     src={`/logos/nba/atlanta.png`}
-                    width={175}
-                    height={175}
-                    style={{ opacity: 0.3 }}
-                />
-                <Image
-                    alt={'Team Logo'}
-                    src={`/san_antonio.png`}
                     width={175}
                     height={175}
                     style={{ opacity: 0.3 }}
