@@ -30,6 +30,12 @@ export type Game = {
     url: string,
     date: string,
 }
+export type Team = {
+    name: string,
+    id: string,
+    given: Record<string, number[]>,
+    gp: number
+}
 export type EGame = Game & {
     maps: {
         map: string,

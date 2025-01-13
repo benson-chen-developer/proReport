@@ -18,6 +18,9 @@ body {
 .hoverBg:hover{
   background: #2B2B2B;
 }
+.hoverBgWhite:hover{
+  background: #fff;
+}
 
 /* TableHeader.tsx */
 .dropdown-container {

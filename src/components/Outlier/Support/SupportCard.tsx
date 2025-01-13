@@ -10,7 +10,7 @@ import { Projection } from '../../../Context/Types/ProjectionTypes';
 interface Props {
     filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
     filters: Filters, 
-    matchUp: MatchUp,
+    matchUp: MatchUp | undefined, 
     pGames: PGame[],
     player: PPlayer,
     barData: BarData[],
@@ -43,7 +43,7 @@ export const SupportCard: React.FC<Props> = ({
             else return '';
         }
 
-        const newBarData = parseBarData(pGames, filter, player, matchUp, supportStatsKey(filter.supportingStat), projections);
+        const newBarData = parseBarData(pGames, filter, player, supportStatsKey(filter.supportingStat), projections, matchUp);
         setBarData(newBarData);
 
         setLoading(false);

@@ -73,12 +73,8 @@ export const PMatches = () => {
     const [displayedGames, setDisplayedGames] = useState<PGame[]>([]);
     const [barData, setBarData] = useState<BarData[]>([]);
     const [seasonAvg, setSeasonAvg] = useState<{ name: string; value: number }[]>([]);
-    const [matchUp, setMatchUp] = useState<MatchUp>({
-        league: 'nba',
-        teams: [], 
-        time: '', 
-        bets: []
-    });
+    const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
+    const [rightBtn, setRightBtn] = useState<"Filters" | "Rankings">("Filters");
 
     /* Player Page States */
     const [pGames, setPGames] = useState<PGame[]>([]);
@@ -102,7 +98,7 @@ export const PMatches = () => {
     const [filters, setFilters] = useState<Filters>({
         stats: [],
         supportingStats: ["Minutes", "Fouls"],
-        lastGames: matchUp.teams.length > 0 ? ["L5", "L10", "L20", "H2H"] : ["L5", "L10", "L20"],
+        lastGames: ["L5", "L10", "L20"],
         periods: [],
         minutes: [15, 45]
     })
@@ -125,7 +121,7 @@ export const PMatches = () => {
         return PSport.sortStats(league, statsInProjections);
     }
 
-    const {fetchNbaPlayers, fetchProjections} = useGlobalContext();
+    const {fetchNbaPlayers, fetchProjections, fetchMatchUps} = useGlobalContext();
 
     const [loading, setLoading] = useState<boolean>(true);
     
@@ -179,6 +175,17 @@ export const PMatches = () => {
                 name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
             }])
 
+            const matchUps = await fetchMatchUps(league);
+            const matchUp = matchUps.find(match => match.teams.includes(player!.city));
+            setMatchUp(matchUp);
+
+            if(matchUp){
+                setFilters(p => ({
+                    ...p, 
+                    lastGames: [...p.lastGames, "H2H"]
+                }))
+            }
+
             setLoading(false);
         };
       
@@ -216,10 +223,8 @@ export const PMatches = () => {
             <Hero 
                 player={player}
                 projections={projections}
+                rightBtn={rightBtn} setRightBtn={setRightBtn}
             />
-            {/* <div style={{width:'100%', display:'flex', alignItems:'flex-end', margin:'30px 0px 20px 0px'}}>
-                <Averages averages={seasonAvg} pGames={pGames}/>
-            </div> */}
             
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
@@ -249,6 +254,7 @@ export const PMatches = () => {
                     width:'35%', //height:'300px', 
                     background:'#2B2B2B', borderLeft:'1px solid #808080'
                 }}>
+                    {/* {rightBtn === "Filters" ? */}
                     <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
                         <StatsFilterHeader 
                             hasProjections={projections.length > 0}
@@ -269,8 +275,7 @@ export const PMatches = () => {
                             filters={filters}
                         />
 
-                        <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'25px 0px 5px 0px'}}>Games Filter</p>
-                        <HomeSwitches filter={filter} setFilter={setFilter} />
+                        {/* <HomeSwitches filter={filter} setFilter={setFilter} />
                         <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                             <WithOutPlayers 
                                 ourPlayer={player}
@@ -285,16 +290,16 @@ export const PMatches = () => {
                                 filter={filter} setFilter={setFilter}
                                 filters={filters}
                             />
-                        </div>
+                        </div> */}
+                        {matchUp ? 
+                            <Rankings 
+                                filter={filter} matchUp={matchUp} player={player}
+                            /> : null
+                        }
                     </div>
-
-                    {/* <div style={{paddingLeft:'5%', background:'#1F1F1F'}}>
-                        <Rankings filter={filter}/>
-                    </div> */}
+                {/* } */}
                 </div>
             </div>
-
-            {/* <Rankings filter={filter}/> */}
         </div>
     )
 

@@ -1,180 +1,152 @@
-import React, { useEffect, useState } from 'react'
-import { calcRank, getTeamStatRanking, RankDisplay, Ranking } from '../../../Context/functions/rankFunctins'
-import { PGame } from '../../../Context/Types/PlayerTypes'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { calcRank, getTeamStatRanking, RankDisplay } from '../../../Context/functions/rankFunctins'
+import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
 import { PSport } from '../../Player/SportClass/Psport'
-import { Filter } from '../Matches'
+import { Filter, Filters, MatchUp } from '../Matches'
+import { Projection } from '../../../Context/Types/ProjectionTypes'
 
 interface Props {
-    filter: Filter
+    matchUp: MatchUp
+    filter: Filter,
+    player: PPlayer
 }
-export const Rankings: React.FC<Props> = ({filter}) => {
+
+type Ranking = {
+    name: string, value: string, rank: number
+}
+export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
     const [rankings, setRankings] = useState<Ranking[]>([]);
-    const [oppRanking, setOppRanking] = useState<Ranking>({team: '', stats: {}, games: 0});
-    const [rankedStats, setRankedStats] = useState<Ranking[]>([]);
+    const [selectedOption, setSelectedOption] = useState('vs G');
+    const [teams, setTeams] = useState<Team[]>([]);
+    const oppTeam = matchUp.teams.find(team => team !== player.city);
 
-    const [rankString, setRankString] = useState<string>('');
-    const [avgRank, setAvgRank] = useState<number>(0);
+    const {fetchNbaTeams} = useGlobalContext();
 
-    const {fetchNbaPlayers, fetchNbaMatches} = useGlobalContext();
-    const bet = {
-        oppTeam: 'cleveland',
-        stat: 'PTS',
-        period: 'All'
+    const setCurrentRank = async () => {
+        const mapping = {"vs G": 0, "vs F": 1, "vs C": 2};
+        const positionIndex = mapping[selectedOption as keyof typeof mapping];
+
+        const teams = await fetchNbaTeams();
+        setTeams(teams);
+
+        let teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
+            const avgA = a.given[filter.stat][3] / a.gp;
+            const avgB: number = b.given[filter.stat][3] / b.gp;
+            return avgB - avgA;
+        });
+        let teamsOrderedByPosition = teams.slice().sort((a, b) => {
+            const avgA = a.given[filter.stat][positionIndex] / a.gp;
+            const avgB = b.given[filter.stat][positionIndex] / b.gp;
+            return avgB - avgA;
+        });
+
+        const teamIndex = teamsOrderedByTotalStat.findIndex(team => team.name === oppTeam);
+        let rankings: Ranking[] = [
+            {
+                name: `${filter.stat} Allowed`,
+                rank: teamIndex+1,
+                value: (teamsOrderedByTotalStat[teamIndex].given[filter.stat][3] / teamsOrderedByTotalStat[teamIndex].gp).toFixed(1)
+            },
+        ];
+
+        const teamPosIndex = teamsOrderedByPosition.findIndex(team => team.name === oppTeam);
+        if(selectedOption !== "All"){
+            rankings.push({
+                name: `${filter.stat} Allowed`,
+                rank: teamPosIndex+1,
+                value: (teamsOrderedByTotalStat[teamPosIndex].given[filter.stat][positionIndex] / teamsOrderedByTotalStat[teamPosIndex].gp).toFixed(1)
+            })
+        }
+        
+        setRankings(rankings)
     }
 
     useEffect(() => {
-        const func = async () => {
-            const allGames = await fetchNbaMatches();
-            const players = await fetchNbaPlayers();
-
-            const rankings = getTeamStatRanking(allGames, players);
-            setRankings(rankings);
-
-            const foundOppRanking = rankings.find(rank => rank.team.toLowerCase() === bet.oppTeam);
-            if(foundOppRanking) setOppRanking(foundOppRanking);
-        }
-
-        func();
-    }, [])
+        setCurrentRank();
+    }, [selectedOption, filter.stat, filter.period])
 
     return (
         <div>
-            {oppRanking.team ?
-                <RankCard 
-                    rankings={rankings}
-                    oppTeam={oppRanking.team}
-                    filter={filter}
-                    rankString={rankString}
-                />
-                : null
-            }
-        </div>
-    )
-}
+            <h1 style={{fontWeight:'bold', fontSize:'18px', color:'#fff', margin:'25px 0px 10px 0px'}}>
+                {oppTeam} Allows
+            </h1>
 
-interface Props2 {
-    rankings: Ranking[]
-    oppTeam: string
-    filter: Filter,
-    rankString: string
-}
-const RankCard: React.FC<Props2> = ({oppTeam, filter, rankString, rankings}) => {
-    // const data = [
-    //     {
-    //         statAllowed: filter.stat,
-    //         rank: rankString,
-    //         avg: 44
-    //     },
-    //     {
-    //         statAllowed: `${filter.stat} (Q1)`,
-    //         rank: '2nd',
-    //         avg: 10.4
-    //     }
-    // ]
-    const [selectedOption, setSelectedOption] = useState('All');
-    const [data, setData] = useState<RankDisplay[]>([]);
-
-    useEffect(() => {
-        const pickedPosition = selectedOption !== 'All' ? selectedOption.slice(3) : selectedOption;
-        const newData: RankDisplay[] = [];
-
-        /* This adds the total stat (So if we picked Q1 PTS this would show PTS allowed) */
-        newData.push(calcRank(rankings, 'All', pickedPosition, 'cleveland', filter.stat));
-
-        /* This adds the period stat (So if we picked Q1 PTS this would show Q1 PTS allowed) */
-        if(filter.period !== 'All'){
-            newData.push(calcRank(rankings, filter.period, pickedPosition, 'cleveland', filter.stat));
-        }
-        
-        setData(newData);
-    }, [selectedOption, filter.stat, filter.period])
-
-    const handleOptionClick = (option: string) => {
-        setSelectedOption(option);
-    };
-
-    const convertPositionAbr = (str: string): string => {
-        let ret = '';
-        str = str.toLowerCase();
-
-        if(str === "g") ret = 'Guards';
-        else if(str === "f") ret = 'Forwards';
-        else if(str === "c") ret = 'Centers';
-
-        return ret;
-    }
-
-    if(data.length === 0) return <div>Loading</div>
-
-    return (
-        <div style={{color:'#fff', width:'100%', height: '300px', background:'#1F1F1F', display:'flex', alignItems:'center', flexDirection:'column'}}>
-            <div style={{width:'95%', height:'90%'}}>
-                <p>{oppTeam} Points Allowed</p>
-
-                {/* Positions Selection */}
-                <div style={{display:'flex', marginBottom:'-10px'}}>
-                    {['All', 'vs G', 'vs F', 'vs C'].map((option, i) => (
-                        <div 
-                            key={i}
-                            style={{
-                                cursor:'pointer', color:'#fff', paddingRight:'20px', alignItems:'center',
-                                display:'flex', flexDirection:'column', justifyContent:'space-between',
-                            }}
-                            onClick={() => setSelectedOption(option)}
-                        >
-                            <div style={{color: option === selectedOption ? '#fff' : 'grey', marginTop:'5px',}}>
-                                    <p style={{margin:0, fontWeight:'bold', marginBottom:'15px', fontSize:'14px'}}>
-                                        {option}
-                                    </p>
-                                </div>
-
-                                <div style={{
-                                    height:'4px', width:'90%', 
-                                    background: option === selectedOption ? '#fff' : '',
-                                    borderTopLeftRadius: option === selectedOption ? '8px' : '0', 
-                                    borderTopRightRadius: option === selectedOption ? '8px' : '0',
-                                }}/>
+            <div style={{display:'flex', marginBottom:'-10px'}}>
+                {['vs G', 'vs F', 'vs C'].map((option, i) => (
+                    <div 
+                        key={i}
+                        style={{
+                            cursor:'pointer', color:'#fff', paddingRight:'20px', alignItems:'center',
+                            display:'flex', flexDirection:'column', justifyContent:'space-between',
+                        }}
+                        onClick={() => setSelectedOption(option)}
+                    >
+                        <div style={{color: option === selectedOption ? '#fff' : 'grey', marginTop:'5px',}}>
+                            <p style={{margin:0, fontWeight:'bold', marginBottom:'15px', fontSize:'14px'}}>
+                                {option}
+                            </p>
                         </div>
-                    ))}
-                </div>
 
-                {/* Headers (Rank + Avg) */}
-                <div style={{width:'100%', justifyContent:'space-between', display:'flex', marginBottom:'10px'}}>
-                    <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff', width:'60%' }} />
-
-                    <div style={{display:'flex', width:'40%'}}>
-                        <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
-                            Rank
-                        </p>
-                        <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
-                            Avg
-                        </p>
+                        <div style={{
+                            height:'4px', width:'90%', 
+                            background: option === selectedOption ? '#fff' : '',
+                            borderTopLeftRadius: option === selectedOption ? '8px' : '0', 
+                            borderTopRightRadius: option === selectedOption ? '8px' : '0',
+                        }}/>
                     </div>
-                </div>
-
-                {/* Actual Data (Points Allowed     23rd     101.1) */}
-                {data.map((d, index) => (
-                    <div key={index} style={{width:'100%', justifyContent:'space-between', display:'flex', marginBottom:'15px'}}>
-                        <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff', width:'60%' }}> 
-                            {d.statAllowed}
-                        </div>
-
-                        <div style={{display:'flex', width:'40%'}}>
-                            <div style={{ fontWeight: 'bold', fontSize: '14px', color: d.color, width:'50%', textAlign:'center' }}>
-                                {d.rank}
-                            </div>
-                            <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
-                                {d.avg.toFixed(1)}
-                            </div>
-                        </div>
-                </div>
                 ))}
             </div>
 
-            {/* <div style={{fontSize:'12px', fontWeight:'normal', color:'#B1B1B1', marginBottom:'20px', width:'85%'}}>
-                {oppTeam} is <span style={{color:'#fff'}}>{data[0].rank} in {data[0].statAllowed}</span>, averaging <span style={{color:'#fff'}}>{data[0].avg} {filter.stat}</span> per game <span style={{color:'#fff'}}>(vs {convertPositionAbr(selectedOption[3])})</span>
-            </div> */}
+            {/* Headers (Rank + Avg) */}
+            <div style={{width:'100%', display:'flex', margin:'15px 0px 5px 0px'}}>
+                <div style={{ width:'60%' }}>
+                    <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1'}}>
+                        Stat per game
+                    </p>
+                </div>
+
+                <div style={{display:'flex', width:'40%', marginRight:'20px'}}>
+                    <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
+                        
+                    </p>
+                    <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
+                        Rank
+                    </p>
+                </div>
+            </div>
+
+            {/* Actual Data (Points Allowed     23rd     101.1) */}
+            <div style={{ marginRight:'20px'}}>
+                {rankings.map((ranking, index) => {
+                    let color = '';
+                    const percent = (ranking.rank / teams.length);
+                    
+                    if(percent <= .33) color = '#18ED9D';
+                    else if (percent <= .60) color = '#ede515';
+                    else color = '#FF3556';
+
+                    return (
+                        <div key={index} style={{width:'100%', display:'flex', marginBottom:'15px'}}>
+                            <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff', width:'60%' }}> 
+                                {ranking.name} 
+                                {index !== 0 ? 
+                                    <span style={{color:'#808080'}}> ({selectedOption}) </span> : null
+                                }
+                            </div>
+
+                            <div style={{display:'flex', width:'40%'}}>
+                                <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#B1B1B1', width:'50%', textAlign:'center' }}>
+                                    {/* {ranking.value} */}
+                                </div>
+                                <div style={{ fontWeight: 'bold', fontSize: '14px', color: color, width:'50%', textAlign:'center' }}>
+                                    {ranking.rank}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }

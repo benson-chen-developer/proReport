@@ -9,7 +9,7 @@ import { BarInfo } from './BarInfo'
 interface Props {
     player: PPlayer,
     filter: Filter,
-    matchUp: MatchUp
+    matchUp: MatchUp | undefined
     setBarData: Dispatch<SetStateAction<BarData[]>>
     pGames: PGame[],
     projections: Projection[]
@@ -61,7 +61,7 @@ export const MainBarChart: React.FC<Props> = ({
 
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes } = filter;
     useEffect(() => {
-        const newData = parseBarData(pGames, filter, player, matchUp, filter.stat, projections);
+        const newData = parseBarData(pGames, filter, player, filter.stat, projections, matchUp);
         setMainBarData(newData);
     }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes])
 

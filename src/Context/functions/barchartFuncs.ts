@@ -32,18 +32,17 @@ export const convertSecondsToMinutes = (totalSeconds: number): number => {
 }
 
 export const parseBarData = (
-    games: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp, 
-    pickedStat: string, projections: Projection[]
+    games: PGame[], filter: Filter, player: PPlayer, 
+    pickedStat: string, projections: Projection[], matchUp?: MatchUp, 
 ): BarData[] => {
-    let oppTeam = '';
-    if(matchUp.teams.length > 0){
-        player.city.toLowerCase() === matchUp.teams[0].toLowerCase() 
-            ? matchUp.teams[1].toLowerCase() 
-            : matchUp.teams[0].toLowerCase();
-    }
+    // if(matchUp.teams.length > 0){
+    //     player.city.toLowerCase() === matchUp.teams[0].toLowerCase() 
+    //         ? matchUp.teams[1].toLowerCase() 
+    //         : matchUp.teams[0].toLowerCase();
+    // }
 
     /* Here we filter the games from the game criteria */
-    const displayedGames = getDisplayGames(games, filter, oppTeam, player);
+    const displayedGames = getDisplayGames(games, filter, player, matchUp);
     /* Here we get the stats from the game via criteria */
 
     /* Set a refline for the projections */
@@ -118,7 +117,7 @@ export const parseBarData = (
 }
 
 /* Filter the aviable games to get stats from */
-export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: string, player: PPlayer): PGame[] => {
+export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp | undefined): PGame[] => {
     let displayedGames: PGame[] = [];
 
     /* Get all games without these players */
@@ -184,6 +183,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, oppTeam: stri
         displayedGames = displayedGames.reverse().slice(-length).reverse();
     }
     else if(filter.lastGame === "H2H"){
+        const oppTeam = matchUp?.teams.find(team => team !== player.city);
         displayedGames = displayedGames.filter(game => game.team1 === oppTeam || game.team2 === oppTeam);
     }
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const { NBAMatch } = require("../models/Sport/PSport");
 const { NBAPlayer } = require("../models/Sport/PPlayerModel");
+const { NBATeam } = require("../models/Sport/Team");
 const router = express.Router();
 
 router.get("/players/nba", async (req, res) => {
@@ -18,6 +19,16 @@ router.get("/matches/nba", async (req, res) => {
         const matches = await NBAMatch.find({});
 
         res.status(200).json(matches);
+    } catch (err) {
+        console.error("Error fetching matches", err);
+        res.status(500).send({ message: "Error fetching matches" });
+    }
+});
+router.get("/teams/nba", async (req, res) => {
+    try {
+        const teams = await NBATeam.find({});
+
+        res.status(200).json(teams);
     } catch (err) {
         console.error("Error fetching matches", err);
         res.status(500).send({ message: "Error fetching matches" });

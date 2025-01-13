@@ -1,6 +1,6 @@
 'use client';
 import React, { createContext, useContext, Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
-import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, ValorantPlayer } from './Types/PlayerTypes';
+import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, Team, ValorantPlayer } from './Types/PlayerTypes';
 import {apiUrl} from '../data/data';
 import { MatchUp } from '../components/Outlier/Matches';
 import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
@@ -17,6 +17,9 @@ interface ContextProps {
   nbaMatches: PGame[];
   setNbaMatches: Dispatch<SetStateAction<PGame[]>>;
   fetchNbaMatches: () => Promise<PGame[]>;
+  nbaTeams: Team[];
+  setNbaTeams: Dispatch<SetStateAction<Team[]>>;
+  fetchNbaTeams: () => Promise<Team[]>;
 
   valorantPlayers: ValorantPlayer[];
   setValorantPlayers:  Dispatch<SetStateAction<ValorantPlayer[]>>;
@@ -48,6 +51,9 @@ const GlobalContext = createContext<ContextProps>({
   nbaMatches: [],
   setNbaMatches: (): PGame[] => [],
   fetchNbaMatches: async (): Promise<PGame[]> => [],
+  nbaTeams: [],
+  setNbaTeams: (): Team[] => [],
+  fetchNbaTeams: async (): Promise<Team[]> => [],
 
   valorantPlayers: [],
   setValorantPlayers:  (): ValorantPlayer[] => [],
@@ -71,6 +77,7 @@ const GlobalContext = createContext<ContextProps>({
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
   const [nbaPlayers, setNbaPlayers] = useState<PPlayer[]>([]);
   const [nbaMatches, setNbaMatches] = useState<PGame[]>([]);
+  const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
   const [valorantPlayers, setValorantPlayers] = useState<ValorantPlayer[]>([]);
   const [lolPlayers, setLolPlayers] = useState<LolPlayer[]>([]);
   const [csPlayers, setCSPlayers] = useState<CSPlayer[]>([]);
@@ -189,12 +196,13 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     }
   };
   const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
-    let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
+    // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
+    let isNewDay = true;
 
     if(isNewDay){
       console.log('isnewday')
       const currentMatchUps = await getMatchUps(league, matchUps, setMatchUps);
-      setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
+      // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
       setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
 
       return currentMatchUps;
@@ -225,12 +233,29 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       return newProjections;
     }
   }
+  const fetchNbaTeams = async (): Promise<Team[]> => {
+    if(nbaTeams.length > 0){
+      return nbaTeams;
+    } else {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
+        if (!response.ok) throw new Error('Failed to fetch nba teams');
+        const data = await response.json();
+        setNbaTeams(data);
+        return data;
+      } catch (error) {
+        console.error('Error fetching Lol players:', error);
+        return [];
+      }
+    }
+  }
   
   return (
     <GlobalContext.Provider value={{ 
       projections, setProjections, fetchProjections,
       nbaPlayers, setNbaPlayers, fetchNbaPlayers,
       nbaMatches, setNbaMatches, fetchNbaMatches,
+      nbaTeams, setNbaTeams, fetchNbaTeams,
       
       valorantPlayers, setValorantPlayers, fetchValorantPlayers,
       lolPlayers, setLolPlayers, fetchLolPlayers,
