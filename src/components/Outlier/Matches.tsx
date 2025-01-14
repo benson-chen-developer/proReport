@@ -179,7 +179,7 @@ export const PMatches = () => {
             const matchUp = matchUps.find(match => match.teams.includes(player!.city));
             setMatchUp(matchUp);
 
-            if(matchUp){
+            if(matchUp && !filters.lastGames.includes('H2H')){
                 setFilters(p => ({
                     ...p, 
                     lastGames: [...p.lastGames, "H2H"]

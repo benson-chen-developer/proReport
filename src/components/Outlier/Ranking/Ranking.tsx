@@ -30,32 +30,36 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
         const teams = await fetchNbaTeams();
         setTeams(teams);
 
+        /* Sorts the teams based on their given stat */
+        let stats = filter.stat.split('+');
         let teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
-            const avgA = a.given[filter.stat][3] / a.gp;
-            const avgB: number = b.given[filter.stat][3] / b.gp;
+            const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][3] / a.gp), 0);
+            const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][3] / b.gp), 0);
             return avgB - avgA;
         });
         let teamsOrderedByPosition = teams.slice().sort((a, b) => {
-            const avgA = a.given[filter.stat][positionIndex] / a.gp;
-            const avgB = b.given[filter.stat][positionIndex] / b.gp;
+            const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex] / a.gp), 0);
+            const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex] / b.gp), 0);
             return avgB - avgA;
         });
 
         const teamIndex = teamsOrderedByTotalStat.findIndex(team => team.name === oppTeam);
+        const totalStat = stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][positionIndex], 0);
         let rankings: Ranking[] = [
             {
                 name: `${filter.stat} Allowed`,
                 rank: teamIndex+1,
-                value: (teamsOrderedByTotalStat[teamIndex].given[filter.stat][3] / teamsOrderedByTotalStat[teamIndex].gp).toFixed(1)
+                value: (totalStat / teamsOrderedByTotalStat[teamIndex].gp).toFixed(1)
             },
         ];
 
         const teamPosIndex = teamsOrderedByPosition.findIndex(team => team.name === oppTeam);
+        const totalPosStat = stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][3], 0);
         if(selectedOption !== "All"){
             rankings.push({
                 name: `${filter.stat} Allowed`,
                 rank: teamPosIndex+1,
-                value: (teamsOrderedByTotalStat[teamPosIndex].given[filter.stat][positionIndex] / teamsOrderedByTotalStat[teamPosIndex].gp).toFixed(1)
+                value: (totalPosStat / teamsOrderedByTotalStat[teamPosIndex].gp).toFixed(1)
             })
         }
         
