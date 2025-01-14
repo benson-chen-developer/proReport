@@ -17,7 +17,7 @@ type Ranking = {
 }
 export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
     const [rankings, setRankings] = useState<Ranking[]>([]);
-    const [selectedOption, setSelectedOption] = useState('vs G');
+    const [selectedOption, setSelectedOption] = useState(`vs ${player.position[player.position.length-1]}`);
     const [teams, setTeams] = useState<Team[]>([]);
     const oppTeam = matchUp.teams.find(team => team !== player.city);
 

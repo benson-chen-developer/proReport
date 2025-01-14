@@ -61,7 +61,7 @@ export const Hero: React.FC<Props> = ({player, projections, rightBtn, setRightBt
             }}>
                 <p style={{margin:0, fontSize:'35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
                 <p style={{margin:'0px 0px 20px 0px', fontSize:'20px', fontWeight:'bold', color:'#fff'}}>
-                    {player.city} - {player.position[0]}
+                    {player.city} | {player.position.replace('-', ' - ')}
                 </p>
             </div>
 

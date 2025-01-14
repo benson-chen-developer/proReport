@@ -189,7 +189,7 @@ export const PMatches = () => {
             setLoading(false);
         };
       
-        if(loading) fetchData();
+        fetchData();
     }, [playerName]);
 
     // useEffect(() => {
