@@ -3,13 +3,15 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 're
 import {Projection} from '../../../Context/Types/ProjectionTypes'
 import ppImage from '../../../../public/prizepicksLogo.png'; 
 import { useGlobalContext } from '../../../Context/store';
+import { Filter } from '../Matches';
 
 interface Props {
     pickedProjection: Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
+    filter: Filter
 }
 
-export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection}) => {
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, filter}) => {
     const [projections, setProjections] = useState<Projection[]>([]);
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -18,11 +20,17 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
     const buttonRef = useRef<HTMLDivElement>(null);
 
     const {fetchProjections} = useGlobalContext();
+    const getSameProjections = (projections: Projection[]): Projection[] => {
+        return projections.filter(p => 
+            p.name === filter.stat &&
+            p.period === filter.period
+        )
+    }
 
     useEffect(() => {
         const func = async () => {
             const projections = await fetchProjections('Jaylen Brown');
-            setProjections(projections);
+            setProjections(getSameProjections(projections));
 
             setLoading(false);
         }
@@ -42,6 +50,17 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        const func = async () => {
+            let projections = await fetchProjections('Jaylen Brown');
+            projections = getSameProjections(projections);
+            setProjections(projections);
+            setPickedProjection(projections[0])
+        }
+
+        func();
+    }, [filter])
 
     if(loading) return null;
 
