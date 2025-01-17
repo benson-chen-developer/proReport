@@ -18,7 +18,7 @@ interface Props {
 }
 export const MainBarChart: React.FC<Props> = ({
     player, filter, matchUp, setBarData,
-    pGames, projections, pickedProjection
+    pGames, projections, pickedProjection, setPickedProjection
 }) => {
     const [avg, setAvg] = useState<number>(-1);
     const [seasonAvg, setSeasonAvg] = useState<number>(-1);
@@ -70,6 +70,8 @@ export const MainBarChart: React.FC<Props> = ({
     return (
         <div style={{width:'100%'}}>
             <BarInfo 
+                pickedProjection={pickedProjection}
+                setPickedProjection={setPickedProjection}
                 projections={projections}
                 avg={avg} 
                 seasonAvg={seasonAvg}
@@ -81,7 +83,6 @@ export const MainBarChart: React.FC<Props> = ({
                 lineValue={pickedProjection ? pickedProjection.values[pickedProjection.values.length-1] : null}
                 refLineOn={refLineOn}
                 seasonAvg={seasonAvg}
-                // foundProjection={projections.find(p => p.name === filter.stat && p.period === filter.period)}
                 barData={mainBarData}
                 player={player} 
                 chartType="main"

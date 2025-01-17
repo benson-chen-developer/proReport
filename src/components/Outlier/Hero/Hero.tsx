@@ -7,11 +7,10 @@ import { useGlobalContext } from '../../../Context/store'
 
 interface Props {
     player: PPlayer
-    projections: Projection[]
     rightBtn: "Filters" | "Rankings",
     setRightBtn: Dispatch<SetStateAction<"Filters" | "Rankings">>
 }
-export const Hero: React.FC<Props> = ({player, projections, rightBtn, setRightBtn}) => {
+export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn}) => {
     const {fetchNbaTeams} = useGlobalContext();
     const [team, setTeam] = useState<Team>();
     useEffect(() => {

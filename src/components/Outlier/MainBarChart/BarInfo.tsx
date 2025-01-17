@@ -12,8 +12,10 @@ interface Props {
     seasonAvg: number,
     mainBarData: BarData[],
     projections: Projection[],
+    pickedProjection:Projection | null
+    setPickedProjection: Dispatch<SetStateAction<Projection | null>>
 }
-export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, projections}) => {
+export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection}) => {
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
     }, 0);
@@ -59,7 +61,10 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
 
             {projections.length > 0 ?
                 <div style={{marginRight:'40px'}}>
-                    <ProjectionSquare />
+                    <ProjectionSquare 
+                        pickedProjection={pickedProjection}
+                        setPickedProjection={setPickedProjection}
+                    />
                 </div> : null
             }
         </div>

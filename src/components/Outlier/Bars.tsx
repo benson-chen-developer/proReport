@@ -185,7 +185,7 @@ export const Bars: React.FC<Props> = ({
                     <Tooltip content={<CustomTooltip player={player} />} />
 
                     {/* Bars */}
-                    <Bar dataKey="stat1" stackId="a" radius={barRadiusArr[0]} animationDuration={200}>
+                    {/* <Bar dataKey="stat1" stackId="a" radius={barRadiusArr[0]} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
@@ -200,7 +200,7 @@ export const Bars: React.FC<Props> = ({
                             /> : null
                         }
                     </Bar>
-                    {/* <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
+                    <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
@@ -233,6 +233,19 @@ export const Bars: React.FC<Props> = ({
                             style={{fontSize: '15px', fontWeight: 'bold'}}
                         />
                     </Bar> */}
+                    <Bar dataKey="statTotal" radius={5} animationDuration={200}>
+                        {barData.map((entry, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={lineValue && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
+                            />
+                        ))}
+                        <LabelList
+                            dataKey="statTotal"  // Number floating up top
+                            position="top"
+                            style={{fontSize: '15px', fontWeight: 'bold'}}
+                        />
+                    </Bar>
 
                     {/* The reference lines */}
                     {refLineOn && barData.length > 0 && (

@@ -150,6 +150,8 @@ export const PMatches = () => {
                 setShowAllStats(true)
             } else {
                 editShownStats(false, projections);
+                setPickedProjection(projections[0])
+                console.log('picked',projections[0] )
             }
             setProjections(projections);
 
@@ -235,7 +237,6 @@ export const PMatches = () => {
         <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
             <Hero 
                 player={player}
-                projections={projections}
                 rightBtn={rightBtn} setRightBtn={setRightBtn}
             />
             

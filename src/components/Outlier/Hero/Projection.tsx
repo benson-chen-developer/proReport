@@ -1,15 +1,16 @@
 import Image from 'next/image'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import {Projection} from '../../../Context/Types/ProjectionTypes'
 import ppImage from '../../../../public/prizepicksLogo.png'; 
 import { useGlobalContext } from '../../../Context/store';
 
 interface Props {
+    pickedProjection: Projection | null
+    setPickedProjection: Dispatch<SetStateAction<Projection | null>>
 }
 
-export const ProjectionSquare: React.FC<Props> = () => {
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection}) => {
     const [projections, setProjections] = useState<Projection[]>([]);
-    const [pickedProjection, setPickedProjection] = useState<Projection>();
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -22,9 +23,7 @@ export const ProjectionSquare: React.FC<Props> = () => {
         const func = async () => {
             const projections = await fetchProjections('Jaylen Brown');
             setProjections(projections);
-            setPickedProjection(projections[0]);
 
-            console.log(projections)
             setLoading(false);
         }
         func();
