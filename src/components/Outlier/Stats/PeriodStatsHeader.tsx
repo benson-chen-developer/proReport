@@ -9,6 +9,7 @@ interface CustomLabelProps {
 export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({
     filter, setFilter, filters
 }) => {
+    console.log(filters)
     return (
         <div style={{display:'flex', width:'100%', marginBottom:'20px'}}>
             {filters.periods.map((stat, index) => 

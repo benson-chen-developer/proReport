@@ -59,7 +59,6 @@ export type MatchUp = {
     league: string,
     teams: string[], 
     time: string, 
-    bets: {filter: Filter, value: number}[]
 }
 
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
@@ -106,6 +105,7 @@ export const PMatches = () => {
     const [showAllStats, setShowAllStats] = useState<boolean>(false);
 
     const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
+    const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
     const getProjectionStats = (projections:Projection[]): string[][] => {
         const statsInProjections: string[] = [];
         const stats = PSport.getAllPickedStats('nba');
@@ -195,24 +195,37 @@ export const PMatches = () => {
     // useEffect(() => {
     //     setFilters(updateFilters(filters, filter))
     // }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
+    
     const editShownStats = (showAllStats: boolean, projections: Projection[]): void => {
-        if(!showAllStats && projections.length > 0) {
-            const periods: string[] = projections
-                .filter((proj) => proj.name === filter.stat) 
-                .map((proj) => proj.period);
+        if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
+            const periods: string[] = Array.from(
+                new Set(
+                    projections
+                        .filter((proj) => proj.name === filter.stat)
+                        .map((proj) => proj.period)
+                )
+            );
+
             setFilters(p => ({
                 ...p, 
-                periods: periods,
+                periods: organizePeriods(periods),
                 stats: getProjectionStats(projections)
             }));
             setFilter(p => ({...p, stat: projections[0].name}))
-        } else {
+        } else { /* No Game */
             setFilters(p => ({
                 ...p,
                 periods: PSport.getAllPeriods('nba'),
                 stats: PSport.getAllPickedStats('nba')
             }));
         }
+    }
+    const organizePeriods = (arr: string[]): string[] => {
+        const order = ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4'];
+    
+        return arr.sort((a, b) => {
+            return order.indexOf(a) - order.indexOf(b);
+        });
     }
     useEffect(() => {
         editShownStats(showAllStats, projections)
@@ -232,6 +245,8 @@ export const PMatches = () => {
                 <div style={{width:'65%'}}>
                     <MainBarChart 
                         projections={projections}
+                        pickedProjection={pickedProjection}
+                        setPickedProjection={setPickedProjection}
                         player={player}
                         filter={filter}
                         matchUp={matchUp}

@@ -59,7 +59,7 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
 
             {projections.length > 0 ?
                 <div style={{marginRight:'40px'}}>
-                    <ProjectionSquare projection={projections[1]}/>
+                    <ProjectionSquare />
                 </div> : null
             }
         </div>

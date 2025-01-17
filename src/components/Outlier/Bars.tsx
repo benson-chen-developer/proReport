@@ -12,14 +12,14 @@ interface Props {
     barData: BarData[],
 
     refLineOn: boolean,
-    foundProjection: Projection | undefined,
+    lineValue: number | null,
     seasonAvg: number,
     chartType: 'support' | 'main',
 }
 
 export const Bars: React.FC<Props> = ({ 
-    player, barData, chartType, seasonAvg, refLineOn,
-    foundProjection
+    player, barData, chartType, seasonAvg, refLineOn, lineValue
+    // foundProjection
 }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [ticks, setTicks] = useState<number[]>([]);
@@ -67,8 +67,6 @@ export const Bars: React.FC<Props> = ({
 
         /* Set the y where the reference line will be */
         let refLineAmt = -1;
-        if(foundProjection) refLineAmt = foundProjection.value;
-        else refLineAmt = seasonAvg
         // console.log('seasonAvg;,',seasonAvg)
         // console.log('reflie;,',refLineAmt)
         setRefLineAmt(refLineAmt);
@@ -191,7 +189,7 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[0] : '#A2A2A2' : '#fff'}
+                                fill={lineValue && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[0] : '#A2A2A2' : '#fff'}
                             />
                         ))}
                         {barData[0].name.includes('+') ?
@@ -202,11 +200,11 @@ export const Bars: React.FC<Props> = ({
                             /> : null
                         }
                     </Bar>
-                    <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
+                    {/* <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
+                                fill={pickedProjection && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
                             />
                         ))}
                         <LabelList
@@ -221,7 +219,7 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={foundProjection && chartType === 'main' ? entry.statTotal > foundProjection.value ? barColorArr[2] : '#A2A2A2' : '#BDBDBD'}
+                                fill={pickedProjection && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[2] : '#A2A2A2' : '#BDBDBD'}
                             />
                         ))}
                         <LabelList
@@ -234,20 +232,20 @@ export const Bars: React.FC<Props> = ({
                             position="top"
                             style={{fontSize: '15px', fontWeight: 'bold'}}
                         />
-                    </Bar>
+                    </Bar> */}
 
                     {/* The reference lines */}
                     {refLineOn && barData.length > 0 && (
-                        foundProjection ? (
+                        lineValue ? (
                             <ReferenceLine
-                                y={foundProjection.value} 
+                                y={lineValue} 
                                 stroke="grey" 
                                 strokeDasharray="6 6" 
                                 strokeWidth={1}
                                 label={
                                     <CustomLabel 
-                                        value={foundProjection.value} 
-                                        y={foundProjection.value}
+                                        value={lineValue} 
+                                        y={lineValue}
                                     />
                                 }
                             />

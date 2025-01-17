@@ -3,6 +3,8 @@ export type Projection = {
     name: string,
     period: string,
     playerName: string,
-    value: number,
-    updated_at: string
+    values: number[],
+    updated_ats: string[],
+    start_time: string,
+    odds: Number
 }

@@ -31,14 +31,15 @@ const CustomTooltip = ({ active, payload, label, player }: CustomTooltipProps) =
         return (
             <div style={{
                 width: '180px', height: '130px', background: '#000', borderRadius: '10px', 
-                display:'flex', flexDirection:'column', alignItems:'center', fontSize:'14px'
+                display:'flex', flexDirection:'column', alignItems:'center', fontSize:'14px',
+                border:'2px solid #fff'
             }}>
                 {/* Row 1 */}
                 <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between', marginTop:'10px',alignItems:'center'}}>
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
                         <Image
                             alt={'Team Logo'}
-                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === oppTeam)!.id}/primary/L/logo.svg`}
+                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === oppTeam)?.id}/primary/L/logo.svg`}
                             width={22} height={22}
                             style={{ marginRight:'3px' }}
                         />  
@@ -50,10 +51,10 @@ const CustomTooltip = ({ active, payload, label, player }: CustomTooltipProps) =
                     </div>
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <b style={{ color: '#fff' }}>{convertNBATeamName(oppTeam, 0)}</b>
+                        <b style={{ color: '#fff' }}>{convertNBATeamName(player.city!, 0)}</b>
                         <Image
                             alt={'Team Logo'}
-                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === player.city)!.id}/primary/L/logo.svg`}
+                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === player.city)?.id}/primary/L/logo.svg`}
                             width={22} height={22}
                             style={{ marginLeft:'3px' }}
                         /> 
@@ -86,15 +87,15 @@ const CustomTooltip = ({ active, payload, label, player }: CustomTooltipProps) =
                     fontWeight:'bold', justifyContent:'space-evenly', borderTop:'1px solid #fff', height:'50%',
                     flexDirection:'column'
                 }}>
-                    <div style={{display:'flex', width:'100%', color:'#fff', textAlign:'center'}}>
+                    <div style={{display:'flex', width:'100%', color:'#fff', textAlign:'center', justifyContent:'center'}}>
                         {statNames.map((stat, i) => 
-                            <div style={{width:'33%'}}>{stats[i]}</div>
+                            <div style={{width:'33%'}} key={i}>{stats[i]}</div>
                         )}
                     </div>
 
-                    <div style={{display:'flex', width:'100%', textAlign:'center'}}>
+                    <div style={{display:'flex', width:'100%', textAlign:'center', justifyContent:'center'}}>
                         {statNames.map((stat, i) => 
-                            <div style={{width:'33%'}}>{stat}</div>
+                            <div style={{width:'33%'}} key={i}>{stat}</div>
                         )}
                     </div>
                 </div>

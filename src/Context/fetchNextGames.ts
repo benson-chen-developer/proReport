@@ -50,7 +50,6 @@ export const getMatchUps = async (
             league: league,
             teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],
             time: game.gameDateTimeUTC, 
-            bets: []
         }))
 
         return matchUps;
