@@ -194,7 +194,13 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={lineValue && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
+                                fill={(lineValue && chartType === 'main') 
+                                    ? entry.statTotal === lineValue 
+                                        ? "#FFFFFF" 
+                                        : entry.statTotal > lineValue 
+                                            ? "#79F4F4" 
+                                            : '#A2A2A2' 
+                                    : '#EEEEEE'}
                             />
                         ))}
                         <LabelList
