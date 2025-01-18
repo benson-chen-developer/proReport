@@ -60,7 +60,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
         }
 
         func();
-    }, [filter])
+    }, [filter.stat, filter.period])
 
     if(loading) return null;
 

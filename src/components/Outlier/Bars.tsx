@@ -3,7 +3,6 @@ import { ReferenceLine } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import { PPlayer } from '../../Context/Types/PlayerTypes';
 import { BarData } from './Matches';
-import { getBarChartTicks, getYAxisMax } from '../../Context/functions/barchartFuncs';
 import CustomTooltip from './CustomTooltip';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 
@@ -22,11 +21,9 @@ export const Bars: React.FC<Props> = ({
     // foundProjection
 }) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [ticks, setTicks] = useState<number[]>([]);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
 
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
-    // const [seasonAvg, setSeasonAvg] = useState<number>(-1);
 
     const [barKey, setBarKey] = useState<number>(0);
     
@@ -67,52 +64,62 @@ export const Bars: React.FC<Props> = ({
 
         /* Set the y where the reference line will be */
         let refLineAmt = -1;
-        // console.log('seasonAvg;,',seasonAvg)
-        // console.log('reflie;,',refLineAmt)
         setRefLineAmt(refLineAmt);
 
         /* Size of the chart */
-        setYAxisMax(getYAxisMax(barData))
-        setTicks(getBarChartTicks(barData, refLineAmt));
+        /* 
+            Goes from 0 to max. Unless all bars are below the
+            prop line then we make the prop line the max + padding
+        */
+        const yAxisMax = Math.max(
+            Math.max(...barData.map(entry => entry.statTotal)), 
+            ((lineValue! + 1) % 2 === 0 ? lineValue! + 1 : lineValue! + 2)
+        )
+        setYAxisMax(yAxisMax)
         
         setLoading(false);
     }, [barData])
-    // }, [seasonAvg, isAway, isHome, lastGame, period, stat])
 
     useEffect(() => {
-        // console.log('barData', barData)
         setBarKey(prev => prev + 1);
     }, [barData]);
 
     interface CustomLabelProps {
         x?: number;
         y?: number;
-        value?: number | string;
+        lineValue: number;
     }
-    const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, value }) => (
-        <svg>
-            <rect
-                x={x} // Center the rect around the x coordinate
-                y={y} // Center the rect around the y coordinate
-                width="50"
-                height="25"
-                rx="12"
-                strokeWidth="2"
-                fill="#79F4F4"
-            />
-            <text
-                x={0} // Center the text
-                y={y} // Middle of the rect
-                fill="#fff"
-                fontSize="14px"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontWeight="bold"
-            >
-                {value}
-            </text>
-        </svg>
-    );
+    const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, lineValue }) => {
+        const percent = (lineValue / yAxisMax);
+        const yVal = 300*percent*.8;
+        console.log(yVal)
+        console.log("yAxisMax", yAxisMax)
+        
+        return (
+            <svg>
+                <rect
+                    x={x - 25} // Center the rect around the x coordinate (half of width 50)
+                    y={yVal} /* y = 250 is like the full height of the graph */
+                    width="50"
+                    height="25"
+                    rx="12"
+                    strokeWidth="2"
+                    fill="#000"
+                />
+                <text
+                    x={x} // Center the text
+                    y={lineValue} // Middle of the rect since dominantBaseline is middle
+                    fill="#fff"
+                    fontSize="14px"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontWeight="bold"
+                >
+                    {lineValue}
+                </text>
+            </svg>
+        )
+    };
 
     const AvgLabel = ({ viewBox }: any) => {
         const { x, y, width } = viewBox; // Extract coordinates and width of the chart
@@ -156,7 +163,7 @@ export const Bars: React.FC<Props> = ({
     }
 
     return (
-        <div style={{ width: '100%', height:'300px'}}>
+        <div style={{ width: '100%', height:'350px'}}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     key={barKey}
@@ -164,7 +171,7 @@ export const Bars: React.FC<Props> = ({
                     width={500}
                     height={300}
                     data={barData}
-                    margin={{ top: 5, right: 30, left: 0, bottom: 0 }}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
                 >
                     {/* Background */}
                     <rect width="100%" height="100%" fill={'#1F1F1F'} /> 
@@ -173,11 +180,9 @@ export const Bars: React.FC<Props> = ({
                     <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
                     <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold', fontSize:'12px' }} tickLine={false} axisLine={false}/>
                     <YAxis 
-                        domain={[0, yAxisMax]} 
-                        // domain={[0, Math.max(...ticks) + 5]}
+                        // domain={[0, yAxisMax]}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 
                         tickLine={false} 
-                        // ticks={ticks}
                         axisLine={false}
                     />
 
@@ -185,54 +190,6 @@ export const Bars: React.FC<Props> = ({
                     <Tooltip content={<CustomTooltip player={player} />} />
 
                     {/* Bars */}
-                    {/* <Bar dataKey="stat1" stackId="a" radius={barRadiusArr[0]} animationDuration={200}>
-                        {barData.map((entry, index) => (
-                            <Cell
-                                key={`cell-${index}`}
-                                fill={lineValue && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[0] : '#A2A2A2' : '#fff'}
-                            />
-                        ))}
-                        {barData[0].name.includes('+') ?
-                            <LabelList
-                                dataKey="stat1Text"
-                                position="center"
-                                style={{fill: 'black', fontSize: '12px', fontWeight: 'bold'}}
-                            /> : null
-                        }
-                    </Bar>
-                    <Bar dataKey="stat2" stackId="a" radius={barRadiusArr[1]} animationDuration={200}>
-                        {barData.map((entry, index) => (
-                            <Cell
-                                key={`cell-${index}`}
-                                fill={pickedProjection && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[1] : '#A2A2A2' : '#EEEEEE'}
-                            />
-                        ))}
-                        <LabelList
-                            dataKey="stat2Text"
-                            position="center"
-                            style={{
-                                fill: 'black', fontSize: '12px', fontWeight: 'bold',
-                            }}
-                        />
-                    </Bar>
-                    <Bar dataKey="stat3" stackId="a" radius={barRadiusArr[2]} animationDuration={200}>
-                        {barData.map((entry, index) => (
-                            <Cell
-                                key={`cell-${index}`}
-                                fill={pickedProjection && chartType === 'main' ? entry.statTotal > lineValue ? barColorArr[2] : '#A2A2A2' : '#BDBDBD'}
-                            />
-                        ))}
-                        <LabelList
-                            dataKey="stat3Text"
-                            position="center"
-                            style={{ fill: 'black', fontSize: '12px', fontWeight: 'bold' }}
-                        />
-                        <LabelList
-                            dataKey="statTotal"  // Number floating up top
-                            position="top"
-                            style={{fontSize: '15px', fontWeight: 'bold'}}
-                        />
-                    </Bar> */}
                     <Bar dataKey="statTotal" radius={5} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
@@ -250,18 +207,42 @@ export const Bars: React.FC<Props> = ({
                     {/* The reference lines */}
                     {refLineOn && barData.length > 0 && (
                         lineValue ? (
+                            // <ReferenceLine
+                            //     y={lineValue} 
+                            //     stroke="grey" 
+                            //     strokeDasharray="6 6" 
+                            //     strokeWidth={1}
+                            //     label={
+                            //         <CustomLabel 
+                            //             value={lineValue} 
+                            //             y={lineValue}
+                            //         />
+                            //     }
+                            //     // label={({ x, y, value }) => (
+                            //     //     <text x={x} y={y - 10} fill="red" textAnchor="middle">
+                            //     //         {value}
+                            //     //     </text>
+                            //     // )}
+                            // />
                             <ReferenceLine
                                 y={lineValue} 
                                 stroke="grey" 
                                 strokeDasharray="6 6" 
                                 strokeWidth={1}
-                                label={
-                                    <CustomLabel 
-                                        value={lineValue} 
-                                        y={lineValue}
-                                    />
-                                }
+                                label={{ 
+                                    value: `${lineValue.toFixed(1)}`, 
+                                    position: 'left', 
+                                    fontWeight:'bold',
+                                    fill: '#fff', 
+                                }}
+                                // label={
+                                //     <CustomLabel 
+                                //         lineValue={lineValue} 
+                                //         y={lineValue}
+                                //     />
+                                // }
                             />
+
                         ) : (
                             <ReferenceLine 
                                 y={refLineAmt} 

@@ -42,15 +42,15 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                             justifyContent: 'space-between',
                         }}
                         onClick={() => {
-                            if(!showAllStats){
-                                const periods: string[] = projections
-                                    .filter((proj) => proj.name === filter.stat) 
-                                    .map((proj) => proj.period);
-                                setFilters(p => ({
-                                    ...p,
-                                    periods: periods
-                                }))
-                            }
+                            // if(!showAllStats){
+                            //     const periods: string[] = projections
+                            //         .filter((proj) => proj.name === filter.stat) 
+                            //         .map((proj) => proj.period);
+                            //     setFilters(p => ({
+                            //         ...p,
+                            //         periods: periods
+                            //     }))
+                            // }
                             setFilter(p => ({...p, stat: category[0]}))
                         }}
                     >

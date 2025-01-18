@@ -233,6 +233,34 @@ export const PMatches = () => {
         editShownStats(showAllStats, projections)
     }, [showAllStats])
 
+    /* Make sure to update the periods for picked stats */
+    useEffect(() => {
+        if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
+            const periods: string[] = Array.from(
+                new Set(
+                    projections
+                        .filter((proj) => proj.name === filter.stat)
+                        .map((proj) => proj.period)
+                )
+            );
+            const organizedPeriods = organizePeriods(periods);
+
+
+            setFilters(p => ({
+                ...p, 
+                periods: organizedPeriods,
+                stats: getProjectionStats(projections)
+            }));
+            setFilter(p => ({...p, period: organizedPeriods[0]}))
+        } else { /* No Game */
+            setFilters(p => ({
+                ...p,
+                periods: PSport.getAllPeriods('nba'),
+                stats: PSport.getAllPickedStats('nba')
+            }));
+        }
+    }, [filter.stat])
+
     if(!loading) return (
         <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
             <Hero 

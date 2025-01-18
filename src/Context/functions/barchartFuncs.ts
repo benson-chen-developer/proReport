@@ -240,26 +240,3 @@ const roundToEven = (num: number, direction: 'ceil' | 'floor') => {
     const rounded = direction === 'ceil' ? Math.ceil(num) : Math.floor(num);
     return rounded % 2 === 0 ? rounded : rounded + (direction === 'ceil' ? 1 : -1);
 };
-
-export const getBarChartTicks = (data: BarData[], refLineAmt: number): number[] => {
-    const maxData = Math.max(...data.map(d => d.statTotal));
-    const yAxisMax = roundToEven(maxData * 1.2, 'ceil');
-
-    // Generate ticks
-    const ticks: number[] = [];
-    const increment = yAxisMax > 5 ? 1 : 0.5; // Use smaller increments for small ranges
-
-    for (let tick = 0; tick <= yAxisMax; tick += increment) {
-        ticks.push(tick);
-    }
-
-    return ticks.length > 1 ? ticks : [0, 1, 2];
-};
-
-export const getYAxisMax = (barData: BarData[]): number => {
-    const maxData = Math.max(...barData.map(d => d.statTotal));
-    const rounded = roundToEven(maxData * 1.2, 'ceil');
-
-    if(rounded === 0) return 1;
-    return rounded;
-}
