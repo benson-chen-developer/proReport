@@ -6,5 +6,6 @@ export type Projection = {
     values: number[],
     updated_ats: string[],
     start_time: string,
-    odds: Number
+    odds: Number,
+    overUnder: Number
 }

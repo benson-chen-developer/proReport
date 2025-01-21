@@ -7,7 +7,7 @@ import { ProjectionSquare } from '../Hero/Projection'
 import { BarData, Filter, MatchUp } from '../Matches'
 
 interface Props {
-    filter: Filter,
+    filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
     avg: number,
     seasonAvg: number,
     mainBarData: BarData[],
@@ -15,7 +15,7 @@ interface Props {
     pickedProjection:Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
 }
-export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection}) => {
+export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection, setFilter}) => {
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
     }, 0);
@@ -60,9 +60,33 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
             </div>
 
             {projections.length > 0 ?
-                <div style={{marginRight:'40px'}}>
+                <div style={{marginRight:'40px', display:'flex'}}>
+
+                    {/* The Over/Under */}
+                    {pickedProjection?.overUnder === 3 ?
+                        <div style={{
+                            width:'30px', height:'30px', border:'solid 3px #5B5B5B',
+                            borderRadius:'8px', display:'flex', alignItems:'center',
+                            justifyContent:'center', marginRight:'8px', cursor:'pointer',
+                            transition: 'transform 0.3s ease',
+                            transform: filter.over ? 'rotate(0deg)' : 'rotate(180deg)'
+                        }} onClick={() => {
+                            setFilter(p => ({...p, over: !p.over}))
+                        }}>
+                            <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                style={{ marginBottom: '2px', transition: 'transform 0.3s ease' }} 
+                                width="16" 
+                                height="16" 
+                                viewBox="0 0 16 16"
+                            >
+                                <path fill="#fff" d="M8 .5L.5 8H5v8h6V8h4.5z"/>
+                            </svg>
+                        </div> : null
+                    }
+                    
                     <ProjectionSquare 
-                        filter={filter}
+                        filter={filter} setFilter={setFilter}
                         pickedProjection={pickedProjection}
                         setPickedProjection={setPickedProjection}
                     />

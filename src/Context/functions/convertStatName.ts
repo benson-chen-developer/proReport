@@ -22,3 +22,21 @@ export const convertStatName = (shortName:string):string => {
     
     return longStats.join('+');
 }
+
+/* 
+    Converting the long name stat to short 
+
+    - full means if you want all the stats for the custom tool tip
+*/
+export const convertSupportName = (stat: string, full?: boolean): string => {
+    if(stat === 'Minutes') return 'MIN'
+    else if(stat === 'Fouls') return 'PF'
+    else if(stat === 'Field Goals Att.') return 'FGA'
+
+    if(full){
+        if('REB') return 'REB+ORB+DRB';
+        else return '';
+    } else {
+        return stat;
+    }
+}

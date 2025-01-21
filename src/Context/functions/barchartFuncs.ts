@@ -2,6 +2,7 @@ import { BarData, Filter, Filters, MatchUp } from "../../components/Outlier/Matc
 import { PGame, PPlayer } from "../Types/PlayerTypes";
 import { Projection } from "../Types/ProjectionTypes";
 import { convertNBATeamName } from "./convertNbaName";
+import { convertSupportName } from "./convertStatName";
 
 /*
     Takes 5.55 (5:55) + 6.21 (6:21) and spits out 12.17(12:17)
@@ -33,22 +34,15 @@ export const convertSecondsToMinutes = (totalSeconds: number): number => {
 
 export const parseBarData = (
     games: PGame[], filter: Filter, player: PPlayer, 
-    pickedStat: string, projections: Projection[], matchUp?: MatchUp, 
+    pickedProjection?: Projection | null, matchUp?: MatchUp,
 ): BarData[] => {
-    // if(matchUp.teams.length > 0){
-    //     player.city.toLowerCase() === matchUp.teams[0].toLowerCase() 
-    //         ? matchUp.teams[1].toLowerCase() 
-    //         : matchUp.teams[0].toLowerCase();
-    // }
-
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, player, matchUp);
-    /* Here we get the stats from the game via criteria */
 
-    /* Set a refline for the projections */
-    const foundProjection = projections.find(p => p.name === filter.stat);
+    /* Here we get the stats from the game via criteria */
     const data = displayedGames.map((game, index) => { 
-        const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
+        const unFormattedDate: Date = new Date(game.date);
+        const date = `${unFormattedDate.getUTCMonth() + 1}/${unFormattedDate.getUTCDate()}`;
         const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
         const isHome: boolean = game.team1 === player.team;
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
@@ -66,7 +60,7 @@ export const parseBarData = (
         else if(filter.period === "Q4") periods = periods.slice(3);
 
         for (let period of periods){
-            let pickedStats = pickedStat.split('+');
+            let pickedStats = filter.stat.split('+');
             // console.log(pickedStat, 'pickedStat')
 
             pickedStats.forEach((pickedStatSegment, index) => {
@@ -79,14 +73,12 @@ export const parseBarData = (
                 }
             })
         }
-        // console.log("statTotal", statTotal)
-        // console.log("parseFloat(statTotal.toFixed(1))", parseFloat(statTotal.toFixed(1)))
     
         /* 
             Convert the values to minutes if needed 
                 - else just round the numbers
         */
-        if(pickedStat === "MIN"){
+        if(filter.stat === "MIN"){
             statTotal = convertSecondsToMinutes(statTotal);
             stats = stats.map(stat => convertSecondsToMinutes(stat));
         } else {
@@ -94,9 +86,20 @@ export const parseBarData = (
             stats = stats.map(stat => Number(stat.toFixed(1)));
         }
 
-        let pickedStatSplit = pickedStat.split('+');
+        
+        let pickedStatSplit = filter.stat.split('+');
+        let hit = false;
+        if(pickedProjection){
+            let lineValue = pickedProjection.values[pickedProjection.values.length-1];
+
+            if(filter.over){
+                if(statTotal >= lineValue) hit = true;
+            } else {
+                if(statTotal <= lineValue) hit = true;
+            }
+        }
         return {
-            name: pickedStat, 
+            name: filter.stat, 
             statTotal: statTotal,
             stat1: stats[0], 
             stat2: stats[1],
@@ -108,13 +111,183 @@ export const parseBarData = (
             score: game.score,
             isHome: isHome,
             opp: opp,
-            hit: foundProjection ? statTotal >= foundProjection.value : false,
+            hit: hit,
             underText: `${date}\n ${convertNBATeamName(opp, 0)}`
         };
     }).reverse();
 
     return data;
 }
+
+export const parseSupportBarData = (
+    mainBarData: BarData[], allGames: PGame[],
+    filter: Filter, player: PPlayer, 
+): BarData[] => {   
+    const supportBarData = mainBarData.map((barData, index) => {
+        const foundGame = allGames.find((game) => {
+            const dateStr = game.date;
+            const date = new Date(dateStr);
+            const formattedDate = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+            const bothTeams = [game.team1, game.team2];
+
+            return formattedDate === barData.date && bothTeams.includes(barData.opp);
+        });
+
+        /* Getting inner stats (REB => ORB + DRB) */
+        const statsThatComesWithSupportingStat = (supportingStat: string): string[] => {
+            let allStatsToBeParsed: string[] = [supportingStat];
+
+            if(supportingStat === 'REB'){
+                allStatsToBeParsed.push('ORB', 'DRB');
+            }
+
+            return allStatsToBeParsed;
+        }
+        const barStat = convertSupportName(filter.supportingStat);
+        const allStatsToBeParsed = statsThatComesWithSupportingStat(barStat);
+
+        let statTotal: number = 0;
+        let stats: number[] = [0, 0, 0];
+
+        /* Get which periods to parse */
+        const foundPlayer = foundGame!.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
+        let periods = Array.from({ length: foundGame!.periodsPlayed }, (_, index) => index);
+        if(filter.period === "H1") periods = [0, 1];
+        else if(filter.period === "H2") periods = periods.slice(2);
+        else if(filter.period === "Q1") periods = [0];
+        else if(filter.period === "Q2") periods = [1];
+        else if(filter.period === "Q3") periods = [2];
+        else if(filter.period === "Q4") periods = periods.slice(3);
+
+        /* Adding up the STATS by looping through each period */
+        for (let period of periods){
+            allStatsToBeParsed.forEach((stat, index) => {
+                let currPeriod = foundPlayer?.periods[period];
+                let val = currPeriod ? currPeriod[stat] : null;
+
+                if(val){
+                    statTotal += val;
+                    stats[index] += val;
+                }
+            })
+        }
+
+        /* Edge Case (MINUTES) convert to a number */
+        if(barStat === "MIN"){
+            statTotal = Math.trunc(convertSecondsToMinutes(statTotal) * 10) / 10;
+            stats = stats.map(stat => convertSecondsToMinutes(stat));
+        } else {
+            statTotal = parseFloat(statTotal.toFixed(1));
+            stats = stats.map(stat => Number(stat.toFixed(1)));
+        }
+
+        let pickedStatSplit = filter.supportingStat.split('+');
+        return ({
+            name: filter.supportingStat, 
+            statTotal: statTotal,
+            stat1: stats[0], 
+            stat2: stats[1],
+            stat3: stats[2],
+            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]} ${stats[0]}` : '',
+            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]} ${stats[1]}` : '',
+            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',
+            date: barData.date, 
+            score: barData.score,
+            isHome: barData.isHome,
+            opp: barData.opp,
+            hit: barData.hit,
+            underText: barData.underText
+        })
+    });
+
+    return supportBarData;
+}
+
+// export const parseSupportBarData = (
+//     games: PGame[], filter: Filter, player: PPlayer, 
+//     pickedProjection?: Projection | null, matchUp?: MatchUp,
+// ): BarData[] => {
+//     /* Here we filter the games from the game criteria */
+//     const displayedGames = getDisplayGames(games, filter, player, matchUp);
+
+//     /* Here we get the stats from the game via criteria */
+//     const data = displayedGames.map((game, index) => { 
+//         const date = new Date(game.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
+//         const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
+//         const isHome: boolean = game.team1 === player.team;
+//         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
+        
+//         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
+//         let statTotal: number = 0;
+//         let stats: number[] = [0, 0, 0];
+        
+//         let periods = Array.from({ length: game.periodsPlayed }, (_, index) => index);
+//         if(filter.period === "H1") periods = [0, 1];
+//         else if(filter.period === "H2") periods = periods.slice(2);
+//         else if(filter.period === "Q1") periods = [0];
+//         else if(filter.period === "Q2") periods = [1];
+//         else if(filter.period === "Q3") periods = [2];
+//         else if(filter.period === "Q4") periods = periods.slice(3);
+
+//         for (let period of periods){
+//             let pickedStats = filter.stat.split('+');
+//             // console.log(pickedStat, 'pickedStat')
+
+//             pickedStats.forEach((pickedStatSegment, index) => {
+//                 let currPeriod = foundPlayer?.periods[period];
+//                 let val = currPeriod ? currPeriod[pickedStatSegment] : null;
+
+//                 if(val){
+//                     statTotal += val;
+//                     stats[index] += val;
+//                 }
+//             })
+//         }
+    
+//         /* 
+//             Convert the values to minutes if needed 
+//                 - else just round the numbers
+//         */
+//         if(filter.stat === "MIN"){
+//             statTotal = convertSecondsToMinutes(statTotal);
+//             stats = stats.map(stat => convertSecondsToMinutes(stat));
+//         } else {
+//             statTotal = parseFloat(statTotal.toFixed(1));
+//             stats = stats.map(stat => Number(stat.toFixed(1)));
+//         }
+
+        
+//         let pickedStatSplit = filter.stat.split('+');
+//         let hit = false;
+//         if(pickedProjection){
+//             let lineValue = pickedProjection.values[pickedProjection.values.length-1];
+
+//             if(filter.over){
+//                 if(statTotal >= lineValue) hit = true;
+//             } else {
+//                 if(statTotal <= lineValue) hit = true;
+//             }
+//         }
+//         return {
+//             name: filter.stat, 
+//             statTotal: statTotal,
+//             stat1: stats[0], 
+//             stat2: stats[1],
+//             stat3: stats[2],
+//             stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]} ${stats[0]}` : '',
+//             stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]} ${stats[1]}` : '',
+//             stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',
+//             date: date, 
+//             score: game.score,
+//             isHome: isHome,
+//             opp: opp,
+//             hit: hit,
+//             underText: `${date}\n ${convertNBATeamName(opp, 0)}`
+//         };
+//     }).reverse();
+
+//     return data;
+// }
 
 /* Filter the aviable games to get stats from */
 export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp | undefined): PGame[] => {

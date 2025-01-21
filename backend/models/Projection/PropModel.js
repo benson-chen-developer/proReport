@@ -7,7 +7,8 @@ const PropsModel = new mongoose.Schema({
     values: { type: [Number], required: true },
     updated_ats: {type: [String], required: true},
     start_time: {type: String, required: true},
-    odds: {type: Number, required: true}
+    odds: {type: Number, required: true},
+    overUnder: {type: Number, required: true} /* 1 over 2 under 3 both */
 });
 
 const Props = mongoose.model("props", PropsModel);

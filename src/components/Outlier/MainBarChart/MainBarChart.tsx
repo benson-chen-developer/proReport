@@ -9,20 +9,21 @@ import { BarInfo } from './BarInfo'
 interface Props {
     player: PPlayer,
     filter: Filter,
+    setFilter: Dispatch<SetStateAction<Filter>>,
     matchUp: MatchUp | undefined
-    setBarData: Dispatch<SetStateAction<BarData[]>>
+    mainBarData: BarData[],
+    setMainBarData: Dispatch<SetStateAction<BarData[]>>
     pGames: PGame[],
     projections: Projection[]
     pickedProjection:Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
 }
 export const MainBarChart: React.FC<Props> = ({
-    player, filter, matchUp, setBarData,
+    player, filter, matchUp, setMainBarData, mainBarData, setFilter,
     pGames, projections, pickedProjection, setPickedProjection
 }) => {
     const [avg, setAvg] = useState<number>(-1);
     const [seasonAvg, setSeasonAvg] = useState<number>(-1);
-    const [mainBarData, setMainBarData] = useState<BarData[]>([]);
 
     /* This is the projection value */
     const [refLineOn, setRefLineOn] = useState<boolean>(true);
@@ -61,11 +62,12 @@ export const MainBarChart: React.FC<Props> = ({
 
     }, [mainBarData])
 
-    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes } = filter;
+    /* BarDat useEffect */
+    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
     useEffect(() => {
-        const newData = parseBarData(pGames, filter, player, filter.stat, projections, matchUp);
+        const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
         setMainBarData(newData);
-    }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes])
+    }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
 
     return (
         <div style={{width:'100%'}}>
@@ -75,7 +77,7 @@ export const MainBarChart: React.FC<Props> = ({
                 projections={projections}
                 avg={avg} 
                 seasonAvg={seasonAvg}
-                filter={filter}
+                filter={filter} setFilter={setFilter}
                 mainBarData={mainBarData}
             />
 

@@ -4,7 +4,7 @@ import { Bars } from '../Bars';
 import { BarData, Filter, Filters, MatchUp } from '../Matches';
 import { StatsHeader } from '../Stats/StatsHeader';
 import Checkbox from '@mui/material/Checkbox';
-import { parseBarData } from '../../../Context/functions/barchartFuncs';
+import { parseBarData, parseSupportBarData } from '../../../Context/functions/barchartFuncs';
 import { Projection } from '../../../Context/Types/ProjectionTypes';
 
 interface Props {
@@ -13,12 +13,12 @@ interface Props {
     matchUp: MatchUp | undefined, 
     pGames: PGame[],
     player: PPlayer,
-    barData: BarData[],
-    projections: Projection[]
+    mainBarData: BarData[],
+    pickedProjection: Projection | null
 }
 export const SupportCard: React.FC<Props> = ({
     filter, setFilter, pGames, player,
-    filters, matchUp, projections
+    filters, matchUp, pickedProjection, mainBarData
 }) => {
     const [barData, setBarData] = useState<BarData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -36,18 +36,11 @@ export const SupportCard: React.FC<Props> = ({
         //     )
         // )
 
-        const supportStatsKey = (stat: string): string => {
-            if(stat === 'Minutes') return 'MIN'
-            else if(stat === 'Fouls') return 'PF'
-            else if(stat === 'Field Goals Att.') return 'FGA'
-            else return '';
-        }
-
-        const newBarData = parseBarData(pGames, filter, player, supportStatsKey(filter.supportingStat), projections, matchUp);
+        const newBarData = parseSupportBarData(mainBarData, pGames, filter, player);
         setBarData(newBarData);
 
         setLoading(false);
-    }, [pGames, filter.supportingStat])
+    }, [filter.supportingStat, mainBarData])
 
     return (
         <div style={{
@@ -124,7 +117,7 @@ export const SupportCard: React.FC<Props> = ({
 
             {!loading ?
                 <Bars
-                    foundProjection={undefined}
+                    lineValue={pickedProjection ? pickedProjection.values[pickedProjection.values.length-1] : null}
                     barData={barData}
                     player={player} 
                     refLineOn={refLineOn}

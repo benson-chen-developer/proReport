@@ -30,7 +30,8 @@ export type Filter = {
     supportingStat: string, //Minutes, fouls,
     withOutPlayers: string[],
     daysRested: number,
-    minutes: [number, number]
+    minutes: [number, number],
+    over: boolean
 }
 export type Filters = {
     stats: string[][], //[PTS, PTS+REBS]
@@ -70,7 +71,7 @@ export const PMatches = () => {
     const league = paramLeague as string;
     
     const [displayedGames, setDisplayedGames] = useState<PGame[]>([]);
-    const [barData, setBarData] = useState<BarData[]>([]);
+    const [mainBarData, setMainBarData] = useState<BarData[]>([]);
     const [seasonAvg, setSeasonAvg] = useState<{ name: string; value: number }[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
     const [rightBtn, setRightBtn] = useState<"Filters" | "Rankings">("Filters");
@@ -92,7 +93,8 @@ export const PMatches = () => {
         withOutPlayers: [],
         supportingStat: "Minutes", 
         daysRested: -1,
-        minutes: [15, 45]
+        minutes: [15, 45],
+        over: true
     });
     const [filters, setFilters] = useState<Filters>({
         stats: [],
@@ -151,7 +153,6 @@ export const PMatches = () => {
             } else {
                 editShownStats(false, projections);
                 setPickedProjection(projections[0])
-                console.log('picked',projections[0] )
             }
             setProjections(projections);
 
@@ -194,9 +195,10 @@ export const PMatches = () => {
         fetchData();
     }, [playerName]);
 
-    // useEffect(() => {
-    //     setFilters(updateFilters(filters, filter))
-    // }, [filter.stat, filter.isAway, filter.isHome, filter.lastGame, filter.period])
+    /* Filter changing the supporting stats options (Not the action support bardata) */
+    useEffect(() => {
+        setFilters(updateFilters(filters, filter))
+    }, [filter.stat])
     
     const editShownStats = (showAllStats: boolean, projections: Projection[]): void => {
         if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
@@ -277,9 +279,10 @@ export const PMatches = () => {
                         pickedProjection={pickedProjection}
                         setPickedProjection={setPickedProjection}
                         player={player}
-                        filter={filter}
+                        filter={filter} setFilter={setFilter}
                         matchUp={matchUp}
-                        setBarData={setBarData}
+                        mainBarData={mainBarData}
+                        setMainBarData={setMainBarData}
                         pGames={pGames}
                     />
                     <SupportCard 
@@ -288,8 +291,8 @@ export const PMatches = () => {
                         filters={filters}
                         pGames={pGames}
                         player={player}
-                        barData={barData}
-                        projections={projections}
+                        mainBarData={mainBarData}
+                        pickedProjection={pickedProjection}
                     />
                 </div>
 

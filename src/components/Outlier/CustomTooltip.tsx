@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { convertNBATeamName } from '../../Context/functions/convertNbaName';
+import { convertSupportName } from '../../Context/functions/convertStatName';
 import { useGlobalContext } from '../../Context/store';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
 
-type CustomTooltipProps = TooltipProps<ValueType, NameType> & { player: PPlayer };
+type CustomTooltipProps = TooltipProps<ValueType, NameType> & { player: PPlayer, chartType: 'support' | 'main' };
 
-const CustomTooltip = ({ active, payload, label, player }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTooltipProps) => {
     const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
     const {fetchNbaTeams} = useGlobalContext();
 
@@ -25,8 +26,13 @@ const CustomTooltip = ({ active, payload, label, player }: CustomTooltipProps) =
         const team1Score = payload[0].payload.score.split('-')[0];
         const team2Score = payload[0].payload.score.split('-')[1];
         const oppTeam = payload[0].payload.opp;
-        const statNames: string[] = payload[0].payload.name.split('+');
         const stats: number[] = [payload[0].payload.stat1, payload[0].payload.stat2, payload[0].payload.stat3];
+
+        let statNames: string[] = payload[0].payload.name.split('+');
+        if(chartType === "support"){
+            const newStats = convertSupportName(payload[0].payload.name, true);
+            statNames = newStats.split('+');
+        }
 
         return (
             <div style={{

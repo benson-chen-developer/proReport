@@ -187,7 +187,7 @@ export const Bars: React.FC<Props> = ({
                     />
 
                     {/* Hovering ToolTip */}
-                    <Tooltip content={<CustomTooltip player={player} />} />
+                    <Tooltip content={<CustomTooltip player={player} chartType={chartType}/>} />
 
                     {/* Bars */}
                     <Bar dataKey="statTotal" radius={5} animationDuration={200}>
@@ -197,7 +197,7 @@ export const Bars: React.FC<Props> = ({
                                 fill={(lineValue && chartType === 'main') 
                                     ? entry.statTotal === lineValue 
                                         ? "#FFFFFF" 
-                                        : entry.statTotal > lineValue 
+                                        : entry.hit 
                                             ? "#79F4F4" 
                                             : '#A2A2A2' 
                                     : '#EEEEEE'}
