@@ -28,46 +28,39 @@ export const MainBarChart: React.FC<Props> = ({
     /* This is the projection value */
     const [refLineOn, setRefLineOn] = useState<boolean>(true);
 
-    useEffect(() => {
-        // console.log('mainbarcahr', projections)
-        let periods = [0, 1, 2, 3];
-        if(filter.period === "H1") periods = [0, 1];
-        else if(filter.period === "H2") periods = [2, 3];
-        else if(filter.period === "Q1") periods = [0];
-        else if(filter.period === "Q2") periods = [1];
-        else if(filter.period === "Q3") periods = [2];
-        else if(filter.period === "Q4") periods = [3];
+    // useEffect(() => {
+    //     // console.log('mainbarcahr', projections)
+    //     let periods = [0, 1, 2, 3];
+    //     if(filter.period === "H1") periods = [0, 1];
+    //     else if(filter.period === "H2") periods = [2, 3];
+    //     else if(filter.period === "Q1") periods = [0];
+    //     else if(filter.period === "Q2") periods = [1];
+    //     else if(filter.period === "Q3") periods = [2];
+    //     else if(filter.period === "Q4") periods = [3];
         
-        let totalStat = 0;
-        mainBarData.forEach((barData) => {
-            totalStat += barData.stat1;
-        })
-        let seasonTotal = 0;
-        pGames.forEach((game) => {
-            let pickedStats = filter.stat.split('+');
-            let foundP = game.players.find(p => p.name === player.name);
+    //     let totalStat = 0;
+    //     mainBarData.forEach((barData) => {
+    //         totalStat += barData.stat1;
+    //     })
+    //     let seasonTotal = 0;
+    //     pGames.forEach((game) => {
+    //         let pickedStats = filter.stat.split('+');
+    //         let foundP = game.players.find(p => p.name === player.name);
 
-            for(const p of periods){
-                pickedStats.forEach((pickedStatSegment, index) => {
-                    const val = foundP?.periods[p][pickedStatSegment]!;
-                    // foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
-                    seasonTotal += val === -1 ? 0 : val
-                })
-            }
-        })
+    //         for(const p of periods){
+    //             pickedStats.forEach((pickedStatSegment, index) => {
+    //                 const val = foundP?.periods[p][pickedStatSegment]!;
+    //                 // foundP?.periods[p].find(stat => stat.name === pickedStatSegment)?.value!;
+    //                 seasonTotal += val === -1 ? 0 : val
+    //             })
+    //         }
+    //     })
 
-        setAvg(totalStat/mainBarData.length)
-        // console.log('useffect seaosnacvg',seasonTotal/pGames.length )
-        setSeasonAvg(seasonTotal/pGames.length)
+    //     setAvg(totalStat/mainBarData.length)
+    //     // console.log('useffect seaosnacvg',seasonTotal/pGames.length )
+    //     setSeasonAvg(seasonTotal/pGames.length)
 
-    }, [mainBarData])
-
-    /* BarDat useEffect */
-    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
-    useEffect(() => {
-        const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
-        setMainBarData(newData);
-    }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
+    // }, [mainBarData])
 
     return (
         <div style={{width:'100%'}}>

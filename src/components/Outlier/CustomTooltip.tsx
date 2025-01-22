@@ -28,7 +28,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
         const oppTeam = payload[0].payload.opp;
         const stats: number[] = [payload[0].payload.stat1, payload[0].payload.stat2, payload[0].payload.stat3];
 
-        let statNames: string[] = payload[0].payload.name.split('+');
+        // let statNames: string[] = payload[0].payload.name.split('+');
+        let statNames: string[] = [payload[0].payload.stat1Text, payload[0].payload.stat2Text, payload[0].payload.stat3Text];
         if(chartType === "support"){
             const newStats = convertSupportName(payload[0].payload.name, true);
             statNames = newStats.split('+');

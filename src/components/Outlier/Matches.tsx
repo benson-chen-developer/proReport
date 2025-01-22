@@ -11,7 +11,7 @@ import { Averages } from './Averages';
 import { SupportCard } from './Support/SupportCard';
 import { MainBarChart } from './MainBarChart/MainBarChart';
 import { useGlobalContext } from '../../Context/store';
-import { updateFilters } from '../../Context/functions/barchartFuncs';
+import { parseBarData, updateFilters } from '../../Context/functions/barchartFuncs';
 import { Rankings } from './Ranking/Ranking';
 import {WithOutPlayers} from './Stats/WithoutPlayers';
 import { DaysOfRest } from './Stats/DaysOfRest';
@@ -189,6 +189,10 @@ export const PMatches = () => {
                 }))
             }
 
+            /* Inital Bar Setting */
+            const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
+            setMainBarData(newData);
+
             setLoading(false);
         };
       
@@ -235,6 +239,13 @@ export const PMatches = () => {
         editShownStats(showAllStats, projections)
     }, [showAllStats])
 
+    /* MainBarData */
+    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
+    useEffect(() => {
+        const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
+        setMainBarData(newData);
+    }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
+
     /* Make sure to update the periods for picked stats */
     useEffect(() => {
         if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
@@ -253,7 +264,7 @@ export const PMatches = () => {
                 periods: organizedPeriods,
                 stats: getProjectionStats(projections)
             }));
-            setFilter(p => ({...p, period: organizedPeriods[0]}))
+            setFilter(p => ({...p, period: organizedPeriods[0], supportingStat:'Minutes'}))
         } else { /* No Game */
             setFilters(p => ({
                 ...p,
@@ -262,6 +273,7 @@ export const PMatches = () => {
             }));
         }
     }, [filter.stat])
+
 
     if(!loading) return (
         <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
@@ -322,7 +334,7 @@ export const PMatches = () => {
                             filters={filters}
                         />
 
-                        {/* <HomeSwitches filter={filter} setFilter={setFilter} />
+                        <HomeSwitches filter={filter} setFilter={setFilter} />
                         <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                             <WithOutPlayers 
                                 ourPlayer={player}
@@ -337,7 +349,7 @@ export const PMatches = () => {
                                 filter={filter} setFilter={setFilter}
                                 filters={filters}
                             />
-                        </div> */}
+                        </div>
                         {matchUp ? 
                             <Rankings 
                                 filter={filter} matchUp={matchUp} player={player}

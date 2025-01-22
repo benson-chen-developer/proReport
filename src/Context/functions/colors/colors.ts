@@ -39,7 +39,7 @@ export const teamColors = (name: string) => {
     /* Southwest */
     if (name === "dallas") return "#0063B5";
     if (name === "memphis") return "#4F77AC";
-    if (name === "houston") return "#F00A3F";
+    if (name === "houston") return "#000000";
     if (name === "new orleans") return "#B18A54";
     if (name === "san antonio") return "#C1CFD5";
 }

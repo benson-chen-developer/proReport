@@ -36,6 +36,7 @@ export const parseBarData = (
     games: PGame[], filter: Filter, player: PPlayer, 
     pickedProjection?: Projection | null, matchUp?: MatchUp,
 ): BarData[] => {
+    
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, player, matchUp);
 
@@ -104,9 +105,9 @@ export const parseBarData = (
             stat1: stats[0], 
             stat2: stats[1],
             stat3: stats[2],
-            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]} ${stats[0]}` : '',
-            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]} ${stats[1]}` : '',
-            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',
+            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]}` : '',
+            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]}` : '',
+            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]}` : '',
             date: date, 
             score: game.score,
             isHome: isHome,
@@ -134,13 +135,15 @@ export const parseSupportBarData = (
         });
 
         /* Getting inner stats (REB => ORB + DRB) */
+        let ignoreAddingFirst = false; /* This is for REB+ORB+DRB in which case we ignore adding the REB and only the OFF/DEF to total */
         const statsThatComesWithSupportingStat = (supportingStat: string): string[] => {
             let allStatsToBeParsed: string[] = [supportingStat];
-
+            
             if(supportingStat === 'REB'){
-                allStatsToBeParsed.push('ORB', 'DRB');
+                allStatsToBeParsed = ['ORB', 'DRB'];
+                // ignoreAddingFirst = true;
             }
-
+            
             return allStatsToBeParsed;
         }
         const barStat = convertSupportName(filter.supportingStat);
@@ -166,8 +169,12 @@ export const parseSupportBarData = (
                 let val = currPeriod ? currPeriod[stat] : null;
 
                 if(val){
-                    statTotal += val;
                     stats[index] += val;
+                    if(index === 0 && ignoreAddingFirst){
+                        /* This is REB+ORB+DRB case */
+                    } else {
+                        statTotal += val;
+                    }
                 }
             })
         }
@@ -181,16 +188,16 @@ export const parseSupportBarData = (
             stats = stats.map(stat => Number(stat.toFixed(1)));
         }
 
-        let pickedStatSplit = filter.supportingStat.split('+');
+        let pickedStatSplit = allStatsToBeParsed;
         return ({
             name: filter.supportingStat, 
             statTotal: statTotal,
             stat1: stats[0], 
             stat2: stats[1],
             stat3: stats[2],
-            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]} ${stats[0]}` : '',
-            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]} ${stats[1]}` : '',
-            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]} ${stats[2]}` : '',
+            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]}` : '',
+            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]}` : '',
+            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]}` : '',
             date: barData.date, 
             score: barData.score,
             isHome: barData.isHome,
@@ -199,6 +206,7 @@ export const parseSupportBarData = (
             underText: barData.underText
         })
     });
+    // console.log(supportBarData)
 
     return supportBarData;
 }
@@ -297,7 +305,6 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     displayedGames = allGames.filter(game => 
         !game.players.some(p => filter.withOutPlayers.includes(p.name))
     );
-
     /* Get all games with this much rest */
     let gamesWithCorrectFilter: PGame[] = [];
     let lastDate: Date;
@@ -337,10 +344,9 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
                 totalMinutes += period['MIN'];
             })
             totalMinutes = convertSecondsToMinutes(totalMinutes);
-
+            
             const lower = filter.minutes[0];
             const upper = filter.minutes[1];
-
             return (totalMinutes >= lower && totalMinutes <= upper)
         } else {
             return false;
@@ -350,7 +356,8 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     /* Get all home or away games */
     if(filter.isHome && !filter.isAway) displayedGames = displayedGames.filter(game => game.team1 === player.city);
     else if(filter.isAway && !filter.isHome) displayedGames.filter(game => game.team2 === player.city);
-    
+
+    /* Get L(*) or H2H */
     if(filter.lastGame[0] === "L"){
         let length = Number(filter.lastGame.slice(1, filter.lastGame.length));
         displayedGames = displayedGames.reverse().slice(-length).reverse();
@@ -359,7 +366,6 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
         const oppTeam = matchUp?.teams.find(team => team !== player.city);
         displayedGames = displayedGames.filter(game => game.team1 === oppTeam || game.team2 === oppTeam);
     }
-
     return displayedGames;
 }
 
@@ -372,10 +378,10 @@ export const updateFilters = (filters: Filters, filter: Filter): Filters => {
         updatedFilters.supportingStats.push(...["Field Goals Att."])
     }
     else if(filter.stat.includes("REB")){
-        updatedFilters.supportingStats.push(...["Potential Rebound", "OFF/DEF Rebounds"])
+        updatedFilters.supportingStats.push(...[/*"Potential Rebound", */"OFF/DEF Rebounds"])
     }
     else if(filter.stat.includes("AST")){
-        updatedFilters.supportingStats.push(...["Potential Assists"])
+        // updatedFilters.supportingStats.push(...["Potential Assists"])
     }
 
     return updatedFilters;
