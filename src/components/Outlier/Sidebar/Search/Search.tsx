@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../../Context/store';
-import { findSimilarNamesNew } from '../../../Player/Componenets/NotFound';
 import { SearchingBar } from './SearchingBar';
 import { SuggestedPlayers } from './SuggestedPlayers';
 

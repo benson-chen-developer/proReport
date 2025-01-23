@@ -54,7 +54,7 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
             </div>
             
             {/* Headshot */}
-            <div style={{height:'100%', display:'flex', alignItems:'flex-end', marginLeft:'25px', zIndex:1}}>
+            <div style={{height:'100%', display:'flex', alignItems:'flex-end', marginLeft: isMobile ? '15px' : '25px', zIndex:1}}>
                 <img
                     src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
                     style={{ width: isMobile ? '125px' : '175px', height: isMobile ? '85px' : '120px' }}

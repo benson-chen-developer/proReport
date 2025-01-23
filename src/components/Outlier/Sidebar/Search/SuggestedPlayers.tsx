@@ -2,6 +2,7 @@ import React, { Dispatch, forwardRef, SetStateAction } from 'react'
 import Link from 'next/link';
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { convertNBATeamName } from '../../../../Context/functions/convertNbaName';
+import { useGlobalContext } from '../../../../Context/store';
 
 interface Props {
     similarPlayers: PPlayer[], 
@@ -9,15 +10,18 @@ interface Props {
 }
 
 export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers, setIsPopUp }, ref) => {
+    const {isMobile} = useGlobalContext();
+
     return (
         <div
             ref={ref}
             style={{
                 borderRadius: "10px",
                 minHeight: '100px', maxHeight: "400px",
-                width: '130%',
+                width: isMobile ? '100%' : '130%',
                 overflowY: "auto", border: '1px solid #A2A2A2',
-                backgroundColor: "#1E1E1E", marginTop: '5px', zIndex: 3
+                backgroundColor: "#1E1E1E", marginTop: '5px', zIndex: 3,
+                overflowX: "hidden",
             }}
         >
             {similarPlayers.length > 0 ? (
@@ -30,7 +34,7 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                             key={index}
                             passHref
                             onClick={() => setIsPopUp(false)}
-                            style={{textDecoration:'none'}}
+                            style={{textDecoration:'none',}}
                         >
                             <div
                                 onClick={() => {}}

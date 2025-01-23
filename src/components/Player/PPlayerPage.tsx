@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { PMatches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
-import { useGlobalContext } from '../../Context/store';
 
 interface Props {
     league: string,
@@ -12,17 +11,27 @@ interface Props {
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
-    const {isMobile} = useGlobalContext();
+
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+    useEffect(() => {
+        if (sidebarVisible) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [sidebarVisible]);
 
     return (
-        <div
-            style={{
-                display: "flex",
-                width: "100%",
-                background: "#000",
-            }}
-        >
-            {!isMobile && <SideBar />}
+        <div style={{display: "flex", width: "100%", background: "#000" }}>
+            <SideBar 
+                sidebarVisible={sidebarVisible} 
+                setSidebarVisible={setSidebarVisible}
+            />
+
             <PMatches />
         </div>
     );

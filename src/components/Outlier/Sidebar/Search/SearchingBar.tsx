@@ -24,7 +24,7 @@ export const SearchingBar = forwardRef<HTMLDivElement, Props>(({ searchQuery, se
                 placeholder="Search for players"
                 style={{
                     width: "95%", fontSize: "15px", 
-                    height: "100%", borderRadius: "15px",
+                    borderRadius: "15px",
                     border: "0px solid #ccc", marginLeft:'10px',
                     background: "#2B2B2B",
                     color: "#fff",
@@ -35,8 +35,8 @@ export const SearchingBar = forwardRef<HTMLDivElement, Props>(({ searchQuery, se
             {/* X Btn */}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 style={{
                     marginRight:'10px', fill: "white", cursor: "pointer",
