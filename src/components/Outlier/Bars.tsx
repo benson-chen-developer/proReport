@@ -5,6 +5,7 @@ import { PPlayer } from '../../Context/Types/PlayerTypes';
 import { BarData } from './Matches';
 import CustomTooltip from './CustomTooltip';
 import { Projection } from '../../Context/Types/ProjectionTypes';
+import { useGlobalContext } from '../../Context/store';
 
 interface Props {
     player: PPlayer,
@@ -18,8 +19,9 @@ interface Props {
 
 export const Bars: React.FC<Props> = ({ 
     player, barData, chartType, seasonAvg, refLineOn, lineValue
-    // foundProjection
 }) => {
+    const {isMobile} = useGlobalContext();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
 
@@ -34,6 +36,7 @@ export const Bars: React.FC<Props> = ({
 
     useEffect(() => {
         setLoading(true);
+        
         /* 
             Change the radius of the bars based if we have multiple stats displayed 
                 - PTS+REB ex
@@ -76,13 +79,14 @@ export const Bars: React.FC<Props> = ({
             ((lineValue! + 1) % 2 === 0 ? lineValue! + 1 : lineValue! + 2)
         )
         setYAxisMax(yAxisMax)
+
+        /* Reanimate the Bars and make them pop up */
+        setBarKey(prev => prev + 1);
+
+        console.log("barda", barData)
         
         setLoading(false);
     }, [barData])
-
-    useEffect(() => {
-        setBarKey(prev => prev + 1);
-    }, [barData]);
 
     interface CustomLabelProps {
         x?: number;
@@ -119,6 +123,24 @@ export const Bars: React.FC<Props> = ({
                 </text>
             </svg>
         )
+    };
+    const CustomXAxisTick = (props: any) => { 
+        const { x, y, payload } = props;
+        const [topText, bottomText] = payload.value.split('\n');
+        const fontSize = isMobile || barData.length > 15 ? '10px' : '12px';
+    
+        return (
+            <g transform={`translate(${x},${y})`}>
+                {/* Top Text */}
+                <text x={0} y={0} dy={7} textAnchor="middle" fill="#B1B1B1" fontWeight="bold" fontSize={fontSize}>
+                    {topText}
+                </text>
+                {/* Bottom Text */}
+                <text x={0} y={12} dy={10} textAnchor="middle" fill="#B1B1B1" fontWeight="bold" fontSize={fontSize}>
+                    {bottomText}
+                </text>
+            </g>
+        );
     };
 
     const AvgLabel = ({ viewBox }: any) => {
@@ -178,7 +200,13 @@ export const Bars: React.FC<Props> = ({
 
                     {/* The lines in the backgrond */}
                     <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
-                    <XAxis dataKey="underText" tick={{ fill: '#B1B1B1', fontWeight:'bold', fontSize:'12px' }} tickLine={false} axisLine={false}/>
+                    
+                    <XAxis 
+                        dataKey="underText" 
+                        tickLine={false} axisLine={false}
+                        tick={<CustomXAxisTick />} 
+                        interval={0}
+                    />
                     <YAxis 
                         // domain={[0, yAxisMax]}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 

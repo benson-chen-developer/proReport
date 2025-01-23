@@ -46,6 +46,7 @@ export const SupportCard: React.FC<Props> = ({
         <div style={{
             width:'100%', background:'#1E1E1E', display:'flex',
             justifyContent:'center', flexDirection:'column', alignItems:'center',
+            paddingBottom: '20px'
         }}>
             <div style={{width:'95%', marginBottom:'30px'}}>
                 {/* Supportin Stats and Averages */}
@@ -55,7 +56,7 @@ export const SupportCard: React.FC<Props> = ({
                         <p style={{color:'#fff', fontSize:'18px', margin: '0px 0px 0px 5px'}}>Supporting Stats</p>
                     </div>
 
-                    <div>
+                    <div style={{marginBottom: '2px'}}>
                         <span style={{color:'#808080'}}>
                             Avg: <span style={{color:'#fff', fontSize:'13px'}}>
                                 {barData.length > 0 
