@@ -7,6 +7,9 @@ import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
 
 interface ContextProps {
+  isMobile: boolean,
+  setIsMobile: Dispatch<SetStateAction<boolean>>;
+
   projections: Projection[];
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName: string) => Promise<Projection[]>;
@@ -41,6 +44,9 @@ interface ContextProps {
 }
 
 const GlobalContext = createContext<ContextProps>({
+  isMobile: false,
+  setIsMobile: (): boolean => false,
+
   projections: [],
   setProjections: (): Projection[] => [],
   fetchProjections: async (playerName: string): Promise<Projection[]> => [],
@@ -92,6 +98,22 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [matchUps, setMatchUps] = useState<Record<string, MatchUp[]>>({ 
     'nba': []
   });
+
+  /* When the screen size changes (Make Font .7 size of reg) */
+  const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        // Set the initial state after the component mounts
+        handleResize();
+
+        // Add resize event listener
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
 
   const fetchValorantPlayers = async (): Promise<ValorantPlayer[]> => {
     if(valorantPlayers.length > 0){
@@ -256,6 +278,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       nbaPlayers, setNbaPlayers, fetchNbaPlayers,
       nbaMatches, setNbaMatches, fetchNbaMatches,
       nbaTeams, setNbaTeams, fetchNbaTeams,
+      isMobile, setIsMobile,
       
       valorantPlayers, setValorantPlayers, fetchValorantPlayers,
       lolPlayers, setLolPlayers, fetchLolPlayers,

@@ -20,6 +20,7 @@ import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { StatsFilterHeader } from './Stats/StatsFilterHeader';
+import { Notfound } from './NotFound/Notfound';
 
 export type Filter = {
     isHome: boolean,
@@ -123,7 +124,7 @@ export const PMatches = () => {
         return PSport.sortStats(league, statsInProjections);
     }
 
-    const {fetchNbaPlayers, fetchProjections, fetchMatchUps} = useGlobalContext();
+    const {fetchNbaPlayers, fetchProjections, fetchMatchUps, isMobile} = useGlobalContext();
 
     const [loading, setLoading] = useState<boolean>(true);
     
@@ -136,62 +137,68 @@ export const PMatches = () => {
 
             const players = await fetchNbaPlayers();
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
-            setPlayer({
-                name: player!.name,
-                playerId: player!.playerId,
-                team: player!.team,
-                sport: league,
-                position: player!.position,
-                city: player!.city
-            });
 
-            /* Intial Projections and Intial Stats Filters set up */
-            const projections = await fetchProjections(player!.name);
-            if(projections.length === 0) {
-                editShownStats(true, []);
-                setShowAllStats(true)
+            if(!player) { 
+                /* This is for if the url is not right */
             } else {
-                editShownStats(false, projections);
-                setPickedProjection(projections[0])
-            }
-            setProjections(projections);
+                /* Set the Player */
+                setPlayer({
+                    name: player!.name,
+                    playerId: player!.playerId,
+                    team: player!.team,
+                    sport: league,
+                    position: player!.position,
+                    city: player!.city
+                });
 
-            /* Get the season averages for fantasy stats */
-            let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
-                ...stat,
-                value: 0,
-            }));
-            allGames.forEach((game) => {
-                const playerPeriods = game.players.find((p) => p.name === player?.name);
-            
-                playerPeriods?.periods.forEach((period) => {
-                    Object.entries(period).forEach(([statName, statValue]) => {
-                        const matchingStat = newSeasonAvg.find((s) => s.name === statName);
-            
-                        if (matchingStat && statValue > 0) {
-                            matchingStat.value += statValue;
-                        }
+                /* Intial Projections and Intial Stats Filters set up */
+                const projections = await fetchProjections(player!.name);
+                if(projections.length === 0) {
+                    editShownStats(true, []);
+                    setShowAllStats(true)
+                } else {
+                    editShownStats(false, projections);
+                    setPickedProjection(projections[0])
+                }
+                setProjections(projections);
+
+                /* Get the season averages for fantasy stats */
+                let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
+                    ...stat,
+                    value: 0,
+                }));
+                allGames.forEach((game) => {
+                    const playerPeriods = game.players.find((p) => p.name === player?.name);
+                
+                    playerPeriods?.periods.forEach((period) => {
+                        Object.entries(period).forEach(([statName, statValue]) => {
+                            const matchingStat = newSeasonAvg.find((s) => s.name === statName);
+                
+                            if (matchingStat && statValue > 0) {
+                                matchingStat.value += statValue;
+                            }
+                        });
                     });
                 });
-            });
-            setSeasonAvg([...newSeasonAvg, {
-                name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
-            }])
+                setSeasonAvg([...newSeasonAvg, {
+                    name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
+                }])
 
-            const matchUps = await fetchMatchUps(league);
-            const matchUp = matchUps.find(match => match.teams.includes(player!.city));
-            setMatchUp(matchUp);
+                /* Get the team they are playing against */
+                const matchUps = await fetchMatchUps(league);
+                const matchUp = matchUps.find(match => match.teams.includes(player!.city));
+                setMatchUp(matchUp);
+                if(matchUp && !filters.lastGames.includes('H2H')){
+                    setFilters(p => ({
+                        ...p, 
+                        lastGames: [...p.lastGames, "H2H"]
+                    }))
+                }
 
-            if(matchUp && !filters.lastGames.includes('H2H')){
-                setFilters(p => ({
-                    ...p, 
-                    lastGames: [...p.lastGames, "H2H"]
-                }))
+                /* Inital Bar Setting */
+                const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
+                setMainBarData(newData);
             }
-
-            /* Inital Bar Setting */
-            const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
-            setMainBarData(newData);
 
             setLoading(false);
         };
@@ -201,7 +208,12 @@ export const PMatches = () => {
 
     /* Filter changing the supporting stats options (Not the action support bardata) */
     useEffect(() => {
-        setFilters(updateFilters(filters, filter))
+        const newFilters = updateFilters(filters, filter);
+        setFilters(newFilters)
+
+        if(!newFilters.supportingStats.includes(filter.supportingStat)){
+            setFilter(p => ({...p, supportingStat: newFilters.supportingStats[0]}))
+        }
     }, [filter.stat])
     
     const editShownStats = (showAllStats: boolean, projections: Projection[]): void => {
@@ -274,18 +286,31 @@ export const PMatches = () => {
         }
     }, [filter.stat])
 
+    if(loading) return (
+        <div style={{
+            width:'100%', height:'100%', display:'flex', justifyContent:'center',
+            marginTop:'200px'
+        }}>
+            <ClipLoader color='#fff' size={40}/>
+        </div>
+    )
+
+    if(!loading && !player.name) return(
+        <Notfound />
+    )
 
     if(!loading) return (
-        <div style={{background: '#000', width:'80%', display:'flex', flexDirection:'column'}}>
+        <div style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
             <Hero 
                 player={player}
+                matchUp={matchUp}
                 rightBtn={rightBtn} setRightBtn={setRightBtn}
             />
             
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
                 {/* Bar Charts */}
-                <div style={{width:'65%'}}>
+                <div style={{width: isMobile ? '100%' : '65%'}}>
                     <MainBarChart 
                         projections={projections}
                         pickedProjection={pickedProjection}
@@ -309,62 +334,57 @@ export const PMatches = () => {
                 </div>
 
                 {/* Filters */}
-                <div style={{
-                    width:'35%', //height:'300px', 
-                    background:'#2B2B2B', borderLeft:'1px solid #808080'
-                }}>
-                    {/* {rightBtn === "Filters" ? */}
-                    <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
-                        <StatsFilterHeader 
-                            hasProjections={projections.length > 0}
-                            showAllStats={showAllStats}
-                            setShowAllStats={setShowAllStats}
-                        />
-                        <DropDownStatsHeader 
-                            filter={filter} setFilter={setFilter}
-                            filters={filters} setFilters={setFilters}
-                            projections={projections}
-                            showAllStats={showAllStats}
-                        />
-                        <SecondStatsHeader 
-                            filter={filter} filters={filters} setFilter={setFilter}
-                        />
-                        <PeriodStatsHeader
-                            setFilter={setFilter} filter={filter}
-                            filters={filters}
-                        />
-
-                        <HomeSwitches filter={filter} setFilter={setFilter} />
-                        <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                            <WithOutPlayers 
-                                ourPlayer={player}
-                                setFilter={setFilter} filter={filter}
+                {!isMobile ?
+                    <div style={{width:'35%', background:'#2B2B2B', borderLeft:'1px solid #808080'}}>
+                        {/* {rightBtn === "Filters" ? */}
+                        <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
+                            <StatsFilterHeader 
+                                hasProjections={projections.length > 0}
+                                showAllStats={showAllStats}
+                                setShowAllStats={setShowAllStats}
                             />
-                            <DaysOfRest 
-                                setFilter={setFilter} filter={filter}
-                            />
-                        </div>
-                        <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
-                            <MinutesSlider 
+                            <DropDownStatsHeader 
                                 filter={filter} setFilter={setFilter}
+                                filters={filters} setFilters={setFilters}
+                                projections={projections}
+                                showAllStats={showAllStats}
+                            />
+                            <SecondStatsHeader 
+                                filter={filter} filters={filters} setFilter={setFilter}
+                            />
+                            <PeriodStatsHeader
+                                setFilter={setFilter} filter={filter}
                                 filters={filters}
                             />
+
+                            <HomeSwitches filter={filter} setFilter={setFilter} />
+                            <div style={{width:'95%', display:'flex', alignItems:'center'}}>
+                                <WithOutPlayers 
+                                    ourPlayer={player}
+                                    setFilter={setFilter} filter={filter}
+                                />
+                                <DaysOfRest 
+                                    setFilter={setFilter} filter={filter}
+                                />
+                            </div>
+                            <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
+                                <MinutesSlider 
+                                    filter={filter} setFilter={setFilter}
+                                    filters={filters}
+                                />
+                            </div>
+                            {matchUp ? 
+                                <Rankings 
+                                    filter={filter} matchUp={matchUp} player={player}
+                                /> : null
+                            }
                         </div>
-                        {matchUp ? 
-                            <Rankings 
-                                filter={filter} matchUp={matchUp} player={player}
-                            /> : null
-                        }
-                    </div>
-                {/* } */}
-                </div>
+                    {/* } */}
+                    </div> : null
+                }
             </div>
         </div>
     )
-
-    // if(!loading && !player) return(
-    //     <NotFound />
-    // )
 
     return <div style={{
         width:'100%', minHeight:'100vh', justifyContent:'center', alignItems:'center',

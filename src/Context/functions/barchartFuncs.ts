@@ -170,11 +170,11 @@ export const parseSupportBarData = (
 
                 if(val){
                     stats[index] += val;
-                    if(index === 0 && ignoreAddingFirst){
-                        /* This is REB+ORB+DRB case */
-                    } else {
+                    // if(index === 0 && ignoreAddingFirst){
+                    //     /* This is REB+ORB+DRB case */
+                    // } else {
                         statTotal += val;
-                    }
+                    // }
                 }
             })
         }
@@ -195,9 +195,9 @@ export const parseSupportBarData = (
             stat1: stats[0], 
             stat2: stats[1],
             stat3: stats[2],
-            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]}` : '',
-            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]}` : '',
-            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]}` : '',
+            stat1Text: allStatsToBeParsed[0] ? `${allStatsToBeParsed[0]}` : '',
+            stat2Text: allStatsToBeParsed[1]? `${pickedStatSplit[1]}` : '',
+            stat3Text: allStatsToBeParsed[2] ? `${pickedStatSplit[2]}` : '',
             date: barData.date, 
             score: barData.score,
             isHome: barData.isHome,
@@ -206,7 +206,6 @@ export const parseSupportBarData = (
             underText: barData.underText
         })
     });
-    // console.log(supportBarData)
 
     return supportBarData;
 }

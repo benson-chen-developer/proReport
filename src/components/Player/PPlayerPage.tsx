@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { PMatches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
+import { useGlobalContext } from '../../Context/store';
 
 interface Props {
     league: string,
@@ -11,15 +12,26 @@ interface Props {
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
-    return (
-        <div style={{display:'flex', width:'100%', background: '#000'}}>
-            <SideBar />
+    const {isMobile} = useGlobalContext();
 
+    return (
+        <div
+            style={{
+                display: "flex",
+                width: "100%",
+                background: "#000",
+            }}
+        >
+            {!isMobile && <SideBar />}
             <PMatches />
         </div>
-    )
-    // if(!loading && !player) return(
-    //     <NotFound />
+    );
+    // return (
+    //     <div style={{display:'flex', width:'100%', background: '#000'}}>
+    //         <SideBar />
+
+    //         <PMatches />
+    //     </div>
     // )
 
     return <div style={{

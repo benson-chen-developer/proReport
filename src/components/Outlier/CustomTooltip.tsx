@@ -26,14 +26,13 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
         const team1Score = payload[0].payload.score.split('-')[0];
         const team2Score = payload[0].payload.score.split('-')[1];
         const oppTeam = payload[0].payload.opp;
-        const stats: number[] = [payload[0].payload.stat1, payload[0].payload.stat2, payload[0].payload.stat3];
+        const stats: number[] = [];
+        if (payload[0].payload.stat1Text) stats.push(payload[0].payload.stat1);
+        if (payload[0].payload.stat2Text) stats.push(payload[0].payload.stat2);
+        if (payload[0].payload.stat3Text) stats.push(payload[0].payload.stat3);
 
-        // let statNames: string[] = payload[0].payload.name.split('+');
         let statNames: string[] = [payload[0].payload.stat1Text, payload[0].payload.stat2Text, payload[0].payload.stat3Text];
-        if(chartType === "support"){
-            const newStats = convertSupportName(payload[0].payload.name, true);
-            statNames = newStats.split('+');
-        }
+        statNames = statNames.filter(name => name !== "");
 
         return (
             <div style={{
