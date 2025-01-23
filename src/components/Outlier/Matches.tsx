@@ -317,6 +317,8 @@ export const PMatches = () => {
                         setPickedProjection={setPickedProjection}
                         player={player}
                         filter={filter} setFilter={setFilter}
+                        filters={filters} setFilters={setFilters}
+                        showAllStats={showAllStats}
                         matchUp={matchUp}
                         mainBarData={mainBarData}
                         setMainBarData={setMainBarData}
@@ -342,12 +344,6 @@ export const PMatches = () => {
                                 hasProjections={projections.length > 0}
                                 showAllStats={showAllStats}
                                 setShowAllStats={setShowAllStats}
-                            />
-                            <DropDownStatsHeader 
-                                filter={filter} setFilter={setFilter}
-                                filters={filters} setFilters={setFilters}
-                                projections={projections}
-                                showAllStats={showAllStats}
                             />
                             <SecondStatsHeader 
                                 filter={filter} filters={filters} setFilter={setFilter}

@@ -3,13 +3,16 @@ import { parseBarData } from '../../../Context/functions/barchartFuncs'
 import { PGame, PlayerType, PPlayer } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { Bars } from '../Bars'
-import { BarData, Filter, MatchUp } from '../Matches'
+import { BarData, Filter, Filters, MatchUp } from '../Matches'
 import { BarInfo } from './BarInfo'
 
 interface Props {
     player: PPlayer,
     filter: Filter,
     setFilter: Dispatch<SetStateAction<Filter>>,
+    filters: Filters,
+    setFilters: Dispatch<SetStateAction<Filters>>
+    showAllStats: boolean
     matchUp: MatchUp | undefined
     mainBarData: BarData[],
     setMainBarData: Dispatch<SetStateAction<BarData[]>>
@@ -20,7 +23,8 @@ interface Props {
 }
 export const MainBarChart: React.FC<Props> = ({
     player, filter, matchUp, setMainBarData, mainBarData, setFilter,
-    pGames, projections, pickedProjection, setPickedProjection
+    pGames, projections, pickedProjection, setPickedProjection,
+    filters, setFilters, showAllStats
 }) => {
     const [avg, setAvg] = useState<number>(-1);
     const [seasonAvg, setSeasonAvg] = useState<number>(-1);
@@ -65,6 +69,7 @@ export const MainBarChart: React.FC<Props> = ({
     return (
         <div style={{width:'100%'}}>
             <BarInfo 
+                filters={filters} setFilters={setFilters} showAllStats={showAllStats}
                 pickedProjection={pickedProjection}
                 setPickedProjection={setPickedProjection}
                 projections={projections}

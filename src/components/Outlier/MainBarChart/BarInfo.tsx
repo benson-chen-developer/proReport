@@ -4,7 +4,8 @@ import { useGlobalContext } from '../../../Context/store'
 import { PGame } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { ProjectionSquare } from '../Hero/Projection'
-import { BarData, Filter, MatchUp } from '../Matches'
+import { BarData, Filter, Filters, MatchUp } from '../Matches'
+import { DropDownStatsHeader } from '../Stats/DropDownStatsHeader'
 
 interface Props {
     filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
@@ -14,8 +15,14 @@ interface Props {
     projections: Projection[],
     pickedProjection:Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
+    filters: Filters,
+    setFilters: Dispatch<SetStateAction<Filters>>
+    showAllStats: boolean
 }
-export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection, setFilter}) => {
+export const BarInfo: React.FC<Props> = ({
+    filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection, setFilter,
+    setFilters, filters, showAllStats
+}) => {
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
     }, 0);
@@ -33,65 +40,77 @@ export const BarInfo: React.FC<Props> = ({filter, avg, seasonAvg, mainBarData, p
     const fullStatName = convertStatName(filter.stat);
 
     return (
-        <div style={{width:'100%', display:'flex', padding:'10px 20px', justifyContent:'space-between', alignItems:'center'}}>
-            <div>
-                <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
-                    <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
-                            <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
-                        </svg>
-                    </div>
-                    <span style={{color:'#fff', fontSize:'15px', fontWeight:'bold', marginLeft:'5px'}}>
-                        {fullStatName}
-                    </span>
-                    <span style={{color:"#B1B1B1", fontWeight:'normal', fontSize:'14px', margin:'1px 0px 0px 3px'}}> Last 10</span>
-                </div> 
+        <div style={{width:'100%', padding:'0px 20px', marginTop:'10px'}}>
+            
+            <div style={{width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <div>
+                    <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
+                        <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
+                            </svg>
+                        </div>
+                        <span style={{color:'#fff', fontSize:'15px', fontWeight:'bold', marginLeft:'5px'}}>
+                            {fullStatName}
+                        </span>
+                        <span style={{color:"#B1B1B1", fontWeight:'normal', fontSize:'14px', margin:'1px 0px 0px 3px'}}> Last 10</span>
+                    </div> 
 
-                {projections.find(p => p.name === filter.stat) ?
-                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
-                        {percentHit.toFixed(0)}%
-                        <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
-                    </div>
-                        :
-                    <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
-                        No Projection
-                    </div>
+                    {projections.find(p => p.name === filter.stat) ?
+                        <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
+                            {percentHit.toFixed(0)}%
+                            <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
+                        </div>
+                            :
+                        <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
+                            No Projection
+                        </div>
+                    }
+                </div>
+
+                {projections.length > 0 ?
+                    <div style={{marginRight:'40px', display:'flex'}}>
+
+                        {/* The Over/Under */}
+                        {pickedProjection?.overUnder === 3 ?
+                            <div style={{
+                                width:'30px', height:'30px', border:'solid 3px #5B5B5B',
+                                borderRadius:'8px', display:'flex', alignItems:'center',
+                                justifyContent:'center', marginRight:'8px', cursor:'pointer',
+                                transition: 'transform 0.3s ease',
+                                transform: filter.over ? 'rotate(0deg)' : 'rotate(180deg)'
+                            }} onClick={() => {
+                                setFilter(p => ({...p, over: !p.over}))
+                            }}>
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    style={{ marginBottom: '2px', transition: 'transform 0.3s ease' }} 
+                                    width="16" 
+                                    height="16" 
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path fill="#fff" d="M8 .5L.5 8H5v8h6V8h4.5z"/>
+                                </svg>
+                            </div> : null
+                        }
+                        
+                        <ProjectionSquare 
+                            filter={filter} setFilter={setFilter}
+                            pickedProjection={pickedProjection}
+                            setPickedProjection={setPickedProjection}
+                        />
+                    </div> : null
                 }
             </div>
 
-            {projections.length > 0 ?
-                <div style={{marginRight:'40px', display:'flex'}}>
-
-                    {/* The Over/Under */}
-                    {pickedProjection?.overUnder === 3 ?
-                        <div style={{
-                            width:'30px', height:'30px', border:'solid 3px #5B5B5B',
-                            borderRadius:'8px', display:'flex', alignItems:'center',
-                            justifyContent:'center', marginRight:'8px', cursor:'pointer',
-                            transition: 'transform 0.3s ease',
-                            transform: filter.over ? 'rotate(0deg)' : 'rotate(180deg)'
-                        }} onClick={() => {
-                            setFilter(p => ({...p, over: !p.over}))
-                        }}>
-                            <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                style={{ marginBottom: '2px', transition: 'transform 0.3s ease' }} 
-                                width="16" 
-                                height="16" 
-                                viewBox="0 0 16 16"
-                            >
-                                <path fill="#fff" d="M8 .5L.5 8H5v8h6V8h4.5z"/>
-                            </svg>
-                        </div> : null
-                    }
-                    
-                    <ProjectionSquare 
-                        filter={filter} setFilter={setFilter}
-                        pickedProjection={pickedProjection}
-                        setPickedProjection={setPickedProjection}
-                    />
-                </div> : null
-            }
+            <div style={{width:'100%', marginTop:'10px'}}>
+                <DropDownStatsHeader 
+                    filter={filter} setFilter={setFilter}
+                    filters={filters} setFilters={setFilters}
+                    projections={projections}
+                    showAllStats={showAllStats}
+                />
+            </div>
         </div>
     )
 }
