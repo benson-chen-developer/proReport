@@ -6,8 +6,9 @@ import { SuggestedPlayers } from './SuggestedPlayers';
 
 interface Props {
     length: string, 
+    setSidebarVisible: Dispatch<SetStateAction<boolean>>
 }
-export const Search: React.FC<Props> = ({length}) => {
+export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [similarPlayers, setSimilarPlayers] = useState<PPlayer[]>([]);
     const {fetchNbaPlayers} = useGlobalContext();
@@ -65,6 +66,7 @@ export const Search: React.FC<Props> = ({length}) => {
             {isPopUp && searchQuery.trim().length > 0? 
                 <SuggestedPlayers
                     setIsPopUp={setIsPopUp}
+                    setSidebarVisible={setSidebarVisible}
                     ref={popupRef} 
                     similarPlayers={similarPlayers}
                 />

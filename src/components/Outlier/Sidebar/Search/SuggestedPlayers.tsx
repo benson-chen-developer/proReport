@@ -7,9 +7,10 @@ import { useGlobalContext } from '../../../../Context/store';
 interface Props {
     similarPlayers: PPlayer[], 
     setIsPopUp: Dispatch<SetStateAction<boolean>>
+    setSidebarVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers, setIsPopUp }, ref) => {
+export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers, setIsPopUp, setSidebarVisible }, ref) => {
     const {isMobile} = useGlobalContext();
 
     return (
@@ -33,7 +34,10 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                             href={`/player/nba/${playerDash}`}
                             key={index}
                             passHref
-                            onClick={() => setIsPopUp(false)}
+                            onClick={() => {
+                                setIsPopUp(false)
+                                if(isMobile) setSidebarVisible(false);
+                            }}
                             style={{textDecoration:'none',}}
                         >
                             <div

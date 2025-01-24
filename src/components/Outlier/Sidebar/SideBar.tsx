@@ -23,7 +23,7 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
                 <Promos />
             </div>
 
-            <Search length='90%'/>
+            <Search setSidebarVisible={setSidebarVisible} length='90%'/>
         </div>
     )
 
@@ -55,7 +55,7 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
                 <Promos />
             </div>
 
-            <Search length='90%'/>
+            <Search setSidebarVisible={setSidebarVisible} length='90%'/>
         </div>
     )
 }
