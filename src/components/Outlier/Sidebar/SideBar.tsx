@@ -36,7 +36,7 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
         <div style={{
             width:'100vw', height:'100vh', display:'flex',
             flexDirection:'column', alignItems:'center', background:'#000',
-            position:'absolute', zIndex:5, overflowX: 'hidden'
+            position:'fixed', zIndex:5, overflowX: 'hidden', bottom:0
         }}>
 
             {/* X Btn */}

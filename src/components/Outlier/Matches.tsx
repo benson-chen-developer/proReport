@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/Types/PlayerTypes';
@@ -66,9 +66,10 @@ export type MatchUp = {
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 interface Props {
+    loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>
     isOverLayFilter: boolean
 }
-export const Matches: React.FC<Props> = ({isOverLayFilter}) => {
+export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading}) => {
     const router = useRouter();
     const { paramPlayer, paramLeague } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
@@ -129,8 +130,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter}) => {
 
     const {fetchNbaPlayers, fetchProjections, fetchMatchUps, isMobile} = useGlobalContext();
 
-    const [loading, setLoading] = useState<boolean>(true);
-    
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);

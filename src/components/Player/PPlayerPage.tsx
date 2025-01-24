@@ -14,6 +14,7 @@ export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
     const {isMobile} = useGlobalContext();
+    const [loading, setLoading] = useState<boolean>(true);
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
     useEffect(() => {
@@ -37,17 +38,22 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
                 setSidebarVisible={setSidebarVisible}
             />
 
-            <Matches isOverLayFilter={isOverLayFilter}/>
+            <Matches 
+                loading={loading} setLoading={setLoading}
+                isOverLayFilter={isOverLayFilter}
+            />
 
             {/* Burger */}
-            <div 
-                style={{position:'fixed', zIndex: 5, marginTop:10, marginLeft: 10}}
-                onClick={() => setSidebarVisible(p => !p)} 
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path fill="#fff" d="M4 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m0 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m1 5a1 1 0 1 0 0 2h14a1 1 0 1 0 0-2z"/></svg>
-            </div>
+            {isMobile && !sidebarVisible && !loading ? 
+                <div 
+                    style={{position:'fixed', zIndex: 5, marginTop:10, marginLeft: 10}}
+                    onClick={() => setSidebarVisible(p => !p)} 
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path fill="#fff" d="M4 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m0 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m1 5a1 1 0 1 0 0 2h14a1 1 0 1 0 0-2z"/></svg>
+                </div> : null
+            }
 
-            {isMobile && !sidebarVisible ? 
+            {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 
                     isOverLayFilter={isOverLayFilter} 
                     setIsOverLayFilter={setIsOverLayFilter}

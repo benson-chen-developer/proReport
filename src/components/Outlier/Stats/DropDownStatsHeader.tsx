@@ -59,9 +59,11 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                                 {category[0]}{category.length > 1 ? '+' : ''}
                             </p>
                         </div>
-    
+                        
+                        {/* White Blip On the Bottom */}
                         <div style={{
                             height: '4px',
+                            marginTop: isMobile ? '5px' : '10px',
                             width: '60%',
                             background: category[0] === filter.stat ? '#fff' : '',
                             borderTopLeftRadius: category[0] === filter.stat ? '8px' : '0',
