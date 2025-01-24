@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
+import { useGlobalContext } from '../../../Context/store';
 import { bgColor } from '../../Player/PPlayerPage';
 import { Filter, Filters } from '../Matches';
 
@@ -8,8 +9,10 @@ interface CustomLabelProps {
     setFilter: Dispatch<SetStateAction<Filter>>
 }
 export const StatsHeader: React.FC<CustomLabelProps> = ({filter, filters, setFilter}) => {
+    const {isMobile} = useGlobalContext();
+    
     return (
-        <div style={{width:'90%', display:'flex'}}>
+        <div style={{width:'90%', display:'flex', fontSize: isMobile ? "10px" : '14px'}}>
             {filters.supportingStats.map((stat, index) => 
                 <div 
                     key={index}
@@ -20,7 +23,7 @@ export const StatsHeader: React.FC<CustomLabelProps> = ({filter, filters, setFil
                     onClick={() => setFilter(p => ({...p, supportingStat: stat}))}
                 >
                     <div style={{color: stat === filter.supportingStat ? '#fff' : 'grey', marginTop:'5px',}}>
-                        <p style={{margin:0, fontWeight:'bold', marginBottom:'15px', fontSize:'14px'}}>{stat}</p>
+                        <p style={{margin:0, fontWeight:'bold', marginBottom:'15px'}}>{stat}</p>
                     </div>
 
                     <div style={{

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
-import { PMatches } from '../Outlier/Matches';
+import { Matches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
+import { useGlobalContext } from '../../Context/store';
+import { FilterBtn } from '../../pages/overlay/Filter/FilterBtn';
 
 interface Props {
     league: string,
@@ -11,6 +13,7 @@ interface Props {
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
+    const {isMobile} = useGlobalContext();
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
     useEffect(() => {
@@ -25,6 +28,8 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
         };
     }, [sidebarVisible]);
 
+    const [isOverLayFilter, setIsOverLayFilter] = useState(false);
+
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
             <SideBar 
@@ -32,35 +37,24 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
                 setSidebarVisible={setSidebarVisible}
             />
 
-            <PMatches />
+            <Matches isOverLayFilter={isOverLayFilter}/>
 
-            {/* Overlay */}
+            {/* Burger */}
             <div 
-                style={{position:'absolute', zIndex: 5, top:10, left: 10}}
+                style={{position:'fixed', zIndex: 5, marginTop:10, marginLeft: 10}}
                 onClick={() => setSidebarVisible(p => !p)} 
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path fill="#fff" d="M4 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m0 6a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1m1 5a1 1 0 1 0 0 2h14a1 1 0 1 0 0-2z"/></svg>
             </div>
+
+            {isMobile && !sidebarVisible ? 
+                <FilterBtn 
+                    isOverLayFilter={isOverLayFilter} 
+                    setIsOverLayFilter={setIsOverLayFilter}
+                /> 
+                    : 
+                null
+            }
         </div>
     );
-    // return (
-    //     <div style={{display:'flex', width:'100%', background: '#000'}}>
-    //         <SideBar />
-
-    //         <PMatches />
-    //     </div>
-    // )
-
-    return <div style={{
-        width:'100%', minHeight:'100vh', justifyContent:'center', alignItems:'center',
-        display:'flex'
-    }}>
-        <ClipLoader
-            color={'#000'}
-            loading={true}
-            size={10}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-        />
-    </div>
 }

@@ -23,6 +23,8 @@ export const BarInfo: React.FC<Props> = ({
     filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection, setFilter,
     setFilters, filters, showAllStats
 }) => {
+    const {isMobile} = useGlobalContext()
+
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
     }, 0);
@@ -40,29 +42,32 @@ export const BarInfo: React.FC<Props> = ({
     const fullStatName = convertStatName(filter.stat);
 
     return (
-        <div style={{width:'100%', padding:'0px 20px', marginTop:'10px'}}>
-            
-            <div style={{width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <div style={{width: '100%', marginTop:'10px'}}>
+            <div style={{
+                width:'90%', display:'flex', justifyContent:'space-between', 
+                alignItems:'center', marginLeft:'20px', 
+                fontSize: isMobile ? '10px' : '14px',
+            }}>
                 <div>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                            <svg xmlns="http://www.w3.org/2000/svg" width={isMobile ? "18px" : "24px"} height={isMobile ? "18px" : "24px"} viewBox="0 0 24 24">
                                 <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
                             </svg>
                         </div>
-                        <span style={{color:'#fff', fontSize:'15px', fontWeight:'bold', marginLeft:'5px'}}>
+                        <span style={{color:'#fff', fontSize: isMobile ? '11px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
                             {fullStatName}
                         </span>
-                        <span style={{color:"#B1B1B1", fontWeight:'normal', fontSize:'14px', margin:'1px 0px 0px 3px'}}> Last 10</span>
+                        <span style={{color:"#B1B1B1", fontWeight: 'normal', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}> Last 10</span>
                     </div> 
 
                     {projections.find(p => p.name === filter.stat) ?
-                        <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
+                        <div style={{color:'#fff', fontWeight:'bold'}}>
                             {percentHit.toFixed(0)}%
                             <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
                         </div>
                             :
-                        <div style={{color:'#fff', fontSize:'14px', fontWeight:'bold', height:'20px'}}>
+                        <div style={{color:'#fff', fontWeight:'bold'}}>
                             No Projection
                         </div>
                     }
@@ -103,7 +108,7 @@ export const BarInfo: React.FC<Props> = ({
                 }
             </div>
 
-            <div style={{width:'100%', marginTop:'10px'}}>
+            <div style={{width:'100%', marginTop:'10px', overflowX:'scroll'}}>
                 <DropDownStatsHeader 
                     filter={filter} setFilter={setFilter}
                     filters={filters} setFilters={setFilters}

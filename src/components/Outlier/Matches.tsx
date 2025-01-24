@@ -65,7 +65,10 @@ export type MatchUp = {
 
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
-export const PMatches = () => {
+interface Props {
+    isOverLayFilter: boolean
+}
+export const Matches: React.FC<Props> = ({isOverLayFilter}) => {
     const router = useRouter();
     const { paramPlayer, paramLeague } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
@@ -289,7 +292,7 @@ export const PMatches = () => {
     if(loading) return (
         <div style={{
             width:'100%', height:'100%', display:'flex', justifyContent:'center',
-            marginTop:'200px'
+            marginTop:'200px',
         }}>
             <ClipLoader color='#fff' size={40}/>
         </div>
@@ -338,7 +341,6 @@ export const PMatches = () => {
                 {/* Filters */}
                 {!isMobile ?
                     <div style={{width:'35%', background:'#2B2B2B', borderLeft:'1px solid #808080'}}>
-                        {/* {rightBtn === "Filters" ? */}
                         <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
                             <StatsFilterHeader 
                                 hasProjections={projections.length > 0}
@@ -375,8 +377,53 @@ export const PMatches = () => {
                                 /> : null
                             }
                         </div>
-                    {/* } */}
-                    </div> : null
+                    </div>
+                        : 
+                    <div style={{
+                        position:'fixed', height:'auto%', width:'100%', zIndex: 4,
+                        backgroundColor: '#2B2B2B', bottom:0, 
+                        // border:'2px solid #fff',
+                        borderTopLeftRadius:'20px', borderTopRightRadius:'20px'
+                    }}>
+                        {isOverLayFilter ?
+                            <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
+                                <StatsFilterHeader 
+                                    hasProjections={projections.length > 0}
+                                    showAllStats={showAllStats}
+                                    setShowAllStats={setShowAllStats}
+                                />
+                                <SecondStatsHeader 
+                                    filter={filter} filters={filters} setFilter={setFilter}
+                                />
+                                <PeriodStatsHeader
+                                    setFilter={setFilter} filter={filter}
+                                    filters={filters}
+                                />
+
+                                <HomeSwitches filter={filter} setFilter={setFilter} />
+                                <div style={{width:'95%', display:'flex', alignItems:'center'}}>
+                                    <WithOutPlayers 
+                                        ourPlayer={player}
+                                        setFilter={setFilter} filter={filter}
+                                    />
+                                    <DaysOfRest 
+                                        setFilter={setFilter} filter={filter}
+                                    />
+                                </div>
+                                <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
+                                    <MinutesSlider 
+                                        filter={filter} setFilter={setFilter}
+                                        filters={filters}
+                                    />
+                                </div>
+                                {matchUp ? 
+                                    <Rankings 
+                                        filter={filter} matchUp={matchUp} player={player}
+                                    /> : null
+                                }
+                            </div> : null
+                        }
+                    </div>
                 }
             </div>
         </div>

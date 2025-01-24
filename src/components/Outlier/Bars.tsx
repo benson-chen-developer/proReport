@@ -185,7 +185,7 @@ export const Bars: React.FC<Props> = ({
     }
 
     return (
-        <div style={{ width: '100%', height:'350px'}}>
+        <div style={{ width: '100%', height:'350px', marginBottom:'20px'}}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     key={barKey}

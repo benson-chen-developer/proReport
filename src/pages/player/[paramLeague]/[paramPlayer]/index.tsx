@@ -44,7 +44,6 @@ const Player: React.FC<Props> = ({}) => {
                     league={paramLeague as string}
                 /> 
             }
-            
         </>
     )
 

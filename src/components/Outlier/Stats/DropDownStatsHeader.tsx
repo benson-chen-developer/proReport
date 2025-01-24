@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { useGlobalContext } from '../../../Context/store';
 import { Projection } from '../../../Context/Types/ProjectionTypes';
 import { bgColor } from '../../Player/PPlayerPage';
 import { Filter, Filters } from '../Matches';
@@ -14,15 +15,11 @@ interface CustomLabelProps {
 export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
     filter, filters, setFilter, setFilters, projections, showAllStats
 }) => {
+    const {isMobile} = useGlobalContext();
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{
-            width: '100%',
-            display: 'flex',
-            margin: '0px 0px 15px 0px',
-            // overflow: 'auto', 
-        }}>
+        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto'}}>
             {filters.stats.map((category, index) => (
                 <div 
                     key={index} 
@@ -30,7 +27,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(-1)}
                 >
-                    {/* Main button */}
+                    {/* Stat */}
                     <div 
                         style={{
                             cursor: 'pointer',
@@ -58,12 +55,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                             color: category[0] === filter.stat ? '#fff' : 'grey',
                             marginTop: '5px',
                         }}>
-                            <p style={{
-                                margin: 0,
-                                fontWeight: 'bold',
-                                marginBottom: '15px',
-                                fontSize: '14px',
-                            }}>
+                            <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '10px' : '14px',}}>
                                 {category[0]}{category.length > 1 ? '+' : ''}
                             </p>
                         </div>
