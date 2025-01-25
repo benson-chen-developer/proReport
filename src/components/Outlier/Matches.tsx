@@ -35,7 +35,7 @@ export type Filter = {
     over: boolean
 }
 export type Filters = {
-    stats: string[][], //[PTS, PTS+REBS]
+    stats: string[], 
     supportingStats: string[], //Minutes, fouls,
     lastGames: string[], //L10, H2H,
     periods: string[], //Q1, H1,
@@ -113,12 +113,12 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
     const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
     const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
-    const getProjectionStats = (projections:Projection[]): string[][] => {
+    const getProjectionStats = (projections:Projection[]): string[] => {
         const statsInProjections: string[] = [];
         const stats = PSport.getAllPickedStats('nba');
 
         projections.forEach((proj) => {
-            const foundProjStat = stats.flatMap(stat => stat).find(s => s === proj.name);
+            const foundProjStat = stats.find(s => s === proj.name);
 
             if(foundProjStat){
                 statsInProjections.push(foundProjStat);

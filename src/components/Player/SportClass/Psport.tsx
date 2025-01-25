@@ -59,50 +59,36 @@ export class PSport {
             return [];
         }
     }
-    static getAllPickedStats = (league: string): string[][] => {
+    static getAllPickedStats = (league: string): string[] => {
         if(league === "nba"){
             return [
-                ["PTS", "PTS+REB", "PTS+AST", "PTS+REB+AST"],
-                ["REB", "ORB", "DRB"],
-                ["AST"],
-                ["BLK"],
-                ["STL"],
-                ["PF"],
-                ["TOV"],
-                ["FGM", "3PM", "FTM"], 
-                ["FGA", "3PA", "FTA"], 
-            ];
+                "PTS" ,
+                "REB", 
+                "AST",
+                "BLK",
+                "STL",
+                "PF",
+                "TOV",
+                "FGM", "3PM", "FTM", 
+                "FGA", "3PA", "FTA",
+                "PTS+REB", "PTS+AST", "PTS+REB+AST", "ORB", "DRB",
+            ]
         }
         else {
             return [];
         }
     }
-    static sortStats = (league: string, unsortedStats: string[]): string[][] => {
+    static sortStats = (league: string, unsortedStats: string[]): string[] => {
         if (league === "nba") {
-            const model = [
-                ["PTS", "PTS+REB", "PTS+AST", "PTS+REB+AST"],
-                ["REB", "ORB", "DRB"],
-                ["AST"],
-                ["BLK"],
-                ["STL"],
-                ["PF"],
-                ["TOV"],
-                ["FGM", "3PM", "FTM"],
-                ["FGA", "3PA", "FTA"],
-            ];
+            const model = PSport.getAllPickedStats(league);
         
-            const sortedStats: string[][] = model.map(() => []); // Initialize an array of arrays
-        
-            // Iterate through each model category and add stats in the same order
-            model.forEach((category, index) => {
-                category.forEach(stat => {
-                    if (unsortedStats.includes(stat)) {
-                        sortedStats[index].push(stat);
-                    }
-                });
+            const sortedStats: string[] = [];
+
+            model.forEach((stat, index) => {
+                if(unsortedStats.includes(stat)) sortedStats.push(stat);
             });
         
-            return sortedStats.filter(subArray => subArray.length > 0);;
+            return sortedStats;
         }
         else {
             return [];
