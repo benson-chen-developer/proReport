@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import {Projection} from '../../../Context/Types/ProjectionTypes'
-import ppImage from '../../../../public/promos/PrizePicks.png'; 
 import { useGlobalContext } from '../../../Context/store';
 import { Filter } from '../Matches';
 
@@ -87,7 +86,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                 onClick={() => setIsPopUp(p => !p)}
             >
                 <Image 
-                    src={ppImage} 
+                    src="/promos/PrizePicks.png" 
                     height={20} width={20} 
                     alt="Projection icon" 
                     style={{margin:'0px 0px 0px 10px'}}
