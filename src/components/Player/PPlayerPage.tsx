@@ -32,14 +32,14 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
                 isOverLayFilter={isOverLayFilter}
             /> */}
 
-            {isMobile && !sidebarVisible && !loading ? 
+            {/* {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 
                     isOverLayFilter={isOverLayFilter} 
                     setIsOverLayFilter={setIsOverLayFilter}
                 /> 
                     : 
                 null
-            }
+            } */}
         </div>
     );
 }
