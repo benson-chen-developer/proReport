@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import Head from 'next/head';
 import { PPlayerPage } from '../../../../components/Player/PPlayerPage';
-import { EPlayerPage } from '../../../../components/Player/EPlayerPage';
 
 interface Props{
     // allGamesLoaded: {league: string, loaded: boolean}[]
@@ -33,17 +32,13 @@ const Player: React.FC<Props> = ({}) => {
                 <meta name="keywords" content={`WNBA, fantasy, rebounds, points, assists, steals, blocks`} />
             </Head>
 
-            {isPsport ?
-                <PPlayerPage 
-                    playerName={(paramPlayer as string).split('_').join(' ').trim()}
-                    league={paramLeague as string}
-                /> 
-                    : 
-                <EPlayerPage 
-                    playerName={paramPlayer as string} 
-                    league={paramLeague as string}
-                /> 
-            }
+            {/* {isPsport ? */}
+            <PPlayerPage 
+                playerName={(paramPlayer as string).split('_').join(' ').trim()}
+                league={paramLeague as string}
+            /> 
+                    {/* : 
+            } */}
         </>
     )
 
