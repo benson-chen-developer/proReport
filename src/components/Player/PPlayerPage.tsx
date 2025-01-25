@@ -22,24 +22,24 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
-            {/* <SideBar 
+            <SideBar 
                 sidebarVisible={sidebarVisible} 
                 setSidebarVisible={setSidebarVisible}
-            /> */}
+            />
 
-            {/* <Matches 
+            <Matches 
                 loading={loading} setLoading={setLoading}
                 isOverLayFilter={isOverLayFilter}
-            /> */}
+            />
 
-            {/* {isMobile && !sidebarVisible && !loading ? 
+            {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 
                     isOverLayFilter={isOverLayFilter} 
                     setIsOverLayFilter={setIsOverLayFilter}
                 /> 
                     : 
                 null
-            } */}
+            }
         </div>
     );
 }
