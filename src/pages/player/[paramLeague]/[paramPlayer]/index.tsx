@@ -33,10 +33,10 @@ const Player: React.FC<Props> = ({}) => {
             </Head>
 
             {/* {isPsport ? */}
-                <PPlayerPage 
-                    playerName={(paramPlayer as string).split('_').join(' ').trim()}
-                    league={paramLeague as string}
-                /> 
+            <PPlayerPage 
+                playerName={(paramPlayer as string).split('_').join(' ').trim()}
+                league={paramLeague as string}
+            /> 
                     {/* : 
             } */}
         </>

@@ -4,7 +4,7 @@ import { ClipLoader } from 'react-spinners';
 import { Matches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
-import { FilterBtn } from '../../pages/overlay/Filter/FilterBtn';
+import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 
 interface Props {
     league: string,
