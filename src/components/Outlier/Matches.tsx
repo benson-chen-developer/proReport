@@ -155,12 +155,14 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
                 /* Intial Projections and Intial Stats Filters set up */
                 const projections = await fetchProjections(player!.name);
+                let pickedProjection = null;
                 if(projections.length === 0) {
                     editShownStats(true, []);
                     setShowAllStats(true)
                 } else {
+                    pickedProjection = projections[0];
                     editShownStats(false, projections);
-                    setPickedProjection(projections[0])
+                    setPickedProjection(pickedProjection)
                 }
                 setProjections(projections);
 
@@ -256,6 +258,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
     useEffect(() => {
+        // console.log(pickedProjection)
         const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
         setMainBarData(newData);
     }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])

@@ -83,8 +83,6 @@ export const Bars: React.FC<Props> = ({
         /* Reanimate the Bars and make them pop up */
         setBarKey(prev => prev + 1);
 
-        console.log("barda", barData)
-        
         setLoading(false);
     }, [barData])
 
