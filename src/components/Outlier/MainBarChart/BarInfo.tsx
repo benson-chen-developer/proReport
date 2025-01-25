@@ -44,7 +44,7 @@ export const BarInfo: React.FC<Props> = ({
     return (
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{
-                width:'90%', display:'flex', justifyContent:'space-between', 
+                width:'95%', display:'flex', justifyContent:'space-between', 
                 alignItems:'center', marginLeft:'20px', 
                 fontSize: isMobile ? '12px' : '14px',
             }}>
