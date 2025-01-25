@@ -48,6 +48,7 @@ export const BarInfo: React.FC<Props> = ({
                 alignItems:'center', marginLeft:'20px', 
                 fontSize: isMobile ? '12px' : '14px',
             }}>
+                {/* The x out of x and x% */}
                 <div>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
@@ -63,8 +64,15 @@ export const BarInfo: React.FC<Props> = ({
 
                     {projections.find(p => p.name === filter.stat) ?
                         <div style={{color:'#fff', fontWeight:'bold'}}>
-                            {percentHit.toFixed(0)}%
-                            <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
+                            {isNaN(percentHit) ?
+                                'No Games' : `${percentHit.toFixed(0)}%`
+                            }
+
+                            <span style={{color: getColor(percentHit), fontSize:'12px'}}> 
+                                {mainBarData.length > 0 ?
+                                    ` ${hits} of ${mainBarData.length}` : ''
+                                }
+                            </span>
                         </div>
                             :
                         <div style={{color:'#fff', fontWeight:'bold'}}>

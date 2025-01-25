@@ -130,6 +130,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
     const {fetchNbaPlayers, fetchProjections, fetchMatchUps, isMobile} = useGlobalContext();
 
+    /* Initial */
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -192,6 +193,8 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                 const matchUps = await fetchMatchUps(league);
                 const matchUp = matchUps.find(match => match.teams.includes(player!.city));
                 setMatchUp(matchUp);
+                console.log('m', matchUp)
+                console.log('m!filters.lastGames.includes(', !filters.lastGames.includes('H2H'))
                 if(matchUp && !filters.lastGames.includes('H2H')){
                     setFilters(p => ({
                         ...p, 
