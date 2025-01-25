@@ -30,7 +30,6 @@ const Index = () => {
     useEffect(() => {
         const func = async () => {
             const promos = await fetchPromos();
-            console.log(promos)
             setPromos(promos)
         }
 

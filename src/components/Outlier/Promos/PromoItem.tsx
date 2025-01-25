@@ -28,6 +28,7 @@ export const PromoItem: React.FC<Props> = ({promo, toastFunc}) => {
                 <Image 
                     src={`/promos/${promo.sportsbook.split(' ')[0]}.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
+                    loader={({ src }) => `${src}`}
                 />
                 
                 {/* Sportsbook and Bonus */}

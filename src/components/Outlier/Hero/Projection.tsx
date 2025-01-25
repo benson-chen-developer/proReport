@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import {Projection} from '../../../Context/Types/ProjectionTypes'
-import ppImage from '../../../../public/prizepicksLogo.png'; 
+import ppImage from '../../../../public/promos/PrizePicks.png'; 
 import { useGlobalContext } from '../../../Context/store';
 import { Filter } from '../Matches';
 
