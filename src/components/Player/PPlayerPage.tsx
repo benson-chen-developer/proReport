@@ -22,10 +22,10 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
-            <SideBar 
+            {/* <SideBar 
                 sidebarVisible={sidebarVisible} 
                 setSidebarVisible={setSidebarVisible}
-            />
+            /> */}
 
             {/* <Matches 
                 loading={loading} setLoading={setLoading}

@@ -49,3 +49,5 @@ yarn-error.log*
 .next/cache/webpack/server-development/index.pack.gz.old
 .next/static/chunks/webpack.js
 .next/trace
+
+bug.txt
