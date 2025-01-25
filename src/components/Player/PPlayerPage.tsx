@@ -27,10 +27,10 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
                 setSidebarVisible={setSidebarVisible}
             />
 
-            <Matches 
+            {/* <Matches 
                 loading={loading} setLoading={setLoading}
                 isOverLayFilter={isOverLayFilter}
-            />
+            /> */}
 
             {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 
