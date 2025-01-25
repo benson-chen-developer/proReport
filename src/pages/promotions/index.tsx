@@ -24,6 +24,9 @@ const Index = () => {
     const {isMobile}  = useGlobalContext();
     const [promos, setPromos] = useState<Promo[]>([]);
 
+    /* SideBar Mobiele Responsive */
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+
     useEffect(() => {
         const func = async () => {
             const promos = await fetchPromos();
@@ -64,7 +67,7 @@ const Index = () => {
 
     return (
         <div style={{background:'#1E1E1E', width:'100%', minHeight:'100vh', display:'flex'}}>
-            <SideBar />
+            <SideBar setSidebarVisible={setSidebarVisible} sidebarVisible={sidebarVisible}/>
 
             {/* Right Side */}
             <div style={{width: isMobile ? '100%' : '80%', alignItems:'center', display:'flex', overflowX:'hidden',flexDirection:'column'}}>
@@ -113,7 +116,7 @@ const Index = () => {
                 {/* Green Blur Up Top */}
                 <div style={{
                     position:'absolute', zIndex: 0, 
-                    pointerEvents: 'none', width:'80%', display:'flex',
+                    pointerEvents: 'none', width: isMobile ? '100%' : '80%', display:'flex',
                     top: '-140px'
                 }}>
                     <Image 

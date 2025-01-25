@@ -7,7 +7,7 @@ import { useGlobalContext } from '../../../../Context/store';
 interface Props {
     similarPlayers: PPlayer[], 
     setIsPopUp: Dispatch<SetStateAction<boolean>>
-    setSidebarVisible: Dispatch<SetStateAction<boolean>>
+    setSidebarVisible?: Dispatch<SetStateAction<boolean>>
 }
 
 export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlayers, setIsPopUp, setSidebarVisible }, ref) => {
@@ -36,7 +36,7 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                             passHref
                             onClick={() => {
                                 setIsPopUp(false)
-                                if(isMobile) setSidebarVisible(false);
+                                if(isMobile) setSidebarVisible!(false);
                             }}
                             style={{textDecoration:'none',}}
                         >

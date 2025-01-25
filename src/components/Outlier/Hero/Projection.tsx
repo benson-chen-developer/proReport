@@ -20,7 +20,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
 
-    const {fetchProjections} = useGlobalContext();
+    const {fetchProjections, isMobile} = useGlobalContext();
     const getSameProjections = (projections: Projection[]): Projection[] => {
         return projections.filter(p => 
             p.name === filter.stat &&
@@ -76,7 +76,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
         <div>
             <div 
                 style={{
-                    width:'175px', height:'30px', borderRadius:'8px',
+                    width: isMobile ? "135px" : '175px', height: isMobile ? '25px' : '30px', borderRadius:'8px',
                     border:'3px solid #18ED9D', background:'#236F53',
                     // border:'3px solid #04CDCD', background:'#274242',
                     // border:'3px solid #7803E8', background:'#27004C',
@@ -92,7 +92,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                     alt="Projection icon" 
                     style={{margin:'0px 0px 0px 10px'}}
                 />
-                <p style={{margin:0, fontSize:'14px', fontWeight:'bold', color:'#fff'}}>
+                <p style={{margin:0, fontSize: isMobile ? "12px" : '14px', fontWeight:'bold', color:'#fff'}}>
                     {filter.over ? 'Over ' : 'Under '} 
                     {pickedProjection?.values[pickedProjection.values.length-1]} {pickedProjection?.name}
                 </p>
@@ -102,7 +102,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
             {isPopUp ?
                 <div 
                     style={{
-                    width:'175px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
+                    width: isMobile ? "135px" : '175px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
                     position:'absolute', height:'auto', marginTop:'3px', display:'flex',
                     alignItems:'center', flexDirection:'column', zIndex: 2
                     }}
@@ -118,7 +118,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                                 style={{
                                     height:'40px', color:'#fff', cursor:'pointer', display:'flex',
                                     justifyContent:'center', alignItems:'center', width:'100%',
-                                    fontSize:'14px', fontWeight:'bold'
+                                    fontSize: isMobile ? "12px" : '14px', fontWeight:'bold'
                                 }} 
                                 onClick={() => {
                                     setPickedProjection(projection)

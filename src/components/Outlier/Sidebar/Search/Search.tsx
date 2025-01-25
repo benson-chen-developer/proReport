@@ -6,7 +6,7 @@ import { SuggestedPlayers } from './SuggestedPlayers';
 
 interface Props {
     length: string, 
-    setSidebarVisible: Dispatch<SetStateAction<boolean>>
+    setSidebarVisible?: Dispatch<SetStateAction<boolean>>
 }
 export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");

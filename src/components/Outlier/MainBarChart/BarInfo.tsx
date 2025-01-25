@@ -46,7 +46,7 @@ export const BarInfo: React.FC<Props> = ({
             <div style={{
                 width:'90%', display:'flex', justifyContent:'space-between', 
                 alignItems:'center', marginLeft:'20px', 
-                fontSize: isMobile ? '10px' : '14px',
+                fontSize: isMobile ? '12px' : '14px',
             }}>
                 <div>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
@@ -73,13 +73,15 @@ export const BarInfo: React.FC<Props> = ({
                     }
                 </div>
 
+                {/* Projections */}
                 {projections.length > 0 ?
-                    <div style={{marginRight:'40px', display:'flex'}}>
+                    <div style={{ display:'flex'}}>
 
                         {/* The Over/Under */}
                         {pickedProjection?.overUnder === 3 ?
                             <div style={{
-                                width:'30px', height:'30px', border:'solid 3px #5B5B5B',
+                                width: isMobile ? '25px' : '30px', height: isMobile ? '25px' : '30px', 
+                                border: 'solid 3px #5B5B5B',
                                 borderRadius:'8px', display:'flex', alignItems:'center',
                                 justifyContent:'center', marginRight:'8px', cursor:'pointer',
                                 transition: 'transform 0.3s ease',
@@ -90,8 +92,8 @@ export const BarInfo: React.FC<Props> = ({
                                 <svg 
                                     xmlns="http://www.w3.org/2000/svg" 
                                     style={{ marginBottom: '2px', transition: 'transform 0.3s ease' }} 
-                                    width="16" 
-                                    height="16" 
+                                    width={isMobile ? '12' : "16"}
+                                    height={isMobile ? '12' : "16"}
                                     viewBox="0 0 16 16"
                                 >
                                     <path fill="#fff" d="M8 .5L.5 8H5v8h6V8h4.5z"/>
