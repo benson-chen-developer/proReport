@@ -166,6 +166,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     setPickedProjection(pickedProjection)
                 }
                 setProjections(projections);
+                console.log(projections)
 
                 /* Get the season averages for fantasy stats */
                 let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
@@ -193,8 +194,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                 const matchUps = await fetchMatchUps(league);
                 const matchUp = matchUps.find(match => match.teams.includes(player!.city));
                 setMatchUp(matchUp);
-                console.log('m', matchUp)
-                console.log('m!filters.lastGames.includes(', !filters.lastGames.includes('H2H'))
                 if(matchUp && !filters.lastGames.includes('H2H')){
                     setFilters(p => ({
                         ...p, 

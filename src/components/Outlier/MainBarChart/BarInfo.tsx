@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { convertStatName } from '../../../Context/functions/convertStatName'
 import { useGlobalContext } from '../../../Context/store'
@@ -59,7 +60,9 @@ export const BarInfo: React.FC<Props> = ({
                         <span style={{color:'#fff', fontSize: isMobile ? '11px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
                             {fullStatName}
                         </span>
-                        <span style={{color:"#B1B1B1", fontWeight: 'normal', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}> Last 10</span>
+                        <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}>
+                            {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
+                        </span>
                     </div> 
 
                     {projections.find(p => p.name === filter.stat) ?
@@ -109,6 +112,16 @@ export const BarInfo: React.FC<Props> = ({
                             </div> : null
                         }
                         
+                        <div style={{display:'flex', alignItems:'center'}}>
+                            {pickedProjection && pickedProjection.odds !== 100 ?
+                                <Image 
+                                    src={pickedProjection.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                    height={20} width={20} 
+                                    alt="Projection icon" 
+                                    style={{margin:'0px 10px 0px 0px'}}
+                                /> : null
+                            }
+                        </div>
                         <ProjectionSquare 
                             filter={filter} setFilter={setFilter}
                             pickedProjection={pickedProjection}

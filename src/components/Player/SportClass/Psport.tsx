@@ -69,9 +69,11 @@ export class PSport {
                 "STL",
                 "PF",
                 "TOV",
+                "PTS+REB", "PTS+AST", "REB+AST", "PTS+REB+AST", 
+                "FAN",
                 "FGM", "3PM", "FTM", 
                 "FGA", "3PA", "FTA",
-                "PTS+REB", "PTS+AST", "PTS+REB+AST", "ORB", "DRB",
+                 "ORB", "DRB",
             ]
         }
         else {
