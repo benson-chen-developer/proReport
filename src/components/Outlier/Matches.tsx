@@ -134,6 +134,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
+            console.log('playerna', playerName)
             const allGames = await PSport.fetchMatches(playerName, league);
             setPGames(allGames);
             setDisplayedGames(allGames);
@@ -166,7 +167,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     setPickedProjection(pickedProjection)
                 }
                 setProjections(projections);
-                console.log(projections)
 
                 /* Get the season averages for fantasy stats */
                 let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({

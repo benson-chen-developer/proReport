@@ -19,7 +19,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto'}}>
+        <div style={{marginLeft:'20px', display: 'flex', overflowX:'scroll', height:'50px', paddingTop:'5px'}}>
             {filters.stats.map((stat, index) => (
                 <div 
                     key={index} 
@@ -40,10 +40,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                         }}
                         onClick={() => {setFilter(p => ({...p, stat: stat}))}}
                     >
-                        <div style={{
-                            color: stat === filter.stat ? '#fff' : 'grey',
-                            marginTop: '5px',
-                        }}>
+                        <div style={{color: stat === filter.stat ? '#fff' : 'grey',}}>
                             <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '10px' : '14px',}}>
                                 {stat}
                             </p>

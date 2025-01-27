@@ -85,9 +85,8 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projections */}
-                {projections.length > 0 ?
+                {!showAllStats && projections.length > 0 ?
                     <div style={{ display:'flex'}}>
-
                         {/* The Over/Under */}
                         {pickedProjection?.overUnder === 3 ?
                             <div style={{

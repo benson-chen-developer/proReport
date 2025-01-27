@@ -25,6 +25,7 @@ export const Bars: React.FC<Props> = ({
 
     const [loading, setLoading] = useState<boolean>(true);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
+    const [defaultYAxis, setDefaultYAxis] = useState<boolean>(true);
 
     const [refLineAmt, setRefLineAmt] = useState<number>(-1); /* The number the referelnce line will be at */
 
@@ -75,54 +76,31 @@ export const Bars: React.FC<Props> = ({
             Goes from 0 to max. Unless all bars are below the
             prop line then we make the prop line the max + padding
         */
-        const yAxisMax = Math.max(
-            Math.max(...barData.map(entry => entry.statTotal)), 
-            ((lineValue! + 1) % 2 === 0 ? lineValue! + 1 : lineValue! + 2)
-        )
-        setYAxisMax(yAxisMax)
+        let maxBarValue = Math.max(...barData.map((bar) => bar.statTotal));
+        if(lineValue && lineValue > maxBarValue){
+            let newYAxis = Math.round(lineValue);
+            while (newYAxis % 4 !== 0) {
+                newYAxis++;
+            }
+            setYAxisMax(newYAxis)
+            setDefaultYAxis(false);
+        } else {
+            setDefaultYAxis(true);
+        }
 
+        // console.log(barData)
         /* Reanimate the Bars and make them pop up */
         setBarKey(prev => prev + 1);
 
         setLoading(false);
     }, [barData])
 
+
     interface CustomLabelProps {
         x?: number;
         y?: number;
         lineValue: number;
     }
-    const CustomLabel: React.FC<CustomLabelProps> = ({ x = 0, y = 0, lineValue }) => {
-        const percent = (lineValue / yAxisMax);
-        const yVal = 300*percent*.8;
-        console.log(yVal)
-        console.log("yAxisMax", yAxisMax)
-        
-        return (
-            <svg>
-                <rect
-                    x={x - 25} // Center the rect around the x coordinate (half of width 50)
-                    y={yVal} /* y = 250 is like the full height of the graph */
-                    width="50"
-                    height="25"
-                    rx="12"
-                    strokeWidth="2"
-                    fill="#000"
-                />
-                <text
-                    x={x} // Center the text
-                    y={lineValue} // Middle of the rect since dominantBaseline is middle
-                    fill="#fff"
-                    fontSize="14px"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontWeight="bold"
-                >
-                    {lineValue}
-                </text>
-            </svg>
-        )
-    };
     const CustomXAxisTick = (props: any) => { 
         const { x, y, payload } = props;
         const [topText, bottomText] = payload.value.split('\n');
@@ -207,7 +185,7 @@ export const Bars: React.FC<Props> = ({
                         interval={0}
                     />
                     <YAxis 
-                        // domain={[0, yAxisMax]}
+                        {...(!defaultYAxis && chartType === "main" && { domain: [0, yAxisMax] })}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 
                         tickLine={false} 
                         axisLine={false}
@@ -240,23 +218,6 @@ export const Bars: React.FC<Props> = ({
                     {/* The reference lines */}
                     {refLineOn && barData.length > 0 && (
                         lineValue ? (
-                            // <ReferenceLine
-                            //     y={lineValue} 
-                            //     stroke="grey" 
-                            //     strokeDasharray="6 6" 
-                            //     strokeWidth={1}
-                            //     label={
-                            //         <CustomLabel 
-                            //             value={lineValue} 
-                            //             y={lineValue}
-                            //         />
-                            //     }
-                            //     // label={({ x, y, value }) => (
-                            //     //     <text x={x} y={y - 10} fill="red" textAnchor="middle">
-                            //     //         {value}
-                            //     //     </text>
-                            //     // )}
-                            // />
                             <ReferenceLine
                                 y={lineValue} 
                                 stroke="grey" 
@@ -268,14 +229,7 @@ export const Bars: React.FC<Props> = ({
                                     fontWeight:'bold',
                                     fill: '#fff', 
                                 }}
-                                // label={
-                                //     <CustomLabel 
-                                //         lineValue={lineValue} 
-                                //         y={lineValue}
-                                //     />
-                                // }
                             />
-
                         ) : (
                             <ReferenceLine 
                                 y={refLineAmt} 
