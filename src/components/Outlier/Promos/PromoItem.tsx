@@ -25,15 +25,14 @@ export const PromoItem: React.FC<Props> = ({promo, toastFunc}) => {
             onMouseLeave={() => setHover(false)}
         >
             <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                {/* <Image 
+                <Image 
                     src={`/promos/${promo.sportsbook.split(' ')[0]}.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
                     loader={({ src }) => `${src}`}
-                /> */}
+                />
 
                 {/* Sportsbook and Bonus */}
                 <div style={{marginLeft: '20px', minWidth: isMobile ? '20%' : "30%"}}>
-                    {`/promos/${promo.sportsbook.split(' ')[0]}.png`}
                     <p style={{fontSize: isMobile ? '12px' : '14px', color:'#B1B1B1', margin:'5px 0px 10px 0px'}}>{promo.sportsbook}</p>
                     <p style={{fontSize: isMobile ? '14px' : '22px', color:'#fff', margin:'0px 0px 10px 0px'}}>{promo.signUp}</p>
                 </div>
