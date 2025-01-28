@@ -31,7 +31,12 @@ export const PromoItem: React.FC<Props> = ({promo, toastFunc}) => {
                     loader={({ src }) => `${src}`}
                 />
                 <Image 
-                    src={`/promos/PrizePicks.png`} alt="Sportsbook Picture" 
+                    src={`/promos/sleeper.png`} alt="Sportsbook Picture" 
+                    width={65} height={65} style={{borderRadius:100}}
+                    loader={({ src }) => `${src}`}
+                />
+                <Image 
+                    src={`/promos/Underdog.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
                     loader={({ src }) => `${src}`}
                 />
