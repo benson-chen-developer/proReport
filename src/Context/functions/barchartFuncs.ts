@@ -32,6 +32,19 @@ export const convertSecondsToMinutes = (totalSeconds: number): number => {
     return minutes + (seconds/100);
 }
 
+const getFantasyMap = (league: string): Record<string, number> => {
+    if(league === 'nba') return {
+        'PTS' : 1,
+        'REB' : 1.2,
+        "AST" : 1.5,
+        "STL" : 3,
+        "BLK" : 3,
+        "TOV" : -1
+    }
+
+    return {};
+}
+
 export const parseBarData = (
     games: PGame[], filter: Filter, player: PPlayer, 
     pickedProjection?: Projection | null, matchUp?: MatchUp,
@@ -62,17 +75,31 @@ export const parseBarData = (
 
         for (let period of periods){
             let pickedStats = filter.stat.split('+');
-            // console.log(pickedStat, 'pickedStat')
 
-            pickedStats.forEach((pickedStatSegment, index) => {
-                let currPeriod = foundPlayer?.periods[period];
-                let val = currPeriod ? currPeriod[pickedStatSegment] : null;
+            if(filter.stat !== "FAN"){
+                pickedStats.forEach((pickedStatSegment, index) => {
+                    let currPeriod = foundPlayer?.periods[period];
+                    let val = currPeriod ? currPeriod[pickedStatSegment] : null;
+    
+                    if(val){
+                        statTotal += val;
+                        stats[index] += val;
+                    }
+                })
+            } else {
+                const map = getFantasyMap('nba');
+                pickedStats = Object.keys(map);
 
-                if(val){
-                    statTotal += val;
-                    stats[index] += val;
-                }
-            })
+                pickedStats.forEach((pickedStatSegment) => {
+                    let currPeriod = foundPlayer?.periods[period];
+                    let val = currPeriod ? currPeriod[pickedStatSegment] : null;
+
+                    if(val){
+                        statTotal += val * map[pickedStatSegment];
+                        stats[0] += val * map[pickedStatSegment];
+                    }
+                })
+            }
         }
     
         /* 

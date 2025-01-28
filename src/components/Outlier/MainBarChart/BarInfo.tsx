@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { convertStatName } from '../../../Context/functions/convertStatName'
 import { useGlobalContext } from '../../../Context/store'
@@ -44,10 +45,11 @@ export const BarInfo: React.FC<Props> = ({
     return (
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{
-                width:'90%', display:'flex', justifyContent:'space-between', 
+                width:'95%', display:'flex', justifyContent:'space-between', 
                 alignItems:'center', marginLeft:'20px', 
                 fontSize: isMobile ? '12px' : '14px',
             }}>
+                {/* The x out of x and x% */}
                 <div>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
@@ -58,13 +60,22 @@ export const BarInfo: React.FC<Props> = ({
                         <span style={{color:'#fff', fontSize: isMobile ? '11px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
                             {fullStatName}
                         </span>
-                        <span style={{color:"#B1B1B1", fontWeight: 'normal', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}> Last 10</span>
+                        <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}>
+                            {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
+                        </span>
                     </div> 
 
                     {projections.find(p => p.name === filter.stat) ?
                         <div style={{color:'#fff', fontWeight:'bold'}}>
-                            {percentHit.toFixed(0)}%
-                            <span style={{color: getColor(percentHit), fontSize:'12px'}}> {hits} of {mainBarData.length}</span>
+                            {isNaN(percentHit) ?
+                                'No Games' : `${percentHit.toFixed(0)}%`
+                            }
+
+                            <span style={{color: getColor(percentHit), fontSize:'12px'}}> 
+                                {mainBarData.length > 0 ?
+                                    ` ${hits} of ${mainBarData.length}` : ''
+                                }
+                            </span>
                         </div>
                             :
                         <div style={{color:'#fff', fontWeight:'bold'}}>
@@ -74,9 +85,8 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projections */}
-                {projections.length > 0 ?
+                {!showAllStats && projections.length > 0 ?
                     <div style={{ display:'flex'}}>
-
                         {/* The Over/Under */}
                         {pickedProjection?.overUnder === 3 ?
                             <div style={{
@@ -101,6 +111,16 @@ export const BarInfo: React.FC<Props> = ({
                             </div> : null
                         }
                         
+                        <div style={{display:'flex', alignItems:'center'}}>
+                            {pickedProjection && pickedProjection.odds !== 100 ?
+                                <Image 
+                                    src={pickedProjection.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                    height={20} width={20} 
+                                    alt="Projection icon" 
+                                    style={{margin:'0px 10px 0px 0px'}}
+                                /> : null
+                            }
+                        </div>
                         <ProjectionSquare 
                             filter={filter} setFilter={setFilter}
                             pickedProjection={pickedProjection}

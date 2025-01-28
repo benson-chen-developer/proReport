@@ -69,22 +69,25 @@ export const SupportCard: React.FC<Props> = ({
                         </span>
                         <span style={{color:'#14EE9D', marginLeft:'10px'}}>
                             Hits Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px'}}>
-                                {barData.filter(d => d.hit).length > 0 
-                                    ? (barData.filter(ogBar => ogBar.hit)
+                                {barData.filter(d => !d.hit).length > 0 && pickedProjection ? 
+                                    (barData.filter(ogBar => ogBar.hit)
                                         .reduce((sum, d, index) => sum + barData[index].stat1, 0) / barData.filter(ogBar => ogBar.hit).length)
                                         .toFixed(1) 
-                                    : 'NA'
+                                        : 
+                                    'NA'
                                 }
                             </span>
                         </span>
                         <span style={{color:'#FF3556', marginLeft:'10px'}}>
-                            Miss Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px'}}>{ 
-                                barData.filter(d => !d.hit).length > 0 
-                                    ? (barData.filter(d => !d.hit)
+                            Miss Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px'}}>
+                                {barData.filter(d => !d.hit).length > 0 && pickedProjection ? 
+                                    (barData.filter(d => !d.hit)
                                         .reduce((sum, d) => sum + d.stat1, 0) / barData.filter(d => !d.hit).length)
                                         .toFixed(1) 
-                                : 'NA'
-                            }</span>
+                                        : 
+                                    'NA'
+                                }
+                            </span>
                         </span>
                     </div>
                 </div>

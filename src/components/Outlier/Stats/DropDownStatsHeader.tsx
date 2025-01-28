@@ -19,8 +19,8 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
     const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto'}}>
-            {filters.stats.map((category, index) => (
+        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto', height:'50px', paddingTop:'5px'}}>
+            {filters.stats.map((stat, index) => (
                 <div 
                     key={index} 
                     style={{ position: 'relative' }}
@@ -32,31 +32,17 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                         style={{
                             cursor: 'pointer',
                             color: '#fff',
-                            paddingRight: '20px',
+                            paddingRight: '15px',
                             alignItems: 'center',
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                         }}
-                        onClick={() => {
-                            // if(!showAllStats){
-                            //     const periods: string[] = projections
-                            //         .filter((proj) => proj.name === filter.stat) 
-                            //         .map((proj) => proj.period);
-                            //     setFilters(p => ({
-                            //         ...p,
-                            //         periods: periods
-                            //     }))
-                            // }
-                            setFilter(p => ({...p, stat: category[0]}))
-                        }}
+                        onClick={() => {setFilter(p => ({...p, stat: stat}))}}
                     >
-                        <div style={{
-                            color: category[0] === filter.stat ? '#fff' : 'grey',
-                            marginTop: '5px',
-                        }}>
+                        <div style={{color: stat === filter.stat ? '#fff' : 'grey',}}>
                             <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '10px' : '14px',}}>
-                                {category[0]}{category.length > 1 ? '+' : ''}
+                                {stat}
                             </p>
                         </div>
                         
@@ -65,41 +51,15 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                             height: '4px',
                             marginTop: isMobile ? '5px' : '10px',
                             width: '60%',
-                            background: category[0] === filter.stat ? '#fff' : '',
-                            borderTopLeftRadius: category[0] === filter.stat ? '8px' : '0',
-                            borderTopRightRadius: category[0] === filter.stat ? '8px' : '0',
+                            background: stat === filter.stat ? '#fff' : '',
+                            borderTopLeftRadius: stat === filter.stat ? '8px' : '0',
+                            borderTopRightRadius: stat === filter.stat ? '8px' : '0',
                         }}/>
                     </div>
-    
-                    {/* Dropdown on hover */}
-                    {hoveredIndex === index && category.length > 1 && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '100%', // Position below the button
-                            left: '0', // Align with the left of the main button
-                            backgroundColor: '#fff',
-                            border: '1px solid #ddd',
-                            padding: '5px',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                            zIndex: 1,
-                            whiteSpace: 'nowrap', // Prevent the dropdown from wrapping text
-                        }}>
-                            {category.slice(1).map((stat, statIndex) => (
-                                <div 
-                                    key={statIndex} 
-                                    style={{ padding: '5px 10px' }} 
-                                    onClick={() => setFilter(p => ({...p, stat: stat}))}
-                                >
-                                    {stat}
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             ))}
         </div>
     );
-    
-    
 }
+
 

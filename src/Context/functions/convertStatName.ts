@@ -5,8 +5,11 @@ export const convertStatName = (shortName:string):string => {
 
     let longStats = stats.map((s) => {
         if(s === 'PTS') return 'Points';
+        else if(s === "FAN") return "Fantasy Score";
         else if(s === 'REB') return 'Rebounds';
-        else if(s === 'AST') return 'Asists';
+        else if(s === 'ORB') return 'Offensive Rebounds';
+        else if(s === 'DRB') return 'Defensive Rebounds';
+        else if(s === 'AST') return 'Asissts';
         else if(s === 'BLK') return 'Blocks';
         else if(s === 'STL') return 'Steals';
         else if(s === 'PF') return 'Fouls';
