@@ -21,6 +21,7 @@ import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { StatsFilterHeader } from './Stats/StatsFilterHeader';
 import { Notfound } from './NotFound/Notfound';
+import { Loading } from './Loading/Loading';
 
 export type Filter = {
     isHome: boolean,
@@ -294,12 +295,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     }, [filter.stat])
 
     if(loading) return (
-        <div style={{
-            width:'100%', height:'100%', display:'flex', justifyContent:'center',
-            marginTop:'200px',
-        }}>
-            <ClipLoader color='#fff' size={40}/>
-        </div>
+        <Loading />
     )
 
     if(!loading && !player.name) return(

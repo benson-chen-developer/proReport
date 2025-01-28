@@ -96,11 +96,6 @@ export const Bars: React.FC<Props> = ({
     }, [barData])
 
 
-    interface CustomLabelProps {
-        x?: number;
-        y?: number;
-        lineValue: number;
-    }
     const CustomXAxisTick = (props: any) => { 
         const { x, y, payload } = props;
         const [topText, bottomText] = payload.value.split('\n');
@@ -183,6 +178,7 @@ export const Bars: React.FC<Props> = ({
                         tickLine={false} axisLine={false}
                         tick={<CustomXAxisTick />} 
                         interval={0}
+                        hide={isMobile && barData.length > 10}
                     />
                     <YAxis 
                         {...(!defaultYAxis && chartType === "main" && { domain: [0, yAxisMax] })}
@@ -211,7 +207,7 @@ export const Bars: React.FC<Props> = ({
                         <LabelList
                             dataKey="statTotal"  // Number floating up top
                             position="top"
-                            style={{fontSize: '15px', fontWeight: 'bold'}}
+                            style={{fontSize:isMobile ? '12px' : '14px', fontWeight: 'bold'}}
                         />
                     </Bar>
 

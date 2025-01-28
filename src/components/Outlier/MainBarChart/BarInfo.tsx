@@ -57,10 +57,10 @@ export const BarInfo: React.FC<Props> = ({
                                 <path fill="#14EE9D" d="M19 21c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM9.553 9.658l4 2l1.553-3.105l1.789.895l-2.447 4.895l-4-2l-1.553 3.105l-1.789-.895z" />
                             </svg>
                         </div>
-                        <span style={{color:'#fff', fontSize: isMobile ? '11px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
+                        <span style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
                             {fullStatName}
                         </span>
-                        <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '11px' : '15px', marginLeft:'5px'}}>
+                        <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
                             {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
                         </span>
                     </div> 

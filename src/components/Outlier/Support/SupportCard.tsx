@@ -54,13 +54,13 @@ export const SupportCard: React.FC<Props> = ({
                 {/* Supportin Stats and Averages */}
                 <div style={{fontSize: isMobile ? '10px' : '14px', display:'flex', justifyContent:'space-between', fontWeight:'bold', alignItems:'flex-end', marginTop:'20px'}}>
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="#fff" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg>
-                        <p style={{color:'#fff', fontSize:'18px', margin: '0px 0px 0px 5px'}}>Supporting Stats</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width={isMobile ? "18px" : "24px"} height={isMobile ? "18px" : "24px"} viewBox="0 0 24 24"><path fill="#fff" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2M9 17H7v-7h2zm4 0h-2V7h2zm4 0h-2v-4h2z"/></svg>
+                        <p style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', margin: '0px 0px 0px 5px'}}>Supporting Stats</p>
                     </div>
 
                     <div style={{marginBottom: '2px'}}>
                         <span style={{color:'#808080'}}>
-                            Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px',}}>
+                            Avg: <span style={{color:'#fff', fontSize: isMobile ? '11px' : '13px',}}>
                                 {barData.length > 0 
                                     ? (barData.reduce((sum, val) => sum + val.stat1, 0) / barData.length).toFixed(1) 
                                     : 'NA'
@@ -68,7 +68,7 @@ export const SupportCard: React.FC<Props> = ({
                             </span>
                         </span>
                         <span style={{color:'#14EE9D', marginLeft:'10px'}}>
-                            Hits Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px'}}>
+                            Hits Avg: <span style={{color:'#fff', fontSize: isMobile ? '11px' : '13px'}}>
                                 {barData.filter(d => !d.hit).length > 0 && pickedProjection ? 
                                     (barData.filter(ogBar => ogBar.hit)
                                         .reduce((sum, d, index) => sum + barData[index].stat1, 0) / barData.filter(ogBar => ogBar.hit).length)
@@ -79,7 +79,7 @@ export const SupportCard: React.FC<Props> = ({
                             </span>
                         </span>
                         <span style={{color:'#FF3556', marginLeft:'10px'}}>
-                            Miss Avg: <span style={{color:'#fff', fontSize: isMobile ? '9px' : '13px'}}>
+                            Miss Avg: <span style={{color:'#fff', fontSize: isMobile ? '11px' : '13px'}}>
                                 {barData.filter(d => !d.hit).length > 0 && pickedProjection ? 
                                     (barData.filter(d => !d.hit)
                                         .reduce((sum, d) => sum + d.stat1, 0) / barData.filter(d => !d.hit).length)
