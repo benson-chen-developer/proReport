@@ -26,17 +26,17 @@ export const PromoItem: React.FC<Props> = ({promo, toastFunc}) => {
         >
             <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                 <Image 
-                    src={`/promos/${promo.sportsbook.split(' ')[0]}.png`} alt="Sportsbook Picture" 
+                    src={`/promos/${promo.sportsbook.split(' ')[0].toLowerCase()}.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
                     loader={({ src }) => `${src}`}
                 />
                 <Image 
-                    src={`/promos/sleeper.png`} alt="Sportsbook Picture" 
+                    src={`/promos/prizepicks.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
                     loader={({ src }) => `${src}`}
                 />
                 <Image 
-                    src={`/promos/Underdog.png`} alt="Sportsbook Picture" 
+                    src={`/promos/underdog.png`} alt="Sportsbook Picture" 
                     width={65} height={65} style={{borderRadius:100}}
                     loader={({ src }) => `${src}`}
                 />
