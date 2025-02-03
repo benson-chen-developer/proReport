@@ -212,7 +212,7 @@ export const Bars: React.FC<Props> = ({
                     </Bar>
 
                     {/* The reference lines */}
-                    {refLineOn && barData.length > 0 && (
+                    {refLineOn && barData.length > 0 &&(
                         lineValue ? (
                             <ReferenceLine
                                 y={lineValue} 

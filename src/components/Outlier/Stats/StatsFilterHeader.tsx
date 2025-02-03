@@ -17,7 +17,9 @@ export const StatsFilterHeader: React.FC<Props> = ({showAllStats, setShowAllStat
                         color:'#fff', display:'flex', fontSize:'12px', fontWeight:'bold',
                         alignItems:'center', cursor:'pointer', userSelect:'none'
                     }}
-                    onClick={() => setShowAllStats(p => !p)}
+                    onClick={() => {
+                        setShowAllStats(p => !p)
+                    }}
                 >
                     All Stats
                     <Checkbox 

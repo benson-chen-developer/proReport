@@ -9,7 +9,6 @@ import { PeriodStatsHeader } from '../Outlier/Stats/PeriodStatsHeader';
 import { PSport } from '../Player/SportClass/Psport';
 import { Averages } from './Averages';
 import { SupportCard } from './Support/SupportCard';
-import { MainBarChart } from './MainBarChart/MainBarChart';
 import { useGlobalContext } from '../../Context/store';
 import { parseBarData, updateFilters } from '../../Context/functions/barchartFuncs';
 import { Rankings } from './Ranking/Ranking';
@@ -22,6 +21,8 @@ import { Projection } from '../../Context/Types/ProjectionTypes';
 import { StatsFilterHeader } from './Stats/StatsFilterHeader';
 import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
+import { BarInfo } from './MainBarChart/BarInfo';
+import { Bars } from './Bars';
 
 export type Filter = {
     isHome: boolean,
@@ -76,7 +77,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
     
-    const [displayedGames, setDisplayedGames] = useState<PGame[]>([]);
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
     const [seasonAvg, setSeasonAvg] = useState<{ name: string; value: number }[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
@@ -135,10 +135,9 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            console.log('playerna', playerName)
+            
             const allGames = await PSport.fetchMatches(playerName, league);
             setPGames(allGames);
-            setDisplayedGames(allGames);
 
             const players = await fetchNbaPlayers();
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
@@ -155,19 +154,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     position: player!.position,
                     city: player!.city
                 });
-
-                /* Intial Projections and Intial Stats Filters set up */
-                const projections = await fetchProjections(player!.name);
-                let pickedProjection = null;
-                if(projections.length === 0) {
-                    editShownStats(true, []);
-                    setShowAllStats(true)
-                } else {
-                    pickedProjection = projections[0];
-                    editShownStats(false, projections);
-                    setPickedProjection(pickedProjection)
-                }
-                setProjections(projections);
 
                 /* Get the season averages for fantasy stats */
                 let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
@@ -191,16 +177,30 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
                 }])
 
+                /* Intial Projections and Intial Stats Filters set up */
+                const projections = await fetchProjections(player!.name);
+                let pickedProjection = null;
+                let newFilters: Filters;
+                if(projections.length === 0) {
+                    newFilters = getNewStatsForFilters(true, []);
+                    setShowAllStats(true)
+                } else {
+                    newFilters = getNewStatsForFilters(false, projections);
+                    pickedProjection = projections.find(p => p.name === newFilters.stats[0] && filter.period === p.period);
+                }
+                setPickedProjection(pickedProjection!)
+                setProjections(projections);
+
                 /* Get the team they are playing against */
                 const matchUps = await fetchMatchUps(league);
                 const matchUp = matchUps.find(match => match.teams.includes(player!.city));
                 setMatchUp(matchUp);
                 if(matchUp && !filters.lastGames.includes('H2H')){
-                    setFilters(p => ({
-                        ...p, 
-                        lastGames: [...p.lastGames, "H2H"]
-                    }))
+                    newFilters.lastGames = [...newFilters.lastGames, "H2H"];
                 }
+
+                /* Set up filters */
+                setFilters(newFilters);
 
                 /* Inital Bar Setting */
                 const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
@@ -213,18 +213,10 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         fetchData();
     }, [playerName]);
 
-    /* Filter changing the supporting stats options (Not the action support bardata) */
-    useEffect(() => {
-        const newFilters = updateFilters(filters, filter);
-        setFilters(newFilters)
+    const getNewStatsForFilters = (showAllStats: boolean, projections: Projection[]): Filters => {
+        let newFilters = filters;
 
-        if(!newFilters.supportingStats.includes(filter.supportingStat)){
-            setFilter(p => ({...p, supportingStat: newFilters.supportingStats[0]}))
-        }
-    }, [filter.stat])
-    
-    const editShownStats = (showAllStats: boolean, projections: Projection[]): void => {
-        if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
+        if(!showAllStats && projections.length > 0) { /* Game */
             const periods: string[] = Array.from(
                 new Set(
                     projections
@@ -232,20 +224,15 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                         .map((proj) => proj.period)
                 )
             );
-
-            setFilters(p => ({
-                ...p, 
-                periods: organizePeriods(periods),
-                stats: getProjectionStats(projections)
-            }));
-            setFilter(p => ({...p, stat: projections[0].name}))
+            
+            newFilters.periods = organizePeriods(periods);
+            newFilters.stats = getProjectionStats(projections);
         } else { /* No Game */
-            setFilters(p => ({
-                ...p,
-                periods: PSport.getAllPeriods('nba'),
-                stats: PSport.getAllPickedStats('nba')
-            }));
+            newFilters.periods = PSport.getAllPeriods('nba');
+            newFilters.stats = PSport.getAllPickedStats('nba');
         }
+
+        return newFilters;
     }
     const organizePeriods = (arr: string[]): string[] => {
         const order = ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4'];
@@ -254,45 +241,36 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             return order.indexOf(a) - order.indexOf(b);
         });
     }
+
+    /* Always make sure that the picked stat is in the options given */
     useEffect(() => {
-        editShownStats(showAllStats, projections)
-    }, [showAllStats])
+        let foundMainStat = filters.stats.find(option => option === filter.stat);
+        let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
+
+        if(!foundMainStat){ 
+            setFilter(p => ({...p, stat: filters.stats[0]}));
+        }
+        if(!foundSupportStat) setFilter(p => ({...p, supportingStat: filters.supportingStats[0]}));
+    }, [filters.stats, filters.supportingStats])
 
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
     useEffect(() => {
-        // console.log(pickedProjection)
         const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
         setMainBarData(newData);
     }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
 
-    /* Make sure to update the periods for picked stats */
+    /* When projected we have to make sure that the peridos match the projection */
     useEffect(() => {
-        if(!showAllStats && projections.length > 0) { /* This is for if there is actually a game */
-            const periods: string[] = Array.from(
-                new Set(
-                    projections
-                        .filter((proj) => proj.name === filter.stat)
-                        .map((proj) => proj.period)
-                )
-            );
-            const organizedPeriods = organizePeriods(periods);
+        let newFilters = getNewStatsForFilters(showAllStats, projections);
+        setFilters(p => ({...newFilters}));
 
+        /* Look for a projection that matches this stat and period */
+        const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
+        if(foundProjection) setPickedProjection(foundProjection);
+        else setPickedProjection(null);
 
-            setFilters(p => ({
-                ...p, 
-                periods: organizedPeriods,
-                stats: getProjectionStats(projections)
-            }));
-            setFilter(p => ({...p, period: organizedPeriods[0], supportingStat:'Minutes'}))
-        } else { /* No Game */
-            setFilters(p => ({
-                ...p,
-                periods: PSport.getAllPeriods('nba'),
-                stats: PSport.getAllPickedStats('nba')
-            }));
-        }
-    }, [filter.stat])
+    }, [filter.stat, showAllStats])
 
     if(loading) return (
         <Loading />
@@ -314,19 +292,29 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
                 {/* Bar Charts */}
                 <div style={{width: isMobile ? '100%' : '65%'}}>
-                    <MainBarChart 
-                        projections={projections}
-                        pickedProjection={pickedProjection}
-                        setPickedProjection={setPickedProjection}
-                        player={player}
-                        filter={filter} setFilter={setFilter}
-                        filters={filters} setFilters={setFilters}
-                        showAllStats={showAllStats}
-                        matchUp={matchUp}
-                        mainBarData={mainBarData}
-                        setMainBarData={setMainBarData}
-                        pGames={pGames}
-                    />
+                    {/* Main BarChart */}
+                    <div style={{width:'100%'}}>
+                        <BarInfo 
+                            filters={filters} showAllStats={showAllStats}
+                            pickedProjection={pickedProjection}
+                            setPickedProjection={setPickedProjection}
+                            projections={projections}
+                            setProjections={setProjections}
+                            avg={0} 
+                            seasonAvg={0}
+                            filter={filter} setFilter={setFilter}
+                            mainBarData={mainBarData}
+                        />
+                        <Bars
+                            lineValue={pickedProjection ? pickedProjection.values[pickedProjection.values.length-1] : null}
+                            refLineOn={true}
+                            seasonAvg={0}
+                            barData={mainBarData}
+                            player={player} 
+                            chartType="main"
+                        />
+                    </div>
+                    
                     <SupportCard 
                         filter={filter} setFilter={setFilter}
                         matchUp={matchUp}

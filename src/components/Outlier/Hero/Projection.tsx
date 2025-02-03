@@ -5,37 +5,24 @@ import { useGlobalContext } from '../../../Context/store';
 import { Filter } from '../Matches';
 
 interface Props {
+    projections: Projection[], setProjections: Dispatch<SetStateAction<Projection[]>>
     pickedProjection: Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
     filter: Filter
     setFilter: Dispatch<SetStateAction<Filter>>
 }
 
-export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, filter, setFilter}) => {
-    const [projections, setProjections] = useState<Projection[]>([]);
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, filter, setFilter, projections, setProjections}) => {
+    // const [projections, setProjections] = useState<Projection[]>([]);
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
 
-    const {fetchProjections, isMobile} = useGlobalContext();
-    const getSameProjections = (projections: Projection[]): Projection[] => {
-        return projections.filter(p => 
-            p.name === filter.stat &&
-            p.period === filter.period
-        )
-    }
+    const {isMobile} = useGlobalContext();
 
     useEffect(() => {
-        const func = async () => {
-            const projections = await fetchProjections('Jaylen Brown');
-            setProjections(getSameProjections(projections));
-
-            setLoading(false);
-        }
-        func();
-
         const handleClickOutside = (event: MouseEvent) => {
             if(
                 buttonRef.current && !buttonRef.current.contains(event.target as Node) &&
@@ -51,25 +38,19 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
         };
     }, []);
 
+    /* When we click a period or stat we check to see if we can find the projection for it */
     useEffect(() => {
-        const func = async () => {
-            let projections = await fetchProjections('Jaylen Brown');
-            projections = getSameProjections(projections);
-            setProjections(projections);
-
-            let newProjeciton = projections[0];
-            // if(newProjeciton.overUnder !== 3) setFilter(p => ({...p, over: true}));
-            setPickedProjection(newProjeciton)
-        }
-
-        func();
+        const matchingProjection = projections.find(proj => 
+            proj.name === filter.stat && proj.period === filter.period
+        );
+        setPickedProjection(matchingProjection ? matchingProjection : null);
     }, [filter.stat, filter.period])
 
     useEffect(() => {
         if(pickedProjection?.overUnder !== 3) setFilter(p => ({...p, over: true}));
     }, [pickedProjection])
 
-    if(loading) return null;
+    // if(loading) return null;
 
     return (
         <div>
@@ -109,7 +90,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                     ref={popupRef}
                 >
                     {projections
-                        .filter(p => p.name === pickedProjection?.name)
+                        .filter(p => p.name === pickedProjection?.name && p.period === pickedProjection.period)
                         .sort((a, b) => b.values[b.values.length-1] - a.values[a.values.length-1])
                         .map((projection, i) => {
                             const lineValue = projection.values[projection.values.length-1].toFixed(1);

@@ -8,24 +8,20 @@ interface CustomLabelProps {
     filter: Filter,
     filters: Filters,
     setFilter: Dispatch<SetStateAction<Filter>>
-    setFilters: Dispatch<SetStateAction<Filters>>
     projections: Projection[],
     showAllStats: boolean
 }
 export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
-    filter, filters, setFilter, setFilters, projections, showAllStats
+    filter, filters, setFilter, projections, showAllStats
 }) => {
     const {isMobile} = useGlobalContext();
-    const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
     
     return (
-        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto', height:'50px', paddingTop:'5px'}}>
+        <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto', height: isMobile ? '30px' : '50px', paddingTop:'5px'}}>
             {filters.stats.map((stat, index) => (
                 <div 
                     key={index} 
                     style={{ position: 'relative' }}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(-1)}
                 >
                     {/* Stat */}
                     <div 

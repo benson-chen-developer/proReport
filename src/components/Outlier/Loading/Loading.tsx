@@ -5,9 +5,11 @@ export const Loading = () => {
     return (
         <div style={{
             width:'100vw', height:'100vh', background:'#000', display:'flex', 
-            justifyContent:'center',
+            justifyContent:'center', alignItems:'center'
         }}>
-            <ClipLoader color='#fff' size={40} style={{marginTop:'25px'}}/>
+            <ClipLoader color='#fff' size={40}/>
+
+            <div style={{marginBottom:'50px'}} />
         </div>
     )
 }

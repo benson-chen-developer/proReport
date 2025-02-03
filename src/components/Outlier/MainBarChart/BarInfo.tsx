@@ -14,15 +14,15 @@ interface Props {
     seasonAvg: number,
     mainBarData: BarData[],
     projections: Projection[],
+    setProjections: Dispatch<SetStateAction<Projection[]>>
     pickedProjection:Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
     filters: Filters,
-    setFilters: Dispatch<SetStateAction<Filters>>
     showAllStats: boolean
 }
 export const BarInfo: React.FC<Props> = ({
-    filter, avg, seasonAvg, mainBarData, projections, pickedProjection, setPickedProjection, setFilter,
-    setFilters, filters, showAllStats
+    filter, avg, seasonAvg, mainBarData, projections, setProjections, pickedProjection, setPickedProjection, setFilter,
+    filters, showAllStats
 }) => {
     const {isMobile} = useGlobalContext()
 
@@ -85,7 +85,12 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projections */}
-                {!showAllStats && projections.length > 0 ?
+                {
+                    pickedProjection && 
+                    pickedProjection.name === filter.stat && 
+                    pickedProjection.period === filter.period  && 
+                    projections.length > 0 
+                ?
                     <div style={{ display:'flex'}}>
                         {/* The Over/Under */}
                         {pickedProjection?.overUnder === 3 ?
@@ -125,6 +130,8 @@ export const BarInfo: React.FC<Props> = ({
                             filter={filter} setFilter={setFilter}
                             pickedProjection={pickedProjection}
                             setPickedProjection={setPickedProjection}
+                            projections={projections}
+                            setProjections={setProjections}
                         />
                     </div> : null
                 }
@@ -133,7 +140,7 @@ export const BarInfo: React.FC<Props> = ({
             <div style={{width:'100%', marginTop:'10px', overflowX:'scroll'}}>
                 <DropDownStatsHeader 
                     filter={filter} setFilter={setFilter}
-                    filters={filters} setFilters={setFilters}
+                    filters={filters} 
                     projections={projections}
                     showAllStats={showAllStats}
                 />
