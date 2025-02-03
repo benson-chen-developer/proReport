@@ -34,6 +34,8 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                             href={`/player/nba/${playerDash}`}
                             key={index}
                             passHref
+                            target="_blank"  
+                            rel="noopener noreferrer"
                             onClick={() => {
                                 setIsPopUp(false)
                                 if(isMobile) setSidebarVisible!(false);

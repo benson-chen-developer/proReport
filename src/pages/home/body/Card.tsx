@@ -82,7 +82,7 @@ export const Card: React.FC<Props>  = ({prop}) => {
 
                     <div style={{width:'100%', display:'flex', gap: '3px', marginBottom:'7px', alignItems:'center'}}>
                         {prop.hits.map((hit, i) => 
-                            <div 
+                            <div key={i}
                                 style={{
                                     background: hit ? '#79F4F4' : '#A2A2A2',
                                     width:'100px', height:'4px', borderRadius:'10px'

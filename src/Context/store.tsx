@@ -12,7 +12,7 @@ interface ContextProps {
 
   projections: Projection[];
   setProjections: Dispatch<SetStateAction<Projection[]>>;
-  fetchProjections: (playerName: string) => Promise<Projection[]>;
+  fetchProjections: (playerName?: string) => Promise<Projection[]>;
   
   nbaPlayers: PPlayer[];
   setNbaPlayers: Dispatch<SetStateAction<PPlayer[]>>;
@@ -49,7 +49,7 @@ const GlobalContext = createContext<ContextProps>({
 
   projections: [],
   setProjections: (): Projection[] => [],
-  fetchProjections: async (playerName: string): Promise<Projection[]> => [],
+  fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
 
   nbaPlayers: [],
   setNbaPlayers: (): PPlayer[] => [],
@@ -235,6 +235,8 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   }
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];
+
+    /* Grab Projections */
     if(projections.length > 0){
       newProjections = projections;
     } else {
@@ -249,6 +251,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
 
+    /* Return them */
     if(playerName) {
       return newProjections.filter(p => p.playerName === playerName);
     } else {

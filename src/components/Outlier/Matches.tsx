@@ -246,12 +246,15 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     useEffect(() => {
         let foundMainStat = filters.stats.find(option => option === filter.stat);
         let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
+        let foundPeriod = filters.periods.find(p => p === filter.period);
+        let newFilter = {...filter};
 
-        if(!foundMainStat){ 
-            setFilter(p => ({...p, stat: filters.stats[0]}));
-        }
-        if(!foundSupportStat) setFilter(p => ({...p, supportingStat: filters.supportingStats[0]}));
-    }, [filters.stats, filters.supportingStats])
+        if(!foundMainStat) newFilter.stat = filters.stats[0];
+        if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
+        if(!foundPeriod) newFilter.period = filters.periods[0];
+
+        setFilter({...newFilter})
+    }, [filters.stats, filters.supportingStats, filters.periods])
 
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
@@ -270,7 +273,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         if(foundProjection) setPickedProjection(foundProjection);
         else setPickedProjection(null);
 
-    }, [filter.stat, showAllStats])
+    }, [filter.stat, filter.period, showAllStats])
 
     if(loading) return (
         <Loading />

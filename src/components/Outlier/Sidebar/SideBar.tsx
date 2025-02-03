@@ -38,12 +38,13 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
             <Search setSidebarVisible={setSidebarVisible} length='90%'/>
             <div style={{height:'20px'}} />
 
-            {links.map(link => {
+            {links.map((link, i) => {
                 const router = useRouter();
                 const isActive = router.pathname === link.link; 
         
                 return (
                     <Link 
+                        key={i}
                         href={link.link} 
                         style={{
                             width:'90%', height:"50px", marginTop:'10px',
