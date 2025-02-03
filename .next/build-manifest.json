@@ -12,6 +12,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/404": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/404.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -22,20 +27,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/home": [
+    "/player": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/home.js"
+      "static/chunks/pages/player.js"
+    ],
+    "/player/[paramLeague]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/player/[paramLeague].js"
     ],
     "/player/[paramLeague]/[paramPlayer]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/player/[paramLeague]/[paramPlayer].js"
-    ],
-    "/promotions": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/promotions.js"
     ]
   },
   "ampFirstPages": []
