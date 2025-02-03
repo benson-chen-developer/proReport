@@ -359,11 +359,11 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                                     filters={filters}
                                 />
                             </div>
-                            {/* {matchUp ? 
+                            {matchUp ? 
                                 <Rankings 
                                     filter={filter} matchUp={matchUp} player={player}
                                 /> : null
-                            } */}
+                            }
                         </div>
                     </div>
                         : 

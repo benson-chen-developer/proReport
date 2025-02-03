@@ -32,19 +32,53 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
 
         /* Sorts the teams based on their given stat */
         let stats = filter.stat.split('+');
-        let teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
-            const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][3] / a.gp), 0);
-            const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][3] / b.gp), 0);
-            return avgB - avgA;
-        });
-        let teamsOrderedByPosition = teams.slice().sort((a, b) => {
-            const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex] / a.gp), 0);
-            const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex] / b.gp), 0);
-            return avgB - avgA;
-        });
+
+        let teamsOrderedByTotalStat: Team[] = [];
+        let teamsOrderedByPosition: Team[] = [];
+        if(stats[0] === "FAN"){
+            teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
+                const statsA: Record<string, number> = {};
+                const statsB: Record<string, number> = {};
+            
+                Object.keys(statWeights).forEach(stat => {
+                    statsA[stat] = a.given[stat]?.[3] ?? 0;
+                    statsB[stat] = b.given[stat]?.[3] ?? 0;
+                });
+            
+                const avgA:number = calcFantasyScore(statsA) / a.gp;
+                const avgB:number = calcFantasyScore(statsB) / b.gp;
+            
+                return avgB - avgA;
+            });
+            teamsOrderedByPosition = teams.slice().sort((a, b) => {
+                const statsA: Record<string, number> = {};
+                const statsB: Record<string, number> = {};
+            
+                Object.keys(statWeights).forEach(stat => {
+                    statsA[stat] = a.given[stat]?.[positionIndex] ?? 0; 
+                    statsB[stat] = b.given[stat]?.[positionIndex] ?? 0;
+                });
+            
+                const avgA = calcFantasyScore(statsA) / a.gp;
+                const avgB = calcFantasyScore(statsB) / b.gp;
+            
+                return avgB - avgA;
+            });
+        } else {
+            teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
+                const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][3] / a.gp), 0);
+                const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][3] / b.gp), 0);
+                return avgB - avgA;
+            });
+            teamsOrderedByPosition = teams.slice().sort((a, b) => {
+                const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex] / a.gp), 0);
+                const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex] / b.gp), 0);
+                return avgB - avgA;
+            });
+        }
 
         const teamIndex = teamsOrderedByTotalStat.findIndex(team => team.name === oppTeam);
-        const totalStat = stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][positionIndex], 0);
+        const totalStat = stats[0] === "FAN" ? 0 : stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][positionIndex], 0);
         let rankings: Ranking[] = [
             {
                 name: `${filter.stat} Allowed`,
@@ -54,7 +88,7 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
         ];
 
         const teamPosIndex = teamsOrderedByPosition.findIndex(team => team.name === oppTeam);
-        const totalPosStat = stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][3], 0);
+        const totalPosStat = stats[0] === "FAN" ? 0 : stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][3], 0);
         if(selectedOption !== "All"){
             rankings.push({
                 name: `${filter.stat} Allowed`,
@@ -154,3 +188,18 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
         </div>
     )
 }
+
+const statWeights: Record<string, number> = {
+    "PTS": 1,
+    "REB": 1.2,
+    "AST": 1.5,
+    "STL": 3,
+    "BLK": 3,
+    "TOV": -1
+};
+
+const calcFantasyScore = (stats: Record<string, number>): number => {
+    return Object.entries(stats).reduce((sum, [key, value]) => {
+        return sum + (statWeights[key] || 0) * value;
+    }, 0);
+};
