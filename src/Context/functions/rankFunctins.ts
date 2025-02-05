@@ -1,7 +1,7 @@
 import { PSport } from "../../components/Player/SportClass/Psport";
 import { PGame, PPlayer } from "../Types/PlayerTypes"
 
-export type Ranking = {
+ type Ranking = {
     team: string;
     stats: {
         [key: string]: Record<string, number>[];

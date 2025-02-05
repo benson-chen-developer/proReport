@@ -52,7 +52,7 @@ export const parseBarData = (
     
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, player, matchUp);
-
+    
     /* Here we get the stats from the game via criteria */
     const data = displayedGames.map((game, index) => { 
         const unFormattedDate: Date = new Date(game.date);

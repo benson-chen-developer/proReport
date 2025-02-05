@@ -31,7 +31,7 @@ export const allDifferentFunctions = (
                 isHome: isHome,
                 isAway: !isHome,
             },
-            {...defaultFilter, period:'H2H'}
+            {...defaultFilter, lastGame:'H2H'}
         ];
 
         if(projectedMinutes !== -1) filters.push({

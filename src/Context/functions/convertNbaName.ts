@@ -126,3 +126,24 @@ export const convertNBATeamName = (teamName: string, param: number): string => {
 
     return '';
 }
+
+export const convertTime = (timeStr: string, option: 'Day' | 'Time'): string => {
+    let time = new Date(timeStr);
+
+    if(option === "Day"){
+        if (
+            time.getFullYear() === time.getFullYear() &&
+            time.getMonth() === time.getMonth() &&
+            time.getDate() === time.getDate()
+        ) {
+            return "Today";
+        } else {
+            return time.toLocaleDateString(undefined, { weekday: 'long' });
+        }
+        
+    } else {
+        let formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        formattedTime = formattedTime.replace(/^0/, '');
+        return formattedTime;
+    }
+}

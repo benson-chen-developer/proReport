@@ -49,3 +49,7 @@ body {
   display: block;
   border-radius: '50px';
 }
+
+.borderHover:hover{
+  border: 1px solid #79F4F4 !important;
+}
