@@ -49,7 +49,6 @@ export const parseBarData = (
     games: PGame[], filter: Filter, player: PPlayer, 
     pickedProjection?: Projection | null, matchUp?: MatchUp,
 ): BarData[] => {
-    
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, player, matchUp);
     
@@ -117,8 +116,9 @@ export const parseBarData = (
         
         let pickedStatSplit = filter.stat.split('+');
         let hit = false;
+        let lineValue = -1;
         if(pickedProjection){
-            let lineValue = pickedProjection.values[pickedProjection.values.length-1];
+            lineValue = pickedProjection.values[pickedProjection.values.length-1];
 
             if(filter.over){
                 if(statTotal >= lineValue) hit = true;
@@ -139,6 +139,7 @@ export const parseBarData = (
             score: game.score,
             isHome: isHome,
             opp: opp,
+            tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
             underText: `${date}\n ${convertNBATeamName(opp, 0)}`
         };
@@ -230,6 +231,7 @@ export const parseSupportBarData = (
             isHome: barData.isHome,
             opp: barData.opp,
             hit: barData.hit,
+            tie: false,
             underText: barData.underText
         })
     });

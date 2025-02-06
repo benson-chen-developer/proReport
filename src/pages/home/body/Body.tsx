@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners';
-import { Filter, MatchUp } from '../../../components/Outlier/Matches';
+import { BarData, Filter, MatchUp } from '../../../components/Outlier/Matches';
 import { parseBarData } from '../../../Context/functions/barchartFuncs';
 import { useGlobalContext } from '../../../Context/store';
 import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes';
@@ -10,7 +10,7 @@ import { allDifferentFunctions } from './functions';
 
 export type PopularProp = {
     player: PPlayer,
-    hits: boolean[],
+    data: BarData[],
     matchUp: MatchUp,
     value: number,
     filter: Filter,
@@ -105,7 +105,7 @@ const getPopularProps = async (
                 let currFilter = {...filter};
                 let isGoodPick = false; 
 
-                const barData = parseBarData(ourGames, filter, player!, prop, currentMatch);
+                let barData = parseBarData(ourGames, filter, player!, prop, currentMatch);
                 let hitsArray: boolean[] = barData.map(data => data.hit);
                 const hitCount = hitsArray.filter(h => h).length;
                 const totalCount = hitsArray.length || 1;
@@ -115,7 +115,7 @@ const getPopularProps = async (
                 if(prop.overUnder === 3 && missPercent >= 80 && hitsArray.length > 2){
                     currFilter.over = false;
                     isGoodPick = true;
-                    hitsArray = hitsArray.map(data => !data);
+                    barData.forEach(data => data.hit = !data.hit ? true : data.hit);
                 }
                 if(hitPercent >= 80 && hitsArray.length > 2){
                     isGoodPick = true;
@@ -124,7 +124,7 @@ const getPopularProps = async (
                 if(isGoodPick){
                     popularProp.push({
                         player: player,
-                        hits: hitsArray,
+                        data: barData,
                         matchUp: currentMatch!,
                         filter: currFilter,
                         value: prop.values[prop.values.length-1],

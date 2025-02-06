@@ -19,7 +19,7 @@ interface ContextProps {
   fetchNbaPlayers: () => Promise<PPlayer[]>;
   nbaMatches: PGame[];
   setNbaMatches: Dispatch<SetStateAction<PGame[]>>;
-  fetchNbaMatches: () => Promise<PGame[]>;
+  fetchNbaMatches: (playerName?: string) => Promise<PGame[]>;
   nbaTeams: Team[];
   setNbaTeams: Dispatch<SetStateAction<Team[]>>;
   fetchNbaTeams: () => Promise<Team[]>;
@@ -56,7 +56,7 @@ const GlobalContext = createContext<ContextProps>({
   fetchNbaPlayers: async (): Promise<PPlayer[]> => [],
   nbaMatches: [],
   setNbaMatches: (): PGame[] => [],
-  fetchNbaMatches: async (): Promise<PGame[]> => [],
+  fetchNbaMatches: async (playerName?: string): Promise<PGame[]> => [],
   nbaTeams: [],
   setNbaTeams: (): Team[] => [],
   fetchNbaTeams: async (): Promise<Team[]> => [],
@@ -201,12 +201,15 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
   };
-  const fetchNbaMatches = async (): Promise<PGame[]> => {
+  const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
     if(nbaMatches.length > 0){
       return nbaMatches;
     } else {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba`);
+        let url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba`;
+        if(playerName) `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba/${playerName}`;
+
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch NBA players');
         const data = await response.json();
         setNbaMatches(data);

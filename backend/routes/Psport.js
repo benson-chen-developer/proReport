@@ -4,7 +4,7 @@ const { NBAPlayer } = require("../models/Sport/PPlayerModel");
 const { NBATeam } = require("../models/Sport/Team");
 const router = express.Router();
 
-router.get("/players/nba", async (req, res) => {
+router.get("/players/nba/", async (req, res) => {
     try {
         const players = await NBAPlayer.find({});
 
@@ -14,9 +14,11 @@ router.get("/players/nba", async (req, res) => {
         res.status(500).send({ message: "Error fetching players" });
     }
 });
+
 router.get("/matches/nba", async (req, res) => {
     try {
         const matches = await NBAMatch.find({});
+        console.log(matches)
 
         res.status(200).json(matches);
     } catch (err) {
@@ -24,6 +26,7 @@ router.get("/matches/nba", async (req, res) => {
         res.status(500).send({ message: "Error fetching matches" });
     }
 });
+
 router.get("/teams/nba", async (req, res) => {
     try {
         const teams = await NBATeam.find({});
@@ -75,27 +78,20 @@ router.get("/matchUps/:league", async (req, res) => {
     }
 });
 
-router.get("/matches/nba/:playerName", async (req, res) => {
-    const playerName = req.params.playerName; 
+router.get("/matches/nba/:playerName?", async (req, res) => { 
+    const playerName = req.params.playerName;
 
     try {
-        const playerMatches = await NBAMatch.aggregate([
-            {
-                $match: { "players.name": playerName } 
-            },
-            {
-                $project: {
-                    _id: 0 // Exclude the `_id` field
-                }
-            }
-        ]);
+        const query = playerName ? { "players.name": playerName } : {};
+        const matches = await NBAMatch.find(query).select("-_id"); 
 
-        res.status(200).json(playerMatches);
+        res.status(200).json(matches);
     } catch (err) {
-        console.error("Error fetching players", err);
-        res.status(500).send({ message: "Error fetching players" });
+        console.error("Error fetching matches", err);
+        res.status(500).send({ message: "Error fetching matches" });
     }
 });
+
 
 
 module.exports = router;

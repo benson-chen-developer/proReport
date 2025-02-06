@@ -32,7 +32,10 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
 
     return (
         <Link
-            href={`/player/nba/${prop.player.name.replace(" ", "_")}`}
+            href={{
+                pathname: `/player/nba/${prop.player.name.replace(" ", "_")}`,
+                query: { paramFilter: JSON.stringify(prop.filter) }, 
+            }}
             target="_blank"  
             rel="noopener noreferrer"
             className='borderHover' 
@@ -118,15 +121,15 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         </p>
 
                         <p style={{color:'#79F4F4', fontSize:'14px', fontWeight:'bold', margin:0}}>
-                            {Math.round(prop.hits.filter(hit => hit).length / prop.hits.length * 100)}%
+                            {Math.round(prop.data.filter(d => d.hit).length / prop.data.length * 100)}%
                         </p>
                     </div>
 
                     <div style={{width:'100%', display:'flex', gap: '3px', marginBottom:'7px', alignItems:'center'}}>
-                        {prop.hits.map((hit, i) => 
+                        {prop.data.map((data, i) => 
                             <div key={i}
                                 style={{
-                                    background: hit ? '#79F4F4' : '#A2A2A2',
+                                    background: data.tie ? "#fff" : data.hit ? '#79F4F4' : '#A2A2A2',
                                     width:'100%', height:'4px', borderRadius:'10px'
                                 }} 
                             />
@@ -143,7 +146,7 @@ const createDescription = (prop: PopularProp): string => {
         ${prop.player.name} has hit 
         ${prop.filter.over ? 'Over' : 'Under'} 
         ${prop.value} ${prop.filter.stat}
-        in the last ${prop.hits.length} games.
+        in the last ${prop.data.length} games.
     `;
 
     const defaultFilter: Filter = {  

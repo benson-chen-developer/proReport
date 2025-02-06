@@ -56,6 +56,7 @@ export type BarData = {
     score: string,
     isHome: boolean,
     opp: string,
+    tie: boolean,
     underText: string,
     hit: boolean
 }
@@ -73,7 +74,7 @@ interface Props {
 }
 export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading}) => {
     const router = useRouter();
-    const { paramPlayer, paramLeague } = router.query;
+    const { paramPlayer, paramLeague, paramFilter } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
     
@@ -205,6 +206,16 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                 /* Inital Bar Setting */
                 const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
                 setMainBarData(newData);
+
+                if(paramFilter) {
+                    try {
+                        const filterFromParam = JSON.parse(paramFilter as string);
+                        setFilter(p => ({...filterFromParam}))
+                    } catch (error) {
+                        /* Someone messed up the url just don;t parse it */
+                        console.error("Error parsing filter:", error);
+                    }
+                }
             }
 
             setLoading(false);
