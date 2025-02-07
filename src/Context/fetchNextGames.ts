@@ -21,6 +21,7 @@ export const getMatchUps = async (
         let todaysGames: any[] = []; 
         /* Strange bug where gameDateEST which is just "2024-12-06T00:00:00Z" doesnt work it shyd but doesnt not sure why */
         const games: any[] = data.filter((game: any) => new Date(game.gameDateTimeEst) >= utcToday);
+        console.log("games", games)
         let lastDay = games.length > 0 ? new Date(games[0].gameDateEst) : null;
 
         if(lastDay){
@@ -46,7 +47,12 @@ export const getMatchUps = async (
                 }
             }
         }
-        const matchUps = todaysGames.map((game) => ({
+        // const matchUps = todaysGames.map((game) => ({
+        //     league: league,
+        //     teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],
+        //     time: game.gameDateTimeUTC, 
+        // }))
+        const matchUps = games.map((game) => ({
             league: league,
             teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],
             time: game.gameDateTimeUTC, 

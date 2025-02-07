@@ -6,6 +6,7 @@ import { MatchUp } from '../components/Outlier/Matches';
 import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
 
+
 interface ContextProps {
   isMobile: boolean,
   setIsMobile: Dispatch<SetStateAction<boolean>>;
@@ -220,22 +221,42 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
   };
+  // const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
+  //   // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
+  //   let isNewDay = true;
+
+  //   if(isNewDay){
+  //     console.log('isnewday')
+  //     const currentMatchUps = await getMatchUps(league, matchUps, setMatchUps);
+  //     // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
+  //     setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
+
+  //     return currentMatchUps;
+  //   } else {
+  //     console.log('is NOT newday')
+  //     return matchUps[league];
+  //   }
+  // }
   const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
-    // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
-    let isNewDay = true;
-
-    if(isNewDay){
-      console.log('isnewday')
+    // document.cookie = `matchUps_${league}=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24}`; 
+    const cookies = document.cookie.split('; ');
+    const scheduleCookie = cookies.find(cookie => cookie.startsWith(`schedule${league}=`));
+  
+    // if(!scheduleCookie){
+    if(false){
       const currentMatchUps = await getMatchUps(league, matchUps, setMatchUps);
-      // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
-      setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
+      console.log('new scheduleCookie', currentMatchUps)
+      document.cookie = `schedule${league}=${JSON.stringify(currentMatchUps.slice(0,2))}; path=/; max-age=${60 * 60 * 24}`; 
+      // setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
 
-      return currentMatchUps;
+      // return currentMatchUps;
     } else {
-      console.log('is NOT newday')
-      return matchUps[league];
+      console.log("scheduleCookie", scheduleCookie)
+      // return matchUps[league];
     }
+    return [];
   }
+
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];
 
