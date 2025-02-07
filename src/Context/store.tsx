@@ -5,6 +5,7 @@ import {apiUrl} from '../data/data';
 import { MatchUp } from '../components/Outlier/Matches';
 import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
+import { getAllData, saveData } from './functions/cookies';
 
 
 interface ContextProps {
@@ -202,60 +203,87 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
   };
+  const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
+    // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
+    let isNewDay = true;
+
+    if(isNewDay){
+      console.log('isnewday')
+      const currentMatchUps = await getMatchUps(league, matchUps);
+      // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
+      setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
+
+      return currentMatchUps;
+    } else {
+      console.log('is NOT newday')
+      return matchUps[league];
+    }
+  }
   const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
     if(nbaMatches.length > 0){
       return nbaMatches;
     } else {
       try {
         let url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba`;
-        if(playerName) `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba/${playerName}`;
+        if(playerName) url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba/${playerName}`;
 
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch NBA players');
         const data = await response.json();
-        setNbaMatches(data);
-        return data;
+
+        let retData = data;
+        if(playerName){
+          const gamesPlayed = data.filter((game: PGame) => {
+              const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+              return foundPlayer?.periods.some(period => period['MIN'] > 0);
+          });
+          const sortedGames = gamesPlayed.sort((a: { date: string }, b: { date: string }) => {
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
+          });
+
+          retData = sortedGames;
+        } 
+
+        setNbaMatches(retData);
+        return retData;
       } catch (error) {
         console.error('Error fetching Lol players:', error);
         return [];
       }
     }
   };
-  // const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
-  //   // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
-  //   let isNewDay = true;
+  // const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
+  //   const cachedGames = await getAllData();
+  //   let allGames: PGame[] = [];
 
-  //   if(isNewDay){
-  //     console.log('isnewday')
-  //     const currentMatchUps = await getMatchUps(league, matchUps, setMatchUps);
-  //     // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
-  //     setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
+  //   if(cachedGames.length === 0){
+  //     console.log('empty cahce')
+  //     let url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba`;
+  //     const response = await fetch(url);
 
-  //     return currentMatchUps;
+  //     if (!response.ok) throw new Error('Failed to fetch NBA Match');
+  //     const data = await response.json();
+  //     allGames = data;
+  //     saveData(data);
   //   } else {
-  //     console.log('is NOT newday')
-  //     return matchUps[league];
+  //     console.log('full cahce')
+  //     allGames = cachedGames;
   //   }
-  // }
-  const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
-    // document.cookie = `matchUps_${league}=${JSON.stringify(data)}; path=/; max-age=${60 * 60 * 24}`; 
-    const cookies = document.cookie.split('; ');
-    const scheduleCookie = cookies.find(cookie => cookie.startsWith(`schedule${league}=`));
-  
-    // if(!scheduleCookie){
-    if(false){
-      const currentMatchUps = await getMatchUps(league, matchUps, setMatchUps);
-      console.log('new scheduleCookie', currentMatchUps)
-      document.cookie = `schedule${league}=${JSON.stringify(currentMatchUps.slice(0,2))}; path=/; max-age=${60 * 60 * 24}`; 
-      // setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
 
-      // return currentMatchUps;
-    } else {
-      console.log("scheduleCookie", scheduleCookie)
-      // return matchUps[league];
-    }
-    return [];
-  }
+  //   if(playerName){
+  //     const gamesPlayed = allGames.filter((game: PGame) => {
+  //         const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+  //         return foundPlayer?.periods.some(period => period['MIN'] > 0);
+  //     });
+  //     const sortedGames = gamesPlayed.sort((a: { date: string }, b: { date: string }) => {
+  //         return new Date(b.date).getTime() - new Date(a.date).getTime();
+  //     });
+
+  //     return sortedGames;
+  //   } 
+
+  //   return allGames;;
+  // }
 
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];

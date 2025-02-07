@@ -8,7 +8,6 @@ import { MatchUp } from "../components/Outlier/Matches";
 export const getMatchUps = async (
     league: string, 
     matchUps: Record<string, MatchUp[]>, 
-    setMatchUps: Dispatch<SetStateAction<Record<string, MatchUp[]>>>
   ): Promise<MatchUp[]> => {
     if (league === "nba") {
         const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matchUps/nba`)
@@ -21,7 +20,7 @@ export const getMatchUps = async (
         let todaysGames: any[] = []; 
         /* Strange bug where gameDateEST which is just "2024-12-06T00:00:00Z" doesnt work it shyd but doesnt not sure why */
         const games: any[] = data.filter((game: any) => new Date(game.gameDateTimeEst) >= utcToday);
-        console.log("games", games)
+        // console.log("games", games)
         let lastDay = games.length > 0 ? new Date(games[0].gameDateEst) : null;
 
         if(lastDay){

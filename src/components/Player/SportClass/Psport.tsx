@@ -1,3 +1,4 @@
+import { getAllData } from "../../../Context/functions/cookies";
 import { PGame } from "../../../Context/Types/PlayerTypes";
 
 export class PSport {
@@ -185,14 +186,15 @@ export class PSport {
     static fetchMatches = async (playerName: string, league: string): Promise<PGame[]> => {
         const parsedName = playerName.replace(/_/g, ' ');
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/${league}/${parsedName}`, {
-            method: 'GET', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        // const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/${league}/${parsedName}`, {
+        //     method: 'GET', 
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        // });
 
-        const allGames = await res.json();
+        const allGames = await getAllData();
+        // console.log('allGames', allGames)
         const gamesPlayed = allGames.filter((game: PGame) => {
             const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             return foundPlayer?.periods.some(period => period['MIN'] > 0);

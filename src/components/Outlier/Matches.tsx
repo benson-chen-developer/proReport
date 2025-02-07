@@ -23,6 +23,7 @@ import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
+import { clearData, getAllData, saveData } from '../../Context/functions/cookies';
 
 export type Filter = {
     isHome: boolean,
@@ -130,14 +131,15 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         return PSport.sortStats(league, statsInProjections);
     }
 
-    const {fetchNbaPlayers, fetchProjections, fetchMatchUps, isMobile} = useGlobalContext();
+    const {fetchNbaPlayers, fetchProjections, fetchMatchUps, fetchNbaMatches, isMobile} = useGlobalContext();
 
     /* Initial */
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             
-            const allGames = await PSport.fetchMatches(playerName, league);
+            // const allGames = await PSport.fetchMatches(playerName, league);
+            const allGames = await fetchNbaMatches(playerName);
             setPGames(allGames);
 
             const players = await fetchNbaPlayers();
@@ -216,6 +218,11 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                         console.error("Error parsing filter:", error);
                     }
                 }
+
+                // saveData(data);
+                // clearData();
+                // const matches = await getAllData();
+                // console.log('matches', matches);
             }
 
             setLoading(false);

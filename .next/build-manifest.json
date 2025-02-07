@@ -31,6 +31,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/player/[paramLeague]/[paramPlayer].js"
+    ],
+    "/promotions": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/promotions.js"
     ]
   },
   "ampFirstPages": []
