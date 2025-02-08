@@ -288,7 +288,11 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
-        if(foundProjection) setPickedProjection(foundProjection);
+        if(foundProjection) {
+            setPickedProjection(foundProjection);
+            
+            if(foundProjection.overUnder === 1) setFilter(p => ({...p, over: true}))
+        }
         else setPickedProjection(null);
 
     }, [filter.stat, filter.period, showAllStats])

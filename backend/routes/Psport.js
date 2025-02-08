@@ -18,7 +18,7 @@ router.get("/players/nba/", async (req, res) => {
 router.get("/matches/nba", async (req, res) => {
     try {
         const matches = await NBAMatch.find({});
-        console.log(matches)
+        // console.log(matches)
 
         res.status(200).json(matches);
     } catch (err) {

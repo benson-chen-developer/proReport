@@ -92,7 +92,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
 
                             <div style={{ marginRight:'20px', fontSize:'13px', display:'flex', }}>
                                 {rankings.map((rank, i) => 
-                                    <div style={{color: "#A2A2A2", marginTop:'5px'}}>
+                                    <div style={{color: "#A2A2A2", marginTop:'5px'}} key={i}>
 
                                         <span style={{marginRight:'5px'}}>
                                             {i === 0 ? 'ALL:' : `${prop.player.position}:`} 

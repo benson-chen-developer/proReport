@@ -113,7 +113,6 @@ export const parseBarData = (
             stats = stats.map(stat => Number(stat.toFixed(1)));
         }
 
-        
         let pickedStatSplit = filter.stat.split('+');
         let hit = false;
         let lineValue = -1;
