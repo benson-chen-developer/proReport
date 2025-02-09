@@ -31,9 +31,8 @@ export const Body = () => {
             const matchUps = await fetchMatchUps('nba');
             const teams = await fetchNbaTeams();
 
-            // console.log('about')
             const popularProps = await getPopularProps(props, games, players, matchUps);
-            console.log(popularProps)
+            // console.log(popularProps)
             setPopularProps(popularProps);
             setTeams(teams);
 

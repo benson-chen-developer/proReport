@@ -56,6 +56,7 @@ export type BarData = {
     date: string, 
     score: string,
     isHome: boolean,
+    playerTeam: string,
     opp: string,
     tie: boolean,
     underText: string,

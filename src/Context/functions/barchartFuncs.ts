@@ -56,9 +56,11 @@ export const parseBarData = (
     const data = displayedGames.map((game, index) => { 
         const unFormattedDate: Date = new Date(game.date);
         const date = `${unFormattedDate.getUTCMonth() + 1}/${unFormattedDate.getUTCDate()}`;
-        const opp: string = game.team1.toLowerCase() === player.city.toLowerCase() ? game.team2 : game.team1;
-        const isHome: boolean = game.team1 === player.team;
+        
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
+        const playerTeam: string = foundPlayer!.team;
+        const opp: string = game.team1.toLowerCase() === playerTeam.toLowerCase() ? game.team2 : game.team1;
+        const isHome: boolean = game.team1 === player.team;
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
         let statTotal: number = 0;
@@ -137,6 +139,7 @@ export const parseBarData = (
             date: date, 
             score: game.score,
             isHome: isHome,
+            playerTeam: playerTeam,
             opp: opp,
             tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
@@ -229,6 +232,7 @@ export const parseSupportBarData = (
             score: barData.score,
             isHome: barData.isHome,
             opp: barData.opp,
+            playerTeam: barData.playerTeam,
             hit: barData.hit,
             tie: false,
             underText: barData.underText

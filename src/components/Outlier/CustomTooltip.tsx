@@ -26,6 +26,7 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
         const team1Score = payload[0].payload.score.split('-')[0];
         const team2Score = payload[0].payload.score.split('-')[1];
         const oppTeam = payload[0].payload.opp;
+        const playerTeam = payload[0].payload.playerTeam;
         const stats: number[] = [];
         if (payload[0].payload.stat1Text) stats.push(payload[0].payload.stat1);
         if (payload[0].payload.stat2Text) stats.push(payload[0].payload.stat2);
@@ -57,10 +58,10 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                     </div>
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <b style={{ color: '#fff' }}>{convertNBATeamName(player.city!, 0)}</b>
+                        <b style={{ color: '#fff' }}>{convertNBATeamName(playerTeam, 0)}</b>
                         <Image
                             alt={'Team Logo'}
-                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === player.city)?.id}/primary/L/logo.svg`}
+                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === playerTeam)?.id}/primary/L/logo.svg`}
                             width={22} height={22}
                             style={{ marginLeft:'3px' }}
                         /> 

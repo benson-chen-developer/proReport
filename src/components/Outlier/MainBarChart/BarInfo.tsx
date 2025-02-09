@@ -49,7 +49,7 @@ export const BarInfo: React.FC<Props> = ({
                 alignItems:'center', marginLeft:'20px', 
                 fontSize: isMobile ? '12px' : '14px',
             }}>
-                {/* The x out of x and x% */}
+                {/* The 90% 9 of 10 */}
                 <div>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
