@@ -205,17 +205,18 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   };
   const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
     // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
-    let isNewDay = true;
+    // let isNewDay = true;
 
-    if(isNewDay){
-      console.log('isnewday')
+    // if(isNewDay){
+    if(matchUps[league].length === 0){
+      // console.log('isnewday')
       const currentMatchUps = await getMatchUps(league, matchUps);
       // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
       setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
 
       return currentMatchUps;
     } else {
-      console.log('is NOT newday')
+      // console.log('is NOT newday')
       return matchUps[league];
     }
   }

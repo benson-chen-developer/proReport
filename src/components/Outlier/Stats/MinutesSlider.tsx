@@ -1,3 +1,4 @@
+import { Checkbox } from '@mui/material';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { Dispatch, SetStateAction, useState } from 'react';

@@ -366,23 +366,27 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     }
 
     /* Get all games with at least this range of minutes played */
-    displayedGames = displayedGames.filter((game, index) => {
-        const foundPlayer = game.players.find(p => p.name === player.name);
-
-        if(foundPlayer){
-            let totalMinutes = 0;
-            foundPlayer.periods.forEach(period => {
-                totalMinutes += period['MIN'];
-            })
-            totalMinutes = convertSecondsToMinutes(totalMinutes);
-            
-            const lower = filter.minutes[0];
-            const upper = filter.minutes[1];
-            return (totalMinutes >= lower && totalMinutes <= upper)
-        } else {
-            return false;
-        }
-    })
+    if(filter.minutes[0] === -1 || filter.minutes[1] === -1 || filter.minutes[0] > filter.minutes[1]){
+        /* Skip the minutes parsing if no time is selected */
+    } else {
+        displayedGames = displayedGames.filter((game, index) => {
+            const foundPlayer = game.players.find(p => p.name === player.name);
+    
+            if(foundPlayer){
+                let totalMinutes = 0;
+                foundPlayer.periods.forEach(period => {
+                    totalMinutes += period['MIN'];
+                })
+                totalMinutes = convertSecondsToMinutes(totalMinutes);
+                
+                const lower = filter.minutes[0];
+                const upper = filter.minutes[1];
+                return (totalMinutes >= lower && totalMinutes <= upper)
+            } else {
+                return false;
+            }
+        })
+    }
     
     /* Get all home or away games */
     if(filter.isHome && !filter.isAway) displayedGames = displayedGames.filter(game => game.team1 === player.city);

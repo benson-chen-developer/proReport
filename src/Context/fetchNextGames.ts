@@ -12,45 +12,49 @@ export const getMatchUps = async (
     if (league === "nba") {
         const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matchUps/nba`)
         const data = await res.json();
-        
+
+        /* If its like midnight and we have live games from yesterday */
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setHours(0, 0, 0, 0);  
+        /* Games Today */
         const today = new Date();
-        today.setHours(0, 0, 0, 0);  
-        const utcToday = new Date(today.toISOString()); /* Have to compare in UTC or it blows up */
+        today.setHours(0, 0, 0, 0);
 
-        let todaysGames: any[] = []; 
-        /* Strange bug where gameDateEST which is just "2024-12-06T00:00:00Z" doesnt work it shyd but doesnt not sure why */
-        const games: any[] = data.filter((game: any) => new Date(game.gameDateTimeEst) >= utcToday);
-        // console.log("games", games)
-        let lastDay = games.length > 0 ? new Date(games[0].gameDateEst) : null;
+        /* Filter the Games (Based on to date params) */
+        const games: any[] = data.filter((game: any) => {
+            const gameDate = new Date(game.gameDateTimeEst)
+            gameDate.setHours(0, 0, 0, 0);
 
-        if(lastDay){
-            for(const game of games){
-                let currGameDay = new Date(game.gameDateEst);
-                currGameDay.setHours(0, 0, 0, 0);
+            return (
+                gameDate.getTime() === today.getTime() ||
+                (gameDate.getTime() === yesterday.getTime() && !game.gameStatusText.includes("Final"))
+            );
+        });
+
+        // if(lastDay){
+        //     for(const game of games){
+        //         let currGameDay = new Date(game.gameDateEst);
+        //         currGameDay.setHours(0, 0, 0, 0);
     
-                if(currGameDay > lastDay && todaysGames.length > 0){
-                    /* 
-                        Stop adding games once this game is on the 
-                        next day and we have at least one game to return 
-                    */
-                    break;
-                }
-                else if(currGameDay > lastDay && todaysGames.length === 0) {
-                    /* If there are no games today basically */
-                    lastDay = currGameDay
-                    todaysGames.push(game);
-                }
-                else if(currGameDay <= lastDay){
-                    /* These games happened today and we are adding them */
-                    todaysGames.push(game);
-                }
-            }
-        }
-        // const matchUps = todaysGames.map((game) => ({
-        //     league: league,
-        //     teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],
-        //     time: game.gameDateTimeUTC, 
-        // }))
+        //         if(currGameDay > lastDay && todaysGames.length > 0){
+        //             /* 
+        //                 Stop adding games once this game is on the 
+        //                 next day and we have at least one game to return 
+        //             */
+        //             break;
+        //         }
+        //         else if(currGameDay > lastDay && todaysGames.length === 0) {
+        //             /* If there are no games today basically */
+        //             lastDay = currGameDay
+        //             todaysGames.push(game);
+        //         }
+        //         else if(currGameDay <= lastDay){
+        //             /* These games happened today and we are adding them */
+        //             todaysGames.push(game);
+        //         }
+        //     }
+        // }
         const matchUps = games.map((game) => ({
             league: league,
             teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],

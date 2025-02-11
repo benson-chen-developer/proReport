@@ -58,14 +58,14 @@ export const BarInfo: React.FC<Props> = ({
                             </svg>
                         </div>
                         <span style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
-                            {fullStatName}
+                            {fullStatName} {filter.period !== "All" ? `(${filter.period})` : ''}
                         </span>
                         <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
                             {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
                         </span>
                     </div> 
 
-                    {projections.find(p => p.name === filter.stat) ?
+                    {projections.find(p => p.name === filter.stat && p.period === filter.period) ?
                         <div style={{color:'#fff', fontWeight:'bold'}}>
                             {isNaN(percentHit) ?
                                 'No Games' : `${percentHit.toFixed(0)}%`

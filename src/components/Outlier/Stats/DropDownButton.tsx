@@ -1,0 +1,121 @@
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+
+interface Props {
+    options: string[],
+    pickedOptionIndexes: number[],
+    setPickedOptionIndexes: Dispatch<SetStateAction<number[]>>
+    defaultText: string
+}
+export const DaysOfRest: React.FC<Props> = ({options, pickedOptionIndexes, setPickedOptionIndexes, defaultText}) => {
+    const [isPopUp, setIsPopUp] = useState<boolean>(false);
+    const [selectedText, setSelectedText] = useState<string>(defaultText);
+    
+    const popupRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if(
+            buttonRef.current && !buttonRef.current.contains(event.target as Node) &&
+            popupRef.current && !popupRef.current.contains(event.target as Node)
+          ){
+            setIsPopUp(false);
+          } 
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    /* When nothing is picked show default text */
+    useEffect(() => {
+        if(pickedOptionIndexes.length === 0) setSelectedText(defaultText);
+    }, [pickedOptionIndexes])
+
+    return(
+      <div style={{width:'150px', height:'35px', borderRadius:'10px', marginLeft:'10px'}}>
+          {/* Button */}
+          <div 
+              style={{
+                display:'flex', alignItems:'center', background:'#000', border:'1px solid #5B5B5B',
+                height:'100%',  borderRadius: '10px', justifyContent:'space-evenly',
+                cursor:'pointer', userSelect: 'none',
+              }}
+              ref={buttonRef}
+          >
+              <div 
+                onClick={() => setIsPopUp(p => !p)}
+                style={{height:'100%', display:'flex', alignItems:'center', marginLeft:'5px'}}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24"><path fill="#fff" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18m-1 5v5l4.28 2.54l.72-1.21l-3.5-2.08V8z"/></svg>
+              </div>
+             
+              <div 
+                onClick={() => setIsPopUp(p => !p)}
+                style={{height:'100%', width:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}
+              >
+                <p style={{color:'#B1B1B1', fontSize:'12px', fontWeight:'bold'}}>
+                  {selectedText}
+                </p>
+              </div>
+
+              {selectedText !== defaultText ? 
+                  <div onClick={() => {
+                    setSelectedText(defaultText)
+                    setIsPopUp(false)
+                  }} style={{height:'100%', display:'flex', alignItems:'center', marginRight:'5px'}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m4.207 12.793l-1.414 1.414L12 13.414l-2.793 2.793l-1.414-1.414L10.586 12L7.793 9.207l1.414-1.414L12 10.586l2.793-2.793l1.414 1.414L13.414 12z"/></svg>
+                  </div>
+                  :
+                <div 
+                  onClick={() => setIsPopUp(p => !p)}
+                  style={{height:'100%', display:'flex', alignItems:'center', marginRight:'5px'}}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="" fillRule="evenodd"><path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="#fff" d="M13.06 16.06a1.5 1.5 0 0 1-2.12 0l-5.658-5.656a1.5 1.5 0 1 1 2.122-2.121L12 12.879l4.596-4.596a1.5 1.5 0 0 1 2.122 2.12l-5.657 5.658Z"/></g></svg>
+                </div>
+              }
+          </div>
+
+          {/* Pop Up */}
+          {isPopUp ?
+              <div 
+                style={{
+                  width:'150px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
+                  position:'absolute', height:'auto', marginTop:'3px', display:'flex',
+                  alignItems:'center', flexDirection:'column', zIndex: 2
+                }}
+                ref={popupRef}
+              >
+                  {options.map((option, i) => {
+                      return <div 
+                        style={{
+                          width:'100%', display:'flex', alignItems:'center', cursor:'pointer',
+                          height:'50px', justifyContent:'center',
+                          background: pickedOptionIndexes.includes(i) ? '#2B2B2B' : ''
+                        }} 
+                        key={i}
+                        className='hoverBg'
+                        onClick={() => {
+                            let foundIndex = pickedOptionIndexes.findIndex(picked => picked === i);
+                            
+                            if(foundIndex){
+                                setPickedOptionIndexes(p => [...p.splice(foundIndex, 1)])
+                            } else {
+                                setPickedOptionIndexes(p => [...p, i]);
+                            }
+                            setIsPopUp(false);
+                        }}
+                      >
+                        <div style={{width:'80%'}}>
+                            <p style={{fontWeight:'bold', color:'#fff', fontSize:'13px'}}>
+                                {option}
+                            </p>
+                        </div>
+                    </div>
+                  })}
+              </div> : null
+          }
+      </div>
+    )
+}
