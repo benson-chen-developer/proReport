@@ -34,7 +34,7 @@ export const BarInfo: React.FC<Props> = ({
         if(percent >= 80){
             return '#79F4F4';
         } else if(percent >= 70){
-            return '#c9e8e8';
+            return '#fff';
         } else {
             return '#A2A2A2'
         }
@@ -66,7 +66,7 @@ export const BarInfo: React.FC<Props> = ({
                     </div> 
 
                     {projections.find(p => p.name === filter.stat && p.period === filter.period) ?
-                        <div style={{color:'#fff', fontWeight:'bold'}}>
+                        <div style={{color: isNaN(percentHit) ? '#fff' : getColor(percentHit), fontWeight:'bold'}}>
                             {isNaN(percentHit) ?
                                 'No Games' : `${percentHit.toFixed(0)}%`
                             }

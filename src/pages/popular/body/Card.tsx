@@ -19,6 +19,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
 
         if(filter.isAway && !filter.isHome) strArr.push('At Away')
         if(filter.isHome && !filter.isAway) strArr.push('At Home')
+        if(filter.lastGame === "H2H") strArr.push('H2H')
         // if(filter.)
 
         return strArr;
@@ -38,7 +39,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
 
     useEffect(() => {
         const func = async () => {
-            const rankings = getRank(teams, prop.filter, oppTeam!, `vs ${prop.player.position[prop.player.position.length-1]}`)
+            const rankings = getRank(teams, prop.filter, oppTeam!, `${prop.player.position}`)
             setRankings(rankings);
         } 
 
@@ -49,7 +50,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
         <Link
             href={{
                 pathname: `/player/nba/${prop.player.name.replace(" ", "_")}`,
-                query: { paramFilter: JSON.stringify(prop.filter) }, 
+                query: { paramFilter: JSON.stringify(prop.filter), paramPropValue: prop.value }, 
             }}
             target="_blank"  
             rel="noopener noreferrer"
@@ -106,7 +107,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                                     <div style={{color: "#A2A2A2", marginTop:'5px'}} key={i}>
 
                                         <span style={{marginRight:'5px'}}>
-                                            {i === 0 ? 'ALL:' : `${prop.player.position}:`} 
+                                            {i === 0 ? 'ALL:' : `${prop.player.position.split('-')[i-1]}:`} 
                                         </span>
                                         
                                         <span style={{color: getRankColor(rank, teams), marginRight:'20px'}}>

@@ -5,6 +5,7 @@ const PropsModel = new mongoose.Schema({
     name: { type: String, required: true },
     playerName: { type: String, required: true },
     values: { type: [Number], required: true },
+    discount: {type: Number, required: false}, /* Tacos and Sleepr Discounts */
     updated_ats: {type: [String], required: true},
     start_time: {type: Date, required: true},
     odds: {type: Number, required: true},

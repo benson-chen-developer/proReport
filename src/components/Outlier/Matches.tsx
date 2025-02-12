@@ -1,13 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
-import { Game, LolGame, PGame, PlayerType, PPlayer } from '../../Context/Types/PlayerTypes';
-import { DropDownStatsHeader } from '../Outlier/Stats/DropDownStatsHeader';
+import {  PGame, PPlayer } from '../../Context/Types/PlayerTypes';
 import { SecondStatsHeader } from '../Outlier/Stats/SecondStatHeader';
-// import { Hero } from '../Outlier/Hero';
 import { PeriodStatsHeader } from '../Outlier/Stats/PeriodStatsHeader';
 import { PSport } from '../Player/SportClass/Psport';
-import { Averages } from './Averages';
 import { SupportCard } from './Support/SupportCard';
 import { useGlobalContext } from '../../Context/store';
 import { parseBarData, updateFilters } from '../../Context/functions/barchartFuncs';
@@ -23,7 +20,6 @@ import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
-import { clearData, getAllData, saveData } from '../../Context/functions/cookies';
 
 export type Filter = {
     isHome: boolean,
@@ -76,7 +72,7 @@ interface Props {
 }
 export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading}) => {
     const router = useRouter();
-    const { paramPlayer, paramLeague, paramFilter } = router.query;
+    const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
     
@@ -183,16 +179,13 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
                 /* Intial Projections and Intial Stats Filters set up */
                 const projections = await fetchProjections(player!.name);
-                let pickedProjection = null;
                 let newFilters: Filters;
                 if(projections.length === 0) {
                     newFilters = getNewStatsForFilters(true, []);
                     setShowAllStats(true)
                 } else {
                     newFilters = getNewStatsForFilters(false, projections);
-                    pickedProjection = projections.find(p => p.name === newFilters.stats[0] && filter.period === p.period);
                 }
-                setPickedProjection(pickedProjection!)
                 setProjections(projections);
 
                 /* Get the team they are playing against */
@@ -210,9 +203,18 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                 const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
                 setMainBarData(newData);
 
+                let initalPickedProjection = null;
                 if(paramFilter) {
                     try {
-                        const filterFromParam = JSON.parse(paramFilter as string);
+                        const filterFromParam: Filter = JSON.parse(paramFilter as string);
+                        if(paramPropValue){
+                            const foundProp = projections.find(p => 
+                                p.values[p.values.length-1] === Number(paramPropValue) &&
+                                p.period === filterFromParam.period &&
+                                p.name === filterFromParam.stat
+                            );
+                            if(foundProp) initalPickedProjection = foundProp;
+                        }
                         setFilter(p => ({...filterFromParam}))
                     } catch (error) {
                         /* Someone messed up the url just don;t parse it */
@@ -220,10 +222,13 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     }
                 }
 
-                // saveData(data);
-                // clearData();
-                // const matches = await getAllData();
-                // console.log('matches', matches);
+                console.log('inital initalPickedProjection', initalPickedProjection)
+                if(!initalPickedProjection){
+                    initalPickedProjection = projections.find(p => 
+                        p.name === newFilters.stats[0] && filter.period === p.period
+                    );
+                }
+                setPickedProjection(initalPickedProjection ? initalPickedProjection : null);
             }
 
             setLoading(false);
@@ -289,14 +294,25 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
+        
         if(foundProjection) {
-            setPickedProjection(foundProjection);
+            console.log('in good', pickedProjection)
+            console.log()
+            /* Only look for a new one if the current doesn't work */
+            if(pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period){
+                setPickedProjection(foundProjection);
+            }
             
             if(foundProjection.overUnder === 1) setFilter(p => ({...p, over: true}))
+        } else {
+            console.log('in bad')
+            setPickedProjection(null);
         }
-        else setPickedProjection(null);
-
     }, [filter.stat, filter.period, showAllStats])
+
+    useEffect(() => {
+        console.log(pickedProjection)
+    }, [pickedProjection])
 
     if(loading) return (
         <Loading />

@@ -38,14 +38,6 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
         };
     }, []);
 
-    /* When we click a period or stat we check to see if we can find the projection for it */
-    useEffect(() => {
-        const matchingProjection = projections.find(proj => 
-            proj.name === filter.stat && proj.period === filter.period
-        );
-        setPickedProjection(matchingProjection ? matchingProjection : null);
-    }, [filter.stat, filter.period])
-
     useEffect(() => {
         if(pickedProjection?.overUnder !== 3) setFilter(p => ({...p, over: true}));
     }, [pickedProjection])
@@ -101,7 +93,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                                 className='hoverBg' 
                                 style={{
                                     height:'40px', color:'#fff', cursor:'pointer', display:'flex',
-                                    justifyContent:'center', alignItems:'center', width:'100%',
+                                    alignItems:'center', width:'100%',
                                     fontSize: isMobile ? "12px" : '14px', fontWeight:'bold'
                                 }} 
                                 onClick={() => {
@@ -109,15 +101,25 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
                                     setIsPopUp(false);
                                 }}
                             > 
-                                {odds !== 100 ?
-                                    <Image 
-                                        src={odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
-                                        height={16} width={16} 
-                                        alt="Projection icon" 
-                                        style={{margin:'0px 10px 0px 0px'}}
-                                    /> : null
-                                }
-                                <div>{lineValue}</div>
+                                <div style={{width:'30%', display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
+                                    {odds !== 100 ?
+                                        <Image 
+                                            src={odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                            height={16} width={16} 
+                                            alt="Projection icon" 
+                                            style={{margin:'0px 10px 0px 0px'}}
+                                        /> : null
+                                    }
+                                    {projection.discount ? 
+                                        <p style={{fontSize: isMobile ? "10px" : '12px', margin:0, color:'#79F4F4'}}>
+                                            -{projection.discount}%
+                                        </p> : null
+                                    }
+                                </div>
+                                
+                                <div style={{width:'40%', display:'flex', justifyContent:'center', alignItems:'center', color:projection.discount ? '#79F4F4' : '#fff'}}>
+                                    <div>{lineValue}</div>
+                                </div>
                             </div>
                         })}
                 </div> : null

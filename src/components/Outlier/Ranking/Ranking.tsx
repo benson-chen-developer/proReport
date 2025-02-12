@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { calcRank, getTeamStatRanking, RankDisplay } from '../../../Context/functions/rankFunctins'
 import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
-import { PSport } from '../../Player/SportClass/Psport'
 import { Filter, Filters, MatchUp } from '../Matches'
-import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { RankNumber } from './RankNumber'
 
 interface Props {
@@ -115,24 +112,38 @@ const calcFantasyScore = (stats: Record<string, number>): number => {
 };
 
 export const getRank = (
-    teams: Team[], filter: Filter, oppTeam: string, selectedOption:string
+    teams: Team[], filter: Filter, oppTeam: string, position:string
 ): Ranking[] => {
-    const mapping = {"vs G": 0, "vs F": 1, "vs C": 2};
-    const positionIndex = mapping[selectedOption as keyof typeof mapping];
+    const positions = ["All", ...position.split('-')];
+    const rankings = positions.map((pos) => {
+        const orderedTeams = orderTeamsByStatAmount(filter.stat, teams, pos);
+        const teamIndex = orderedTeams.findIndex(team => team.name === oppTeam);
 
-    /* Sorts the teams based on their given stat */
-    let stats = filter.stat.split('+');
+        return {
+            name: `${filter.stat} Allowed`,
+            rank: teamIndex+1,
+            value: (0 / teams[teamIndex].gp).toFixed(1)
+        }
+    })
 
+    return rankings;
+}
+
+const orderTeamsByStatAmount = (stat: string, teams: Team[], position: string): Team[] => {
+    const stats = stat.split('+');
     let teamsOrderedByTotalStat: Team[] = [];
-    let teamsOrderedByPosition: Team[] = [];
+
+    const mapping = {"G": 0, "F": 1, "C": 2, "All": 3};
+    let positionIndex = mapping[position as keyof typeof mapping];
+
     if(stats[0] === "FAN"){
         teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
             const statsA: Record<string, number> = {};
             const statsB: Record<string, number> = {};
         
             Object.keys(statWeights).forEach(stat => {
-                statsA[stat] = a.given[stat]?.[3] ?? 0;
-                statsB[stat] = b.given[stat]?.[3] ?? 0;
+                statsA[stat] = a.given[stat]?.[positionIndex] ?? 0;
+                statsB[stat] = b.given[stat]?.[positionIndex] ?? 0;
             });
         
             const avgA:number = calcFantasyScore(statsA) / a.gp;
@@ -140,54 +151,15 @@ export const getRank = (
         
             return avgB - avgA;
         });
-        teamsOrderedByPosition = teams.slice().sort((a, b) => {
-            const statsA: Record<string, number> = {};
-            const statsB: Record<string, number> = {};
-        
-            Object.keys(statWeights).forEach(stat => {
-                statsA[stat] = a.given[stat]?.[positionIndex] ?? 0; 
-                statsB[stat] = b.given[stat]?.[positionIndex] ?? 0;
-            });
-        
-            const avgA = calcFantasyScore(statsA) / a.gp;
-            const avgB = calcFantasyScore(statsB) / b.gp;
-        
-            return avgB - avgA;
-        });
     } else {
         teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
-            const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][3] / a.gp), 0);
-            const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][3] / b.gp), 0);
-            return avgB - avgA;
-        });
-        teamsOrderedByPosition = teams.slice().sort((a, b) => {
             const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex] / a.gp), 0);
             const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex] / b.gp), 0);
             return avgB - avgA;
         });
     }
 
-    const teamIndex = teamsOrderedByTotalStat.findIndex(team => team.name === oppTeam);
-    const totalStat = stats[0] === "FAN" ? 0 : stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][positionIndex], 0);
-    let rankings: Ranking[] = [
-        {
-            name: `${filter.stat} Allowed`,
-            rank: teamIndex+1,
-            value: (totalStat / teamsOrderedByTotalStat[teamIndex].gp).toFixed(1)
-        },
-    ];
-
-    const teamPosIndex = teamsOrderedByPosition.findIndex(team => team.name === oppTeam);
-    const totalPosStat = stats[0] === "FAN" ? 0 : stats.reduce((sum, stat) => sum + teamsOrderedByTotalStat[teamIndex].given[stat][3], 0);
-    if(selectedOption !== "All"){
-        rankings.push({
-            name: `${filter.stat} Allowed`,
-            rank: teamPosIndex+1,
-            value: (totalPosStat / teamsOrderedByTotalStat[teamPosIndex].gp).toFixed(1)
-        })
-    }
-    
-    return rankings;
+    return teamsOrderedByTotalStat;
 }
 
 export const getRankColor = (ranking: Ranking, teams: Team[]): string => {

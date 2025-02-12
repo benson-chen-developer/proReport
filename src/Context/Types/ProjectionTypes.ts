@@ -4,6 +4,7 @@ export type Projection = {
     period: string,
     playerName: string,
     values: number[],
+    discount?: number, 
     updated_ats: string[],
     start_time: string,
     odds: number,

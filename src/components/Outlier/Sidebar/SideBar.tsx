@@ -16,7 +16,8 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
     const links: {text:string, link:string}[] = [
         {text: 'Home', link: '/home'},
         {text: 'Popular Picks', link: '/popular'},
-        {text: 'Promos', link: '/promotions',}
+        {text: 'Ranking', link: '/ranking'},
+        {text: 'Promos', link: '/promotions'},
     ]
 
     const getIcon = (text:string, picked: boolean) => {

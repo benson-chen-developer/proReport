@@ -29,9 +29,8 @@ export const Index = () => {
             const teams = await fetchNbaTeams();
 
             const popularProps = await getPopularProps(props, games, players, matchUps);
-            // console.log(popularProps)
             setPopularProps(popularProps);
-            setShownPopularProps(shownPopularProps);
+            setShownPopularProps(popularProps);
             setTeams(teams);
 
             /* Set all the filter options */
