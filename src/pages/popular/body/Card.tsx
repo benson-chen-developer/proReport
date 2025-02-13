@@ -3,10 +3,8 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Filter } from '../../../components/Outlier/Matches'
 import { getRank, getRankColor, Ranking } from '../../../components/Outlier/Ranking/Ranking'
-import { RankNumber } from '../../../components/Outlier/Ranking/RankNumber'
 import { convertNBATeamName, convertTime } from '../../../Context/functions/convertNbaName'
 import { Team } from '../../../Context/Types/PlayerTypes'
-import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { PopularProp } from './Body'
 
 interface Props {

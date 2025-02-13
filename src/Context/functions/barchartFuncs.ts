@@ -133,9 +133,9 @@ export const parseBarData = (
             stat1: stats[0], 
             stat2: stats[1],
             stat3: stats[2],
-            stat1Text: stats[0] > 0 ? `${pickedStatSplit[0]}` : '',
-            stat2Text: stats[1] > 0 ? `${pickedStatSplit[1]}` : '',
-            stat3Text: stats[2] > 0 ? `${pickedStatSplit[2]}` : '',
+            stat1Text: pickedStatSplit[0] ? `${pickedStatSplit[0]}` : '',
+            stat2Text: pickedStatSplit[1] ? `${pickedStatSplit[1]}` : '',
+            stat3Text: pickedStatSplit[2] ? `${pickedStatSplit[2]}` : '',
             date: date, 
             score: game.score,
             isHome: isHome,
@@ -331,7 +331,6 @@ export const parseSupportBarData = (
 /* Filter the aviable games to get stats from */
 export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp | undefined): PGame[] => {
     let displayedGames: PGame[] = [];
-    console.log('filter', filter)
 
     /* Get all games without these players */
     displayedGames = allGames.filter(game => 

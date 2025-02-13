@@ -9,7 +9,7 @@ export const Footer = () => {
         }}>
             <div style={{width:'100%', height:'1px', background:'#808080', borderRadius:'10px'}} />
             <div style={{width:'95%', marginTop: '50px'}}>
-                <p style={{color:'#fff', fontWeight:'bold'}}>Sports Stats @ 2024 All Rights Reserved</p>
+                <p style={{color:'#fff', fontWeight:'bold'}}>ProReport @ 2025 All Rights Reserved</p>
             </div>
         </div>
     )
