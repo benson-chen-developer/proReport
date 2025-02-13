@@ -66,6 +66,7 @@ export const getPopularProps = async (
                         matchUp: currentMatch!,
                         filter: currFilter,
                         value: prop.values[prop.values.length-1],
+                        odds: prop.odds
                     };
 
                     if(filterIndex > 0){

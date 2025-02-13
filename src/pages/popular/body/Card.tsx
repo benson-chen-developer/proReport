@@ -95,7 +95,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         </p>
                     </div>
 
-                    <div style={{color:'#fff', width:'60%', marginTop:'10px', fontWeight:'bold'}}>
+                    <div style={{color:'#fff', width:'55%', marginTop:'10px', fontWeight:'bold'}}>
                         <div style={{alignItems:'center', marginTop:'10px'}}>
                             <p style={{color:'#A2A2A2',fontSize:'12px', margin:'auto 0px 0px 0px'}}>
                                 <span style={{color:'#fff'}}>{convertNBATeamName(oppTeam!, 0)} </span>
@@ -146,6 +146,19 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         }
                     </div>
 
+                    {/* Odds (-114) */}
+                    <div style={{
+                        width:'auto', display:'flex', justifyContent:'center', marginTop:'10px',
+                        fontSize:'14px', color:'#A2A2A2', fontWeight:'bold'
+                    }}>
+                        {prop.odds !== 100 ?
+                            <Image 
+                                src={prop.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                height={16} width={16} 
+                                alt="Projection icon" 
+                            /> : null
+                        }
+                    </div>
                 </div>
 
                 {/* Bottom Bar */}

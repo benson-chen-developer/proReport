@@ -10,6 +10,7 @@ export type PopularProp = {
     matchUp: MatchUp,
     value: number,
     filter: Filter,
+    odds: number
 }
 
 interface Props {

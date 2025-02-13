@@ -296,8 +296,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
         
         if(foundProjection) {
-            console.log('in good', pickedProjection)
-            console.log()
             /* Only look for a new one if the current doesn't work */
             if(pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period){
                 setPickedProjection(foundProjection);
@@ -305,7 +303,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             
             if(foundProjection.overUnder === 1) setFilter(p => ({...p, over: true}))
         } else {
-            console.log('in bad')
             setPickedProjection(null);
         }
     }, [filter.stat, filter.period, showAllStats])
