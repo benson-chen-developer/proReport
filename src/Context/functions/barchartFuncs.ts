@@ -331,6 +331,7 @@ export const parseSupportBarData = (
 /* Filter the aviable games to get stats from */
 export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlayer, matchUp: MatchUp | undefined): PGame[] => {
     let displayedGames: PGame[] = [];
+    console.log('filter', filter)
 
     /* Get all games without these players */
     displayedGames = allGames.filter(game => 
@@ -390,7 +391,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     
     /* Get all home or away games */
     if(filter.isHome && !filter.isAway) displayedGames = displayedGames.filter(game => game.team1 === player.city);
-    else if(filter.isAway && !filter.isHome) displayedGames.filter(game => game.team2 === player.city);
+    else if(filter.isAway && !filter.isHome) displayedGames = displayedGames.filter(game => game.team2 === player.city);
 
     /* Get L(*) or H2H */
     if(filter.lastGame[0] === "L"){

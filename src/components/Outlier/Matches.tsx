@@ -307,10 +307,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         }
     }, [filter.stat, filter.period, showAllStats])
 
-    useEffect(() => {
-        console.log(pickedProjection)
-    }, [pickedProjection])
-
     if(loading) return (
         <Loading />
     )
