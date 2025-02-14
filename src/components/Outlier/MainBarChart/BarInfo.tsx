@@ -5,7 +5,7 @@ import { useGlobalContext } from '../../../Context/store'
 import { PGame } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { ProjectionSquare } from '../Hero/Projection'
-import { BarData, Filter, Filters, MatchUp } from '../Matches'
+import { BarData, Filter, Filters } from '../Matches'
 import { DropDownStatsHeader } from '../Stats/DropDownStatsHeader'
 
 interface Props {

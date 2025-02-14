@@ -2,10 +2,10 @@
 import React, { createContext, useContext, Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
 import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, Team, ValorantPlayer } from './Types/PlayerTypes';
 import {apiUrl} from '../data/data';
-import { MatchUp } from '../components/Outlier/Matches';
 import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
 import { getAllData, saveData } from './functions/cookies';
+import { MatchUp } from './Types/Match';
 
 
 interface ContextProps {
@@ -210,7 +210,8 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     // if(isNewDay){
     if(matchUps[league].length === 0){
       // console.log('isnewday')
-      const currentMatchUps = await getMatchUps(league, matchUps);
+      const teams = await fetchNbaTeams();
+      const currentMatchUps = await getMatchUps(league, teams);
       // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
       setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
 

@@ -20,6 +20,7 @@ import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
+import { MatchUp } from '../../Context/Types/Match';
 
 export type Filter = {
     isHome: boolean,
@@ -57,11 +58,6 @@ export type BarData = {
     tie: boolean,
     underText: string,
     hit: boolean
-}
-export type MatchUp = {
-    league: string,
-    teams: string[], 
-    time: string, 
 }
 
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
@@ -190,7 +186,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
                 /* Get the team they are playing against */
                 const matchUps = await fetchMatchUps(league);
-                const matchUp = matchUps.find(match => match.teams.includes(player!.city));
+                const matchUp = matchUps.find(match => match.teams.some(t => t.name === player!.city));
                 setMatchUp(matchUp);
                 if(matchUp && !filters.lastGames.includes('H2H')){
                     newFilters.lastGames = [...newFilters.lastGames, "H2H"];
@@ -222,7 +218,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     }
                 }
 
-                console.log('inital initalPickedProjection', initalPickedProjection)
                 if(!initalPickedProjection){
                     initalPickedProjection = projections.find(p => 
                         p.name === newFilters.stats[0] && filter.period === p.period

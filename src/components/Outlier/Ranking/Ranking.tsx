@@ -1,7 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
-import { Filter, Filters, MatchUp } from '../Matches'
+import { Filter, Filters } from '../Matches'
+import Image from 'next/image'
+import { teamColors } from '../../../Context/functions/colors/colors'
+import { NBATeamCircle } from '../Hero/TeamsMatchUp'
+import { MatchUp } from '../../../Context/Types/Match'
 
 interface Props {
     matchUp: MatchUp
@@ -16,7 +20,7 @@ export type Ranking = {
 export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
     const [rankings, setRankings] = useState<Ranking[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
-    const oppTeam = matchUp.teams.find(team => team !== player.city);
+    const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
 
     const {fetchNbaTeams} = useGlobalContext();
 
@@ -25,30 +29,33 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
             const nbaTeams = await fetchNbaTeams();
             setTeams(nbaTeams);
 
-            const rankings = getRank(nbaTeams, filter, oppTeam!, player.position)
+            const rankings = getRank(nbaTeams, filter, oppTeam!.name, player.position)
             setRankings(rankings);
         }
 
         func();
     }, [filter.stat, filter.period])
 
+
     return (
-        <div>
-            <h1 style={{fontWeight:'bold', fontSize:'16px', color:'#fff', margin:'25px 0px 0px 0px'}}>
-                {oppTeam} Allows
+        <div style={{width:"95%", borderRadius:'15px'}}>
+            <h1 style={{
+                fontWeight:'bold', fontSize:'16px', color:'#fff', margin:'10px 0px 5px 0px',
+                display: 'flex'
+            }}>
+                <NBATeamCircle team={oppTeam}/>
+
+                <span style={{marginLeft:'5px'}}>{oppTeam.name}</span>
             </h1>
 
             {/* Headers (Rank + Avg) */}
-            <div style={{width:'100%', display:'flex', margin:'15px 0px 5px 0px'}}>
-                <div style={{ width:'60%' }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '12px', color: '#B1B1B1'}}>
-                        {filter.stat} Allowed Per Game
-                    </p>
-                </div>
+            <div style={{width:'100%', display:'flex', margin:'0px 0px 10px 0px'}}>
+                <p style={{ fontWeight: 'bold', fontSize: '12px', color: '#B1B1B1', margin:'0px'}}>
+                    {filter.stat} Allowed Per Game
+                </p>
             </div>
 
-            {/* Actual Data (Points Allowed     23rd     101.1) */}
-            <div style={{ marginRight:'20px', display:'flex', fontSize:'14px'}}>
+            <div style={{ display:'flex', fontSize:'14px', marginTop:'20px'}}>
                 {rankings.map((ranking, i) => {
                     return (
                         <div key={i} style={{display:'flex', marginBottom:'15px', fontWeight: 'bold', marginRight:'25px'}}>

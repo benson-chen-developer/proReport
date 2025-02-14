@@ -4,8 +4,9 @@ import { PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import Image from 'next/image'
 import { useGlobalContext } from '../../../Context/store'
-import { MatchUp } from '../Matches'
 import { convertNBATeamName } from '../../../Context/functions/convertNbaName'
+import { MatchUp } from '../../../Context/Types/Match'
+import { NBATeamCircle, TeamsMatchUp } from './TeamsMatchUp'
 
 interface Props {
     player: PPlayer
@@ -68,11 +69,11 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                 height:'100%', display:'flex', justifyContent:'flex-end', marginLeft: isMobile ? '0px' : '25px',
                 flexDirection:'column', width:'50%',
             }}>
-                <p style={{margin:0, fontSize: isMobile ? '24px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
+                <p style={{margin:0, fontSize: isMobile ? '18px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
                 
                 <p style={{
                     margin: isMobile ? '0px 0px 20px 0px' : '0px 0px 20px 0px', 
-                    fontSize: isMobile ? '14px' : '20px', fontWeight:'bold', color:'#fff'
+                    fontSize: isMobile ? '12px' : '20px', fontWeight:'bold', color:'#fff'
                 }}>
                     {player.city} | {player.position.replace('-', ' - ')}
                 </p>
@@ -112,10 +113,11 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                     fontSize: isMobile ? '10px' : '14px'
                 }}>
                     <p style={{ 
-                        marginRight: isMobile ? '15px' : '25px', 
+                        marginRight: isMobile ? '10px' : '15px', 
                         marginBottom: isMobile ? '5px' : '10px', 
                         fontSize: isMobile ? '11px' : '16px' 
                     }}>
+                        ({matchUp.teams[0].name === player.city ? "Home" : "Away"}) {" "}
                         {(() => {
                             const date = matchUp ? new Date(matchUp.time) : new Date();
                             const today = new Date();
@@ -134,21 +136,12 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                         })()}
                     </p>
                     
-                    <div style={{
-                        borderRadius:'20px', background:'#2B2B2B',
-                        border: rightBtn === "Filters" ? '2px solid #FFFFFF' : '2px solid #2B2B2B', 
-                        display:'flex', alignItems:'center',cursor:'pointer',
-                        justifyContent:'center',
-                        margin: isMobile ? '0px 10px 10px 0px' : '0px 10px 20px 0px',
-                        marginRight:'10px', 
-                        height: isMobile ? '21px' : '30px', 
-                        padding: isMobile ? '0px 5px' : '0px 15px', 
-                    }}>
-                        {`${convertNBATeamName(matchUp?.teams[0], 0)} vs ${convertNBATeamName(matchUp?.teams[1], 0)}`} 
-                        
-                        <span style={{fontWeight: 'normal', marginLeft: isMobile ? '5px' : '15px'}}>
-                            {formattedTime}
-                        </span>
+                    <div style={{marginBottom:'10px'}}>
+                        <TeamsMatchUp 
+                            matchUp={matchUp} 
+                            index={0}
+                            picked={false}
+                        />
                     </div>
                 </div> : null
             }

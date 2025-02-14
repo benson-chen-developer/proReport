@@ -6,6 +6,7 @@ import { convertNBATeamName } from '../../Context/functions/convertNbaName';
 import { convertSupportName } from '../../Context/functions/convertStatName';
 import { useGlobalContext } from '../../Context/store';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
+import { NBATeamCircle } from './Hero/TeamsMatchUp';
 
 type CustomTooltipProps = TooltipProps<ValueType, NameType> & { player: PPlayer, chartType: 'support' | 'main' };
 
@@ -44,13 +45,17 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                 {/* Row 1 */}
                 <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between', marginTop:'10px',alignItems:'center'}}>
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <Image
+                        {/* <Image
                             alt={'Team Logo'}
                             src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === oppTeam)?.id}/primary/L/logo.svg`}
                             width={22} height={22}
                             style={{ marginRight:'3px' }}
-                        />  
-                        <b style={{ color: '#fff' }}>{convertNBATeamName(oppTeam, 0)}</b>
+                        />   */}
+                        <NBATeamCircle 
+                            teamId={nbaTeams.find(t => t.name === oppTeam)!.id}
+                            teamName={nbaTeams.find(t => t.name === oppTeam)!.name}
+                        />
+                        <b style={{ color: '#fff', marginLeft:'5px' }}>{convertNBATeamName(oppTeam, 0)}</b>
                     </div>
 
                     <div style={{ color: '#A2A2A2', fontWeight:'bold'}}>
@@ -58,13 +63,17 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                     </div>
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <b style={{ color: '#fff' }}>{convertNBATeamName(playerTeam, 0)}</b>
-                        <Image
+                        <b style={{ color: '#fff', marginRight:'5px' }}>{convertNBATeamName(playerTeam, 0)}</b>
+                        {/* <Image
                             alt={'Team Logo'}
                             src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === playerTeam)?.id}/primary/L/logo.svg`}
                             width={22} height={22}
                             style={{ marginLeft:'3px' }}
-                        /> 
+                        />  */}
+                        <NBATeamCircle 
+                            teamId={nbaTeams.find(t => t.name === playerTeam)!.id}
+                            teamName={nbaTeams.find(t => t.name === playerTeam)!.name}
+                        />
                     </div>
                 </div>
 

@@ -1,13 +1,12 @@
-import { Dispatch, SetStateAction } from "react";
-import { MatchUp } from "../components/Outlier/Matches";
+import { MatchUp } from "./Types/Match";
+import { Team } from "./Types/PlayerTypes";
 
 /*
     1) Check at 8am EST each day
         - If the lastDateChecked is past 8am est today then don't check for todays games
 */
 export const getMatchUps = async (
-    league: string, 
-    matchUps: Record<string, MatchUp[]>, 
+    league: string, teams: Team[]
   ): Promise<MatchUp[]> => {
     if (league === "nba") {
         const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matchUps/nba`)
@@ -55,11 +54,19 @@ export const getMatchUps = async (
         //         }
         //     }
         // }
-        const matchUps = games.map((game) => ({
-            league: league,
-            teams: [game.homeTeam.teamCity, game.awayTeam.teamCity],
-            time: game.gameDateTimeUTC, 
-        }))
+        const matchUps: MatchUp[] = games.map((game) => {
+            const homeTeam = teams.find(t => t.name === game.homeTeam.teamCity);
+            const awayTeam = teams.find(t => t.name === game.awayTeam.teamCity);
+
+            if(!homeTeam || !awayTeam) return null;
+
+            return {
+                league: league,
+                teams: [homeTeam, awayTeam],
+                time: game.gameDateTimeUTC, 
+            }
+        })
+        .filter((matchUp): matchUp is MatchUp => matchUp !== null);
 
         return matchUps;
     }

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { MatchUp } from '../../components/Outlier/Matches';
+import { ClipLoader } from 'react-spinners';
 import { SideBar } from '../../components/Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
+import { MatchUp } from '../../Context/Types/Match';
 import { Team } from '../../Context/Types/PlayerTypes';
-import { Body, PopularProp } from '../popular/body/Body';
-import { getPopularProps } from '../popular/body/functions';
-import { Header } from '../popular/header/Header';
+import { Body, PopularProp } from './body/Body';
+import { getPopularProps } from './body/functions';
+import { Header } from './header/Header';
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -70,16 +71,20 @@ export const Index = () => {
             />
 
             <div style={{width: isMobile ? '100%' : '80%', height:'100%'}}>
-                <Header 
-                    pickedMatchUps={pickedMatchUps}
-                    setPickedMatchUps={setPickedMatchUps}
-                />
+                {loading ? <ClipLoader color='#fff' size={40}/> :
+                    <>
+                        <Header 
+                            pickedMatchUps={pickedMatchUps}
+                            setPickedMatchUps={setPickedMatchUps}
+                        />
 
-                <Body 
-                    teams={teams}
-                    loading={loading}
-                    popularProps={shownPopularProps}
-                />
+                        <Body 
+                            teams={teams}
+                            loading={loading}
+                            popularProps={shownPopularProps}
+                        />
+                    </>
+                }
             </div>
         </div>
     )

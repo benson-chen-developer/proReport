@@ -15,8 +15,7 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
 
     const links: {text:string, link:string}[] = [
         {text: 'Home', link: '/home'},
-        {text: 'Popular Picks', link: '/popular'},
-        {text: 'Ranking', link: '/ranking'},
+        // {text: 'Ranking', link: '/ranking'},
         {text: 'Promos', link: '/promotions'},
     ]
 
@@ -32,10 +31,10 @@ export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) =>
         }}>
             <div style={{height:'40px'}}/>
 
-            <div style={{width:'90%', display:'flex', justifyContent:'space-between'}}>
+            {/* <div style={{width:'90%', display:'flex', justifyContent:'space-between'}}>
                 <div />
                 <Promos />
-            </div>
+            </div> */}
 
             <Search setSidebarVisible={setSidebarVisible} length='90%'/>
             <div style={{height:'20px'}} />
