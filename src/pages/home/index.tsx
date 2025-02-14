@@ -71,7 +71,11 @@ export const Index = () => {
             />
 
             <div style={{width: isMobile ? '100%' : '80%', height:'100%'}}>
-                {loading ? <ClipLoader color='#fff' size={40}/> :
+                {loading ? 
+                    <div style={{display:'flex', width:'100%', justifyContent:'center', marginTop:'100px'}}>
+                        <ClipLoader color='#fff' size={40}/> 
+                    </div>
+                        :
                     <>
                         <Header 
                             pickedMatchUps={pickedMatchUps}

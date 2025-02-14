@@ -10,7 +10,7 @@ interface Props {
 
 export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => {
     const [matchUps, setMatchUps] = useState<MatchUp[]>([]);
-    const {fetchMatchUps} = useGlobalContext();
+    const {fetchMatchUps, isMobile} = useGlobalContext();
 
     useEffect(() => {
         const func = async () => {
@@ -26,20 +26,26 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => 
     return (
         <div style={{
             width:'100%', height:'20vh', background:'#151515', borderBottom:'1px solid #fff',
-            display:'flex'
+            display:'flex', flexDirection:'column'
         }}>
+            <p style={{
+                color:'#fff', fontSize: isMobile ? '18px' : "22px", fontWeight:'bold',
+                margin: isMobile ? '40px 0px 0px 10px' : '30px 0px 0px 20px', 
+            }}>
+                Home
+            </p>
 
             {/* Matches */}
             <div style={{display:'flex', width:' 100%', marginTop:'auto', marginBottom:'10px'}}>
                 <div style={{
-                    color:'#fff', fontWeight:'bold', margin:0, width:'10%',
+                    color:'#fff', fontWeight:'bold', margin:0, width: isMobile ? "15%" : '10%',
                     display:'flex', alignItems:'center', justifyContent:'center'
                 }}>
                     <div style={{
-                        height:'40px', borderRadius:'5px', width:'80%',
+                        height: isMobile ? '30px' : '40px', borderRadius:'5px', width:'80%',
                         marginLeft:'10%',
                         background: matchPicked ? '#fff' : '#2B2B2B', 
-                        fontSize:'14px',
+                        fontSize: isMobile ? '10px' : '14px',
                         border:'1px solid grey',
                         display:'flex', alignItems:'center', justifyContent:'center'
                     }}>
@@ -64,7 +70,7 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => 
 
                 <div
                     style={{
-                        display: 'flex', width: '90%', overflowX: 'auto', 
+                        display: 'flex', width: isMobile ? '85%' : '90%', overflowX: 'auto', 
                         whiteSpace: 'nowrap'
                     }}
                 >
