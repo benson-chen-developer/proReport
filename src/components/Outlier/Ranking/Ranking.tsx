@@ -1,9 +1,7 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes'
+import React, { useEffect, useState } from 'react'
+import { PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
-import { Filter, Filters } from '../Matches'
-import Image from 'next/image'
-import { teamColors } from '../../../Context/functions/colors/colors'
+import { Filter } from '../Matches'
 import { NBATeamCircle } from '../Hero/TeamsMatchUp'
 import { MatchUp } from '../../../Context/Types/Match'
 

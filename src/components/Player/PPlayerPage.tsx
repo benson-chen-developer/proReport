@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/router';
-import { ClipLoader } from 'react-spinners';
+import React, { useState } from 'react'
 import { Matches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';

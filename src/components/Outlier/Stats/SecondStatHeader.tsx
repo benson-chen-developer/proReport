@@ -2,10 +2,6 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { HomeSwitches } from './HomeSwitches';
-import { bgColor} from '../../Player/PPlayerPage';
 import { Filter, Filters } from '../Matches';
 
 const PinkSwitch = styled(Switch)(({ theme }) => ({

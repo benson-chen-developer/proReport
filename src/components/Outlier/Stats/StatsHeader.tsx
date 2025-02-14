@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { useGlobalContext } from '../../../Context/store';
-import { bgColor } from '../../Player/PPlayerPage';
 import { Filter, Filters } from '../Matches';
 
 interface CustomLabelProps {
