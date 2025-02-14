@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { Filter } from '../../../components/Outlier/Matches'
-import { getRank, getRankColor, Ranking } from '../../../components/Outlier/Ranking/Ranking'
-import { convertNBATeamName, convertTime } from '../../../Context/functions/convertNbaName'
-import { Team } from '../../../Context/Types/PlayerTypes'
+import { Filter } from '../../../Outlier/Matches'
+import { getRank, getRankColor, Ranking } from '../../../Outlier/Ranking/Ranking'
+import { convertNBATeamName, convertTime } from '../../../../Context/functions/convertNbaName'
+import { Team } from '../../../../Context/Types/PlayerTypes'
 import { PopularProp } from './Body'
 
 interface Props {

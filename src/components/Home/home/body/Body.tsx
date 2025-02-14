@@ -1,8 +1,8 @@
 import { ClipLoader } from 'react-spinners';
-import { BarData, Filter } from '../../../components/Outlier/Matches';
-import { useGlobalContext } from '../../../Context/store';
-import { MatchUp } from '../../../Context/Types/Match';
-import { PGame, PPlayer, Team } from '../../../Context/Types/PlayerTypes';
+import { BarData, Filter } from '../../../Outlier/Matches';
+import { useGlobalContext } from '../../../../Context/store';
+import { MatchUp } from '../../../../Context/Types/Match';
+import { PGame, PPlayer, Team } from '../../../../Context/Types/PlayerTypes';
 import { Card } from './Card';
 
 export type PopularProp = {

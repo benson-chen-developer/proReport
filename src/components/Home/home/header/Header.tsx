@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { TeamsMatchUp } from '../../../components/Outlier/Hero/TeamsMatchUp';
-import { useGlobalContext } from '../../../Context/store';
-import { MatchUp } from '../../../Context/Types/Match';
+import { TeamsMatchUp } from '../../../Outlier/Hero/TeamsMatchUp';
+import { useGlobalContext } from '../../../../Context/store';
+import { MatchUp } from '../../../../Context/Types/Match';
 
 interface Props {
     pickedMatchUps: MatchUp[],

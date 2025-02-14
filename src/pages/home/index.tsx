@@ -4,9 +4,9 @@ import { SideBar } from '../../components/Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
 import { MatchUp } from '../../Context/Types/Match';
 import { Team } from '../../Context/Types/PlayerTypes';
-import { Body, PopularProp } from './body/Body';
-import { getPopularProps } from './body/functions';
-import { Header } from './header/Header';
+import { Body, PopularProp } from '../../components/Home/home/body/Body';
+import { getPopularProps } from '../../components/Home/home/body/functions';
+import { Header } from '../../components/Home/home/header/Header';
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);

@@ -1,8 +1,8 @@
-import { Filter } from "../../../components/Outlier/Matches";
-import { parseBarData } from "../../../Context/functions/barchartFuncs";
-import { MatchUp } from "../../../Context/Types/Match";
-import { PGame, PPlayer } from "../../../Context/Types/PlayerTypes";
-import { Projection } from "../../../Context/Types/ProjectionTypes";
+import { Filter } from "../../../Outlier/Matches";
+import { parseBarData } from "../../../../Context/functions/barchartFuncs";
+import { MatchUp } from "../../../../Context/Types/Match";
+import { PGame, PPlayer } from "../../../../Context/Types/PlayerTypes";
+import { Projection } from "../../../../Context/Types/ProjectionTypes";
 import { PopularProp } from "./Body";
 
 export const getPopularProps = async (
