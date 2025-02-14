@@ -1,4 +1,5 @@
-import { BarData, Filter, Filters, MatchUp } from "../../components/Outlier/Matches";
+import { BarData, Filter, Filters } from "../../components/Outlier/Matches";
+import { MatchUp } from "../Types/Match";
 import { PGame, PPlayer } from "../Types/PlayerTypes";
 import { Projection } from "../Types/ProjectionTypes";
 import { convertNBATeamName } from "./convertNbaName";
@@ -398,8 +399,8 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
         displayedGames = displayedGames.reverse().slice(-length).reverse();
     }
     else if(filter.lastGame === "H2H"){
-        const oppTeam = matchUp?.teams.find(team => team !== player.city);
-        displayedGames = displayedGames.filter(game => game.team1 === oppTeam || game.team2 === oppTeam);
+        const oppTeam = matchUp?.teams.find(team => team.name !== player.city);
+        displayedGames = displayedGames.filter(game => game.team1 === oppTeam?.name || game.team2 === oppTeam?.name);
     }
     return displayedGames;
 }
