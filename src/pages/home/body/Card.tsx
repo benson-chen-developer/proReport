@@ -23,21 +23,21 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
         return strArr;
     }
     const matchUpText = `
-        ${convertNBATeamName(prop.matchUp.teams[0], 0)} 
+        ${convertNBATeamName(prop.matchUp.teams[0].name, 0)} 
             vs 
-        ${convertNBATeamName(prop.matchUp.teams[1], 0)} - 
+        ${convertNBATeamName(prop.matchUp.teams[1].name, 0)} - 
         ${convertTime(prop.matchUp.time, 'Day')} 
         ${convertTime(prop.matchUp.time, 'Time')}
     `
 
     const team = teams.find(t => t.name === prop.player.city);
-    const oppTeam = prop.matchUp.teams.find(team => team !== prop.player.city);
+    const oppTeam = prop.matchUp.teams.find(team => team.name !== prop.player.city);
 
     const [rankings, setRankings] = useState<Ranking[]>([]);
 
     useEffect(() => {
         const func = async () => {
-            const rankings = getRank(teams, prop.filter, oppTeam!, `${prop.player.position}`)
+            const rankings = getRank(teams, prop.filter, oppTeam?.name!, `${prop.player.position}`)
             setRankings(rankings);
         } 
 
@@ -96,7 +96,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                     <div style={{color:'#fff', width:'55%', marginTop:'10px', fontWeight:'bold'}}>
                         <div style={{alignItems:'center', marginTop:'10px'}}>
                             <p style={{color:'#A2A2A2',fontSize:'12px', margin:'auto 0px 0px 0px'}}>
-                                <span style={{color:'#fff'}}>{convertNBATeamName(oppTeam!, 0)} </span>
+                                <span style={{color:'#fff'}}>{convertNBATeamName(oppTeam?.name!, 0)} </span>
                                 {prop.filter.stat} Allowed
                             </p>
 

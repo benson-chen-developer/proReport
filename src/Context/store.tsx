@@ -1,8 +1,7 @@
 'use client';
 import React, { createContext, useContext, Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
 import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, Team, ValorantPlayer } from './Types/PlayerTypes';
-import {apiUrl} from '../data/data';
-import { checkIfIsNewDay, getMatchUps } from './fetchNextGames';
+import { getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
 import { getAllData, saveData } from './functions/cookies';
 import { MatchUp } from './Types/Match';
