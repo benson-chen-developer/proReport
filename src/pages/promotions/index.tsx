@@ -7,6 +7,7 @@ import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import { fetchPromos } from '../../Context/functions/fetchPromos';
 import { useGlobalContext } from '../../Context/store';
+import { Loading } from '../../components/Outlier/Loading/Loading';
 // import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -23,6 +24,7 @@ export type Promo = {
 const Index = () => {
     const {isMobile}  = useGlobalContext();
     const [promos, setPromos] = useState<Promo[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     /* SideBar Mobiele Responsive */
     const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -31,6 +33,7 @@ const Index = () => {
         const func = async () => {
             const promos = await fetchPromos();
             setPromos(promos)
+            setLoading(false);
         }
 
         func();
@@ -63,6 +66,10 @@ const Index = () => {
             </IconButton>
         </React.Fragment>
     );
+
+    if(loading) return(
+        <Loading />
+    )
 
     if(isMobile) return (
         <div style={{background:'#1E1E1E', width:'100%', minHeight:'100vh', position: 'relative', overflow: 'hidden'}}>

@@ -199,6 +199,7 @@ export const Bars: React.FC<Props> = ({
                                     ? entry.statTotal === lineValue 
                                         ? "#FFFFFF" 
                                         : entry.hit 
+                                            // ? "#14EE9D"
                                             ? "#79F4F4" 
                                             : '#A2A2A2' 
                                     : '#EEEEEE'}

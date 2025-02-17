@@ -19,7 +19,7 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
             style={{
                 borderRadius: "10px",
                 minHeight: '100px', maxHeight: "400px",
-                width: isMobile ? '100%' : '130%',
+                width: '100%',
                 overflowY: "auto", border: '1px solid #A2A2A2',
                 backgroundColor: "#1E1E1E", marginTop: '5px', zIndex: 3,
                 overflowX: "hidden",
