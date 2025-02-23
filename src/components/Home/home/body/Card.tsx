@@ -5,13 +5,13 @@ import { Filter } from '../../../Outlier/Matches'
 import { getRank, getRankColor, Ranking } from '../../../Outlier/Ranking/Ranking'
 import { convertNBATeamName, convertTime } from '../../../../Context/functions/convertNbaName'
 import { Team } from '../../../../Context/Types/PlayerTypes'
-import { PopularProp } from './Body'
+import { PopularProp, Projection } from '../../../../Context/Types/ProjectionTypes'
 
 interface Props {
-    prop: PopularProp,
+    popularProp: PopularProp,
     teams: Team[]
 }
-export const Card: React.FC<Props>  = ({prop, teams}) => {
+export const Card: React.FC<Props>  = ({popularProp, teams}) => {
     const getFiltersText = (filter: Filter): string[] => {
         let strArr: string[] = [];
 
@@ -23,21 +23,21 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
         return strArr;
     }
     const matchUpText = `
-        ${convertNBATeamName(prop.matchUp.teams[0].name, 0)} 
+        ${convertNBATeamName(popularProp.matchUp.teams[0].name, 0)} 
             vs 
-        ${convertNBATeamName(prop.matchUp.teams[1].name, 0)} - 
-        ${convertTime(prop.matchUp.time, 'Day')} 
-        ${convertTime(prop.matchUp.time, 'Time')}
+        ${convertNBATeamName(popularProp.matchUp.teams[1].name, 0)} - 
+        ${convertTime(popularProp.matchUp.time, 'Day')} 
+        ${convertTime(popularProp.matchUp.time, 'Time')}
     `
 
-    const team = teams.find(t => t.name === prop.player.city);
-    const oppTeam = prop.matchUp.teams.find(team => team.name !== prop.player.city);
+    const team: Team = teams.find(t => t.name === popularProp.prop.player.city)!;
+    const oppTeam = popularProp.matchUp.teams.find(team => team.name !== popularProp.prop.player.city);
 
     const [rankings, setRankings] = useState<Ranking[]>([]);
 
     useEffect(() => {
         const func = async () => {
-            const rankings = getRank(teams, prop.filter, oppTeam?.name!, `${prop.player.position}`)
+            const rankings = getRank(teams, popularProp.prop.popularGameFilter, oppTeam?.name!, `${popularProp.prop.player.position}`)
             setRankings(rankings);
         } 
 
@@ -47,8 +47,8 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
     return (
         <Link
             href={{
-                pathname: `/player/nba/${prop.player.name.replace(" ", "_")}`,
-                query: { paramFilter: JSON.stringify(prop.filter), paramPropValue: prop.value }, 
+                pathname: `/player/nba/${popularProp.prop.player.name.replace(" ", "_")}`,
+                query: { paramFilter: JSON.stringify(popularProp.prop.popularGameFilter), paramPropValue: popularProp.prop.values[popularProp.prop.values.length-1] }, 
             }}
             target="_blank"  
             rel="noopener noreferrer"
@@ -67,7 +67,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         <div style={{ position: 'relative', width: '100px', height: '75px'}}>
                             {/* Player Picture */}
                             <Image
-                                src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${prop.player.playerId}.png`}
+                                src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${popularProp.prop.player.playerId}.png`}
                                 height={60}
                                 width={80} 
                                 alt="Player Picture"
@@ -86,7 +86,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                             />
                         </div>
                         <p style={{color:'#fff', fontWeight:'bold', margin:'-5px 0px 0px 0px', fontSize:'14px'}}>
-                            {prop.player.name}
+                            {popularProp.prop.player.name}
                         </p>
                         <p style={{color:'#A2A2A2', fontWeight:'bold', margin:'5px 0px 0px 0px', fontSize:'12px'}}>
                             {matchUpText} 
@@ -97,7 +97,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         <div style={{alignItems:'center', marginTop:'10px'}}>
                             <p style={{color:'#A2A2A2',fontSize:'12px', margin:'auto 0px 0px 0px'}}>
                                 <span style={{color:'#fff'}}>{convertNBATeamName(oppTeam?.name!, 0)} </span>
-                                {prop.filter.stat} Allowed
+                                {popularProp.prop.popularGameFilter.stat} Allowed
                             </p>
 
                             <div style={{ marginRight:'20px', fontSize:'13px', display:'flex', }}>
@@ -105,7 +105,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                                     <div style={{color: "#A2A2A2", marginTop:'5px'}} key={i}>
 
                                         <span style={{marginRight:'5px'}}>
-                                            {i === 0 ? 'ALL:' : `${prop.player.position.split('-')[i-1]}:`} 
+                                            {i === 0 ? 'ALL:' : `${popularProp.prop.player.position.split('-')[i-1]}:`} 
                                         </span>
                                         
                                         <span style={{color: getRankColor(rank, teams), marginRight:'20px'}}>
@@ -116,7 +116,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                             </div>
                         </div>
                         
-                        {getFiltersText(prop.filter).length !== 0 ?
+                        {getFiltersText(popularProp.prop.popularGameFilter).length !== 0 ?
                             <div style={{fontSize:'12px', color:'#A2A2A2', marginTop:'15px'}}>
                                 <div style={{display:'flex'}}>
                                     <svg
@@ -135,7 +135,7 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                                     </span>
                                 </div>
 
-                                {getFiltersText(prop.filter).map((str, i) => 
+                                {getFiltersText(popularProp.prop.popularGameFilter).map((str, i) => 
                                     <p style={{margin: '5px 0px 0px 0px'}} key={i}>
                                         - {str}
                                     </p>
@@ -149,9 +149,9 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                         width:'auto', display:'flex', justifyContent:'center', marginTop:'10px',
                         fontSize:'14px', color:'#A2A2A2', fontWeight:'bold'
                     }}>
-                        {prop.odds !== 100 ?
+                        {popularProp.prop.odds !== 100 ?
                             <Image 
-                                src={prop.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                src={popularProp.prop.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
                                 height={16} width={16} 
                                 alt="Projection icon" 
                             /> : null
@@ -166,20 +166,20 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
                 }}>
                     <div style={{width:'100%', display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom:'5px'}}>
                         <p style={{color:'#fff', fontWeight:'bold', fontSize:'22px', margin:0}}>
-                            {prop.filter.over ? "O" : "U"} {prop.value}
-                            <span style={{color:'#A2A2A2', fontSize:'12px'}}> {prop.filter.stat} ({prop.filter.period})</span>
+                            {popularProp.prop.popularGameFilter.over ? "O" : "U"} {popularProp.prop.values[popularProp.prop.values.length-1]}
+                            <span style={{color:'#A2A2A2', fontSize:'12px'}}> {popularProp.prop.popularGameFilter.stat} ({popularProp.prop.popularGameFilter.period})</span>
                         </p>
 
                         <p style={{color:'#79F4F4', fontSize:'14px', fontWeight:'bold', margin:0}}>
-                            {Math.round(prop.data.filter(d => d.hit).length / prop.data.length * 100)}%
+                            {Math.round(popularProp.prop.popularHits.filter(hit => hit).length / popularProp.prop.popularHits.length * 100)}%
                         </p>
                     </div>
 
                     <div style={{width:'100%', display:'flex', gap: '3px', marginBottom:'7px', alignItems:'center'}}>
-                        {prop.data.map((data, i) => 
+                        {popularProp.prop.popularHits.map((val, i) => 
                             <div key={i}
                                 style={{
-                                    background: data.tie ? "#fff" : data.hit ? '#79F4F4' : '#A2A2A2',
+                                    background: val=== "tie" ? "#fff" : val === "hit" ? '#79F4F4' : '#A2A2A2',
                                     width:'100%', height:'4px', borderRadius:'10px'
                                 }} 
                             />
@@ -191,26 +191,26 @@ export const Card: React.FC<Props>  = ({prop, teams}) => {
     )
 }
 
-const createDescription = (prop: PopularProp): string => {
-    let str = `
-        ${prop.player.name} has hit 
-        ${prop.filter.over ? 'Over' : 'Under'} 
-        ${prop.value} ${prop.filter.stat}
-        in the last ${prop.data.length} games.
-    `;
+// const createDescription = (prop: PopularProp): string => {
+//     let str = `
+//         ${prop.player.name} has hit 
+//         ${prop.filter.over ? 'Over' : 'Under'} 
+//         ${prop.value} ${prop.filter.stat}
+//         in the last ${prop.data.length} games.
+//     `;
 
-    const defaultFilter: Filter = {  
-        stat: prop.filter.stat,
-        over: true,
-        isHome: true,
-        isAway: true,
-        period: 'All',
-        lastGame: "L10", 
-        withOutPlayers: [],
-        daysRested: -1,
-        minutes: [0, 45],
-        supportingStat: 'Minute'
-    };
+//     const defaultFilter: Filter = {  
+//         stat: prop.filter.stat,
+//         over: true,
+//         isHome: true,
+//         isAway: true,
+//         period: 'All',
+//         lastGame: "L10", 
+//         withOutPlayers: [],
+//         daysRested: -1,
+//         minutes: [0, 45],
+//         supportingStat: 'Minute'
+//     };
 
-    return str;
-}
+//     return str;
+// }

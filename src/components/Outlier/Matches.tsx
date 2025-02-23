@@ -21,6 +21,7 @@ import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
 import { MatchUp } from '../../Context/Types/Match';
+import { fetchProjections } from '../../Context/functions/fetchProjections';
 
 export type Filter = {
     isHome: boolean,
@@ -124,7 +125,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         return PSport.sortStats(league, statsInProjections);
     }
 
-    const {fetchNbaPlayers, fetchProjections, fetchMatchUps, fetchNbaMatches, isMobile} = useGlobalContext();
+    const {fetchNbaPlayers, fetchMatchUps, fetchNbaMatches, isMobile} = useGlobalContext();
 
     /* Initial */
     useEffect(() => {
@@ -174,7 +175,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                 }])
 
                 /* Intial Projections and Intial Stats Filters set up */
-                const projections = await fetchProjections(player!.name);
+                const projections = await fetchProjections(player.name);
                 let newFilters: Filters;
                 if(projections.length === 0) {
                     newFilters = getNewStatsForFilters(true, []);

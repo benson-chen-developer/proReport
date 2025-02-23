@@ -55,7 +55,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                     display:'flex', alignItems:'center',cursor:'pointer',
                     justifyContent:'space-between',
                     width:'auto', 
-                    height: isMobile ? '21px' : '40px', 
+                    height: isMobile ? '30px' : '40px', 
                 }}
             >
                 <div style={{display:'flex', alignItems:'center'}}>

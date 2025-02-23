@@ -1,10 +1,11 @@
 'use client';
 import React, { createContext, useContext, Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
 import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, Team, ValorantPlayer } from './Types/PlayerTypes';
-import { getMatchUps } from './fetchNextGames';
 import { Projection } from './Types/ProjectionTypes';
 import { getAllData, saveData } from './functions/cookies';
 import { MatchUp } from './Types/Match';
+import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
+import { cacheMatchups, getCurrentMatchups } from './functions/cookies/matchUps';
 
 
 interface ContextProps {
@@ -93,9 +94,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [playersInCombo, setPlayersInCombo] = useState<PlayerType[]>([]);
   const [projections, setProjections] = useState<Projection[]>([]);
 
-  const [lastDateChecked, setLastDateChecked] = useState<Record<string, Date>>({ 
-    'nba': new Date('2024-12-01T00:00:00Z')
-  });
   const [matchUps, setMatchUps] = useState<Record<string, MatchUp[]>>({ 
     'nba': []
   });
@@ -187,13 +185,20 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     }
   };
   const fetchNbaPlayers = async (): Promise<PPlayer[]> => {
+    const storedPlayers = localStorage.getItem('nbaplayers');
+    const nbaPlayers: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
+
     if(nbaPlayers.length > 0){
+      console.log('player is cached')
       return nbaPlayers;
     } else {
       try {
+        console.log('player is not cached')
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/players/nba`);
         if (!response.ok) throw new Error('Failed to fetch NBA players');
         const data = await response.json();
+
+        localStorage.setItem('nbaplayers', JSON.stringify(data));
         setNbaPlayers(data);
         return data;
       } catch (error) {
@@ -201,24 +206,34 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         return [];
       }
     }
+    
+    // const nbaPlayers = await fetchCachedNBAPlayers();
+    // return nbaPlayers;
   };
-  const fetchMatchUps = async (league: string): Promise<MatchUp[]> => {
-    // let isNewDay = checkIfIsNewDay(lastDateChecked[league]);    
-    // let isNewDay = true;
+  const fetchMatchUps = async (): Promise<MatchUp[]> => {
+    const cachedMatchUps = localStorage.getItem('matchUps');
+    let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 
-    // if(isNewDay){
-    if(matchUps[league].length === 0){
-      // console.log('isnewday')
-      const teams = await fetchNbaTeams();
-      const currentMatchUps = await getMatchUps(league, teams);
-      // setLastDateChecked(prev => ({ ...prev, [league]: new Date() }));
-      setMatchUps(prev => ({ ...prev, [league]: currentMatchUps }));
-
-      return currentMatchUps;
+    if(matchUps.length > 0){
+      console.log('matchup is cached')
     } else {
-      // console.log('is NOT newday')
-      return matchUps[league];
+      try {
+        console.log('matchUps is not cached')
+
+        const teams = await fetchNbaTeams();
+        matchUps = await cacheMatchups(teams);
+        localStorage.setItem('matchUps', JSON.stringify(matchUps));
+      } catch (error) {
+        console.error('Error fetching matchUps', error);
+        return [];
+      }
     }
+
+    const currentMatchups = getCurrentMatchups(matchUps);
+    console.log('currentMatchups', currentMatchups)
+    return currentMatchups;
+    // localStorage.setItem('matchUps', JSON.stringify([]));
+    // console.log('cleared cache')
   }
   const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
     if(nbaMatches.length > 0){
@@ -304,28 +319,51 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
 
+    console.log('newProjections', newProjections)
+    console.log(playerName)
     /* Return them */
     if(playerName) {
-      return newProjections.filter(p => p.playerName === playerName);
+      return newProjections.filter(p => p.player.name === playerName);
     } else {
       return newProjections;
     }
   }
   const fetchNbaTeams = async (): Promise<Team[]> => {
+    const cachedNbaTeams = localStorage.getItem('nbaTeams');
+    const nbaTeams: Team[] = cachedNbaTeams ? JSON.parse(cachedNbaTeams) : [];
+
     if(nbaTeams.length > 0){
+      console.log('nbaTeams is cached')
       return nbaTeams;
     } else {
       try {
+        console.log('nbaTeams is not cached')
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
         if (!response.ok) throw new Error('Failed to fetch nba teams');
         const data = await response.json();
-        setNbaTeams(data);
+
+        localStorage.setItem('nbaTeams', JSON.stringify(data));
         return data;
       } catch (error) {
-        console.error('Error fetching Lol players:', error);
+        console.error('Error fetching matchUps', error);
         return [];
       }
     }
+
+    // if(nbaTeams.length > 0){
+    //   return nbaTeams;
+    // } else {
+    //   try {
+    //     const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
+    //     if (!response.ok) throw new Error('Failed to fetch nba teams');
+    //     const data = await response.json();
+    //     setNbaTeams(data);
+    //     return data;
+    //   } catch (error) {
+    //     console.error('Error fetching Lol players:', error);
+    //     return [];
+    //   }
+    // }
   }
   
   return (

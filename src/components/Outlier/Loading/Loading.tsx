@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners'
 
 const tips = [
@@ -15,7 +15,7 @@ const tips = [
         emoji: '🤔'
     },
     {
-        text: "Never chase a lost with an impulsive bet",
+        text: "Never chase a loss with an impulsive bet",
         emoji: '😡'
     },
     {
@@ -27,9 +27,14 @@ const tips = [
         emoji: '🧐'
     }
 ]
-const randomTip = tips[Math.floor(Math.random() * tips.length)];
 
 export const Loading = () => {
+    const [randomTip, setRandomTip] = useState<{text:string, emoji:string}>({text:'', emoji:''});
+    useEffect(() => {
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        setRandomTip(randomTip)
+    }, [])
+
     return (
         <div style={{
             width:'100%', height:'100vh', background:'#000', display:'flex', 
@@ -44,7 +49,7 @@ export const Loading = () => {
                 <p style={{color:'#fff', fontWeight:'bold', fontSize:'16px', lineHeight:'2', marginTop:'10px'}}>
                     {randomTip.text}
                 </p>
-            </div>
+            </div> 
         </div>
     )
 }

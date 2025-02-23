@@ -19,6 +19,7 @@ export const Logo = () => {
                 alt="ProReport Logo"
                 width={175} 
                 height={50} 
+                priority
             />
 
             <div style={{

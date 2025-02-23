@@ -92,6 +92,27 @@ router.get("/matches/nba/:playerName?", async (req, res) => {
     }
 });
 
+router.post("/matches/nba/teams", async (req, res) => { 
+    const { cities } = req.body; 
+    
+    if (cities.length === 0) {
+        return res.status(200).json([]);
+    }
 
+    try {
+        // Find games where either team1 or team2 is in the cities array
+        const matches = await NBAMatch.find({
+            $or: [{ team1: { $in: cities } }, { team2: { $in: cities } }]
+        })
+
+        // Convert matches array to a Set to remove duplicates based on a unique game identifier (e.g., gameId)
+        const uniqueMatches = Array.from(new Map(matches.map(match => [match.url, match])).values());
+
+        res.status(200).json(uniqueMatches);
+    } catch (err) {
+        console.error("Error fetching matches", err);
+        res.status(500).send({ message: "Error fetching matches" });
+    }
+});
 
 module.exports = router;

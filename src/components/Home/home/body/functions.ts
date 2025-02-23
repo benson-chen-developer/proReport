@@ -8,6 +8,8 @@ import { PopularProp } from "./Body";
 export const getPopularProps = async (
     allProps: Projection[], games: PGame[], players: PPlayer[], todayMatches: MatchUp[]
 ): Promise<PopularProp[]> => {
+    if(todayMatches.length === 0) return []; /* No Games */
+
     const popularProp: PopularProp[] = [];
 
     const allPropsGroupedByPlayer = Object.values(
@@ -30,7 +32,9 @@ export const getPopularProps = async (
         if(!player) continue;
 
         const currentMatch = todayMatches.find(match => match.teams.some(t => t.name === player.city));
-        let isHome = currentMatch!.teams[0].name === player!.city;
+        if(!currentMatch) continue;
+
+        let isHome = currentMatch.teams[0].name === player!.city;
         const ourGames = games.filter((game) => {
             const foundPlayer = game.players.find(p => p.name.toLowerCase() === propGroup[0].playerName.toLowerCase());
             return foundPlayer?.periods.some(period => period['MIN'] > 0);

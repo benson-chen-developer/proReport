@@ -4,15 +4,7 @@ import { useGlobalContext } from '../../../../Context/store';
 import { MatchUp } from '../../../../Context/Types/Match';
 import { PGame, PPlayer, Team } from '../../../../Context/Types/PlayerTypes';
 import { Card } from './Card';
-
-export type PopularProp = {
-    player: PPlayer,
-    data: BarData[],
-    matchUp: MatchUp,
-    value: number,
-    filter: Filter,
-    odds: number
-}
+import { PopularProp } from '../../../../Context/Types/ProjectionTypes';
 
 interface Props {
     popularProps: PopularProp[]
@@ -53,7 +45,7 @@ export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
                             width: '95%',
                         }}>
                             {popularProps.map((prop, i) => (
-                                <Card key={i} prop={prop} teams={teams}/>
+                                <Card key={i} popularProp={prop} teams={teams}/>
                             ))}
                         </div> 
                             :
