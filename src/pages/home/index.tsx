@@ -5,7 +5,6 @@ import { useGlobalContext } from '../../Context/store';
 import { MatchUp } from '../../Context/Types/Match';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
 import { Body } from '../../components/Home/home/body/Body';
-import { getPopularProps } from '../../components/Home/home/body/functions';
 import { Header } from '../../components/Home/home/header/Header';
 import { Loading } from '../../components/Outlier/Loading/Loading';
 import { fetchNBAMatchesViaTeams } from '../../Context/functions/fetchNbaMatches';
