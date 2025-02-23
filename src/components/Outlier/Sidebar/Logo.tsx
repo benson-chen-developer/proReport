@@ -15,7 +15,7 @@ export const Logo = () => {
                 ProReport
             </h1> */}
             <Image 
-                src="/logo2.svg" 
+                src="/Logo2.svg" 
                 alt="ProReport Logo"
                 width={175} 
                 height={50} 
