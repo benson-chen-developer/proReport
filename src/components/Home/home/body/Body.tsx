@@ -44,9 +44,12 @@ export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
                             gap: isMobile ? "0px 0px" : '5px 1%', 
                             width: '95%',
                         }}>
-                            {popularProps.map((prop, i) => (
-                                <Card key={i} popularProp={prop} teams={teams}/>
-                            ))}
+                            {popularProps
+                                .filter(prop => prop.matchUp && prop.prop) // Remove invalid items before mapping
+                                .map((prop, i) => (
+                                    <Card key={i} popularProp={prop} teams={teams} />
+                                ))
+                            }
                         </div> 
                             :
                         <div style={{width:'100%', display:'flex', justifyContent:'center', color:'#fff', alignItems:'center', marginTop:'50px'}}>

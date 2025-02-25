@@ -40,16 +40,15 @@ export const Loading = () => {
             width:'100%', height:'100vh', background:'#000', display:'flex', 
             alignItems:'center', flexDirection:'column'
         }}>
-            <div style={{marginBottom:'150px'}} />
+            <div style={{marginTop:'150px'}} />
 
-            <ClipLoader color='#fff' size={40}/>
-
-            <div style={{width:'30%', textAlign:'center', marginTop:'10px'}}>
+            <div style={{width:'30%', textAlign:'center', marginBottom:'10px'}}>
                 <p style={{fontSize:'30px', margin:'20px 0px 0px 0px'}}>{randomTip.emoji}</p>
                 <p style={{color:'#fff', fontWeight:'bold', fontSize:'16px', lineHeight:'2', marginTop:'10px'}}>
                     {randomTip.text}
                 </p>
             </div> 
+            <ClipLoader color='#fff' size={40}/>
         </div>
     )
 }

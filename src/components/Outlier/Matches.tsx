@@ -21,7 +21,7 @@ import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
 import { MatchUp } from '../../Context/Types/Match';
-import { fetchProjections } from '../../Context/functions/fetchProjections';
+import { fetchProjections } from '../../Context/functions/fetch/fetchProjections';
 
 export type Filter = {
     isHome: boolean,

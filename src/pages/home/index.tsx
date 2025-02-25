@@ -9,7 +9,7 @@ import { Header } from '../../components/Home/home/header/Header';
 import { Loading } from '../../components/Outlier/Loading/Loading';
 import { fetchNBAMatchesViaTeams } from '../../Context/functions/fetchNbaMatches';
 import { PopularProp, Projection } from '../../Context/Types/ProjectionTypes';
-import { fetchPopularProjections } from '../../Context/functions/fetchProjections';
+import { fetchPopularProjections } from '../../Context/functions/fetch/fetchProjections';
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +28,6 @@ export const Index = () => {
         const func = async () => {
             setLoading(true);
             /* Cached */
-            const matchUps = await fetchMatchUps('nba');
             const teams = await fetchNbaTeams();
             const players = await fetchNbaPlayers();
             setPlayers(players);
@@ -36,16 +35,10 @@ export const Index = () => {
             // /* Gotta to be new each time */
             // const props = await fetchProjections();
             const props = await fetchPopularProjections();
-            // const games = await fetchNBAMatchesViaTeams(
-            //     matchUps.flatMap(match => match.teams.map(team => team.name))
-            // );
-            // console.log('games', games)
+            const matchUps = await fetchMatchUps();
 
-            // const popularProps = await getPopularProps(props, games, players, matchUps);
-            // setPopularProps(popularProps);
-            // setShownPopularProps(popularProps);
             setTeams(teams);
-            const popularProps = props
+            const popularProps: PopularProp[] = props
                 .filter(prop => prop.popularHits.length > 0)
                 .map(prop => {
                     return ({
@@ -56,7 +49,6 @@ export const Index = () => {
                     })
                 })
             ;
-            console.log('popularProps', popularProps)
             setPopularProps(popularProps);
             setShownPopularProps(popularProps);
             
@@ -77,6 +69,8 @@ export const Index = () => {
     
             if(pickedMatchUps.length > 0){
                 newPopularProps = newPopularProps.filter(prop => {
+                    if(!prop.matchUp) return false; /* This is due to the game being tmr most likely */
+
                     const isSameMatch = pickedMatchUps.find((m) =>
                         m.teams[0].name === prop.matchUp.teams[0].name
                         // && m.time === prop.matchUp.time

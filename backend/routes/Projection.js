@@ -2,6 +2,21 @@ const express = require("express");
 const router = express.Router();
 const { Props } = require("../models/Projection/PropModel");
 
+router.get('/popular', async (req, res) => {
+    try {
+        const projections = await Props.find({
+            popularHits: { $exists: true, $not: { $size: 0 } } // Only fetch documents where popularHits exists and is not empty
+        })
+        .populate("player")
+        .lean(); 
+
+        res.status(200).json(projections);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         const projections = await Props.find({}).populate("player");
@@ -28,21 +43,6 @@ router.get('/:playerName', async (req, res) => {
             { $unwind: '$playerData' }, // Convert array to object
             { $match: { 'playerData.name': playerName } } // Filter by player's name
         ]);
-
-        res.status(200).json(projections);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-router.get('/popular', async (req, res) => {
-    try {
-        const projections = await Props.find({
-            popularHits: { $exists: true, $not: { $size: 0 } } // Only fetch documents where popularHits exists and is not empty
-        })
-        .populate("player")
-        .lean(); 
 
         res.status(200).json(projections);
     } catch (error) {

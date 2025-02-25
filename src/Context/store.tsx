@@ -42,7 +42,7 @@ interface ContextProps {
   setComboPopUp: Dispatch<SetStateAction<boolean>>,
   playersInCombo: PlayerType[],
   setPlayersInCombo: Dispatch<SetStateAction<PlayerType[]>>,
-  fetchMatchUps: (league: string) => Promise<MatchUp[]>
+  fetchMatchUps: () => Promise<MatchUp[]>
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -79,7 +79,7 @@ const GlobalContext = createContext<ContextProps>({
   setComboPopUp: (): boolean => false,
   playersInCombo: [],
   setPlayersInCombo: (): PlayerType[] => [],
-  fetchMatchUps: async (league: string): Promise<MatchUp[]> => [],
+  fetchMatchUps: async (): Promise<MatchUp[]> => [],
 });
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {

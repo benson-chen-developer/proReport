@@ -1,4 +1,4 @@
-import { Projection } from "../Types/ProjectionTypes";
+import { Projection } from "../../Types/ProjectionTypes";
 
 export const fetchPopularProjections = async (): Promise<Projection[]> => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/popular`);

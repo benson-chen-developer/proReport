@@ -18,6 +18,13 @@ const { Promo } = require("./models/Promos/PromoModel");
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+/* TEST : See what the incoming req look like */
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.path}`);
+    next();
+});
+
 app.use("/trending", TrendingRoute);
 app.use("/cs", CSRoute);
 app.use("/valorant", ValorantRoute);

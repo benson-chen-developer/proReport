@@ -116,10 +116,10 @@ const removeOldMatchups = (matchups: MatchUp[]): MatchUp[] => {
         - Also if you pass in props then it will return any matches that match that prop's game
             (This is for if 2 days of props are available at once)
 */
-export const getCurrentMatchups = (matchUps: MatchUp[]): MatchUp[] => {
+export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): MatchUp[] => {
     let searchDate = new Date();
     searchDate.setHours(0, 0, 0, 0);
-
+    
     let filteredGames: MatchUp[] = [];
 
     while (filteredGames.length === 0) {
@@ -137,26 +137,48 @@ export const getCurrentMatchups = (matchUps: MatchUp[]): MatchUp[] => {
     return filteredGames;
 };
 
-// export const getCurrentMatchups = (matchUps: MatchUp[]): MatchUp[] => {
+/*
+    Returns all the games today
+        - Also if you pass in props then it will return any matches that match that prop's game
+            (This is for if 2 days of props are available at once)
+*/
+//DOESNT WORK I THINK ITS GETTING TOO MANY GAMES DUE TO NOT ENDING WHEN GOING PAST CURRENT DAY
+// export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): MatchUp[] => {
 //     let searchDate = new Date();
-//     searchDate.setHours(0, 0, 0, 0); // Normalize to start of the day
+//     searchDate.setHours(0, 0, 0, 0);
+//     console.log("props for get curuent mathcup", props)
+    
+//     let propsTeams = props ? props.map(prop => prop.player.city) : [];
 
 //     let filteredGames: MatchUp[] = [];
 
-//     // Find the next available games
-//     while (filteredGames.length === 0) {
-//         filteredGames = matchUps.filter((game) => {
-//             const gameDate = new Date(game.gameDateTimeEst);
+//     let counter = 0; /* After 14 days of iteration stop as a fail safe */
+//     while (filteredGames.length === 0 && propsTeams.length > 0){
+//         /* Add games on this date */
+//         filteredGames.push(...matchUps.filter((matchUp) => {
+//             const gameDate = new Date(matchUp.time);
 //             gameDate.setHours(0, 0, 0, 0);
-//             return gameDate.getTime() === searchDate.getTime();
-//         });
 
-//         // If no games are found and we still have future games, move forward
-//         if (filteredGames.length === 0) {
-//             if (matchUps.every(game => new Date(game.gameDateTimeEst) < searchDate)) {
-//                 return []; // No future games exist, return empty array
+//             /* (If matches today's date) */
+//             if(gameDate.getTime() === searchDate.getTime()) return true;
+
+//             /* (If is a game in our props) */
+//             let foundPropMatch = matchUp.teams.find(team => propsTeams.includes(team.name));
+//             if(foundPropMatch && gameDate.getTime() >= searchDate.getTime()) {
+//                 propsTeams = propsTeams.filter(team => team !== foundPropMatch!.name);
+//                 return true;
 //             }
-//             searchDate.setDate(searchDate.getDate() + 1);
+//         }));
+
+//         if (filteredGames.length === 0) {
+//             searchDate.setDate(searchDate.getDate() + 1); 
+//         }
+
+//         counter++;
+
+//         if(counter === 14){
+//             console.log("Something went wrong in looping through the matchups schedule")
+//             break;
 //         }
 //     }
 

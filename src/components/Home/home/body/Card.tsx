@@ -171,7 +171,7 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
                         </p>
 
                         <p style={{color:'#79F4F4', fontSize:'14px', fontWeight:'bold', margin:0}}>
-                            {Math.round(popularProp.prop.popularHits.filter(hit => hit).length / popularProp.prop.popularHits.length * 100)}%
+                            {Math.round(popularProp.prop.popularHits.filter(hit => hit === "hit" || hit === "tie").length / popularProp.prop.popularHits.length * 100)}%
                         </p>
                     </div>
 
