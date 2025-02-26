@@ -61,6 +61,7 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                     src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
                     width={isMobile ? 125 : 175}
                     height={isMobile ? 90 : 125}
+                    priority
                 />
             </div>
 

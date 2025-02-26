@@ -41,7 +41,7 @@ export const BarInfo: React.FC<Props> = ({
     }
 
     const fullStatName = convertStatName(filter.stat);
-
+    console.log(pickedProjection)
     return (
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{

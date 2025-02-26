@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import {  PGame, PPlayer } from '../../Context/Types/PlayerTypes';
@@ -286,25 +286,35 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     // [period, stat];
     /*OG Dependencies. Clicking stat, period => auto triggers pickedProjection to update so no need to have it here*/
 
-    /* When projected we have to make sure that the peridos match the projection */
+    // useEffect(() => {
+    //     const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
+    //     setMainBarData(newData);
+    // }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
+
+    /* 
+        CHANGE (PICKED PROJECTIONS)
+        When projected we have to make sure that the peridos match the projection 
+    */
     useEffect(() => {
         let newFilters = getNewStatsForFilters(showAllStats, projections);
-        setFilters(p => ({...newFilters}));
-
+        setFilters(p => ({ ...newFilters }));
+    
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
-        
-        if(foundProjection) {
+    
+        if (foundProjection) {
             /* Only look for a new one if the current doesn't work */
-            if(pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period){
+            if (pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period) {
                 setPickedProjection(foundProjection);
             }
-            
-            if(foundProjection.overUnder === 1) setFilter(p => ({...p, over: true}))
+    
+            if (foundProjection.overUnder === 1) setFilter(p => ({ ...p, over: true }));
         } else {
             setPickedProjection(null);
         }
-    }, [filter.stat, filter.period, showAllStats])
+    }, [
+        filter.stat, 
+        filter.period, showAllStats]);
 
     if(loading) return (
         <Loading />

@@ -23,11 +23,11 @@ export const Footer = () => {
                         1-800-GAMBLER to get live support.
                     </p>
 
-                    <div style={{ marginTop: '30px' }}>
-                        <p style={{ color: '#fff', fontSize: '10px', fontWeight: 'bold' }}>
+                    <div style={{ marginTop: '30px', fontWeight:'bold' }}>
+                        <p style={{ color: '#fff', fontSize: '10px',}}>
                             Contact our support and report bugs at
                         </p>
-                        <p style={{ color: '#a2a2a2' }}>proreport.helper@gmail.com</p>
+                        <p style={{ color: '#a2a2a2', fontSize:'12px' }}>proreport.helper@gmail.com</p>
                     </div>
                 </div>
             ) : (
@@ -44,11 +44,11 @@ export const Footer = () => {
                         </p>
                     </div>
 
-                    <div style={{ textAlign: 'right' }}>
-                        <p style={{ color: '#a2a2a2', fontSize: '12px', fontWeight: 'bold' }}>
+                    <div style={{ textAlign: 'right', fontWeight:'bold' }}>
+                        <p style={{ color: '#a2a2a2', fontSize: '12px'}}>
                             Contact our support and report bugs at
                         </p>
-                        <p style={{ color: '#fff' }}>proreport.helper@gmail.com</p>
+                        <p style={{ color: '#fff', fontSize: '14px' }}>proreport.helper@gmail.com</p>
                     </div>
                 </div>
             )}

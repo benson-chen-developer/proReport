@@ -34,7 +34,9 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                         }}
-                        onClick={() => {setFilter(p => ({...p, stat: stat}))}}
+                        onClick={() => {
+                            setFilter(p => ({...p, stat: stat}))
+                        }}
                     >
                         <div style={{color: stat === filter.stat ? '#fff' : 'grey',}}>
                             <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '10px' : '14px',}}>
