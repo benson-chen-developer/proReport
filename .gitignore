@@ -50,4 +50,4 @@ yarn-error.log*
 .next/static/chunks/webpack.js
 .next/trace
 
-bug.txt
+allbug.txt

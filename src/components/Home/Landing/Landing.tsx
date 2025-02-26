@@ -136,7 +136,7 @@ export const Landing = () => {
                             Certain features will be missing and app issues may exist. Our team is hard at work addressing these problems. <br /><br />
                             Be on the lookout for changes as new features are constantly being added! <br /><br />
                             During beta all features will be <span style={{color:'#79F4F4'}}>FREE</span> to gather feedback. <br /><br />
-                            {/* You can send feedback and report bugs here: gambling@gma.ilc,om */}
+                            You can send feedback and report bugs here: <span style={{color:'#fff'}}>proreport.helper@gmail.com</span>
                         </p>
                     </div>
                 </div>

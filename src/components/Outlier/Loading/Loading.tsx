@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners'
+import { useGlobalContext } from '../../../Context/store';
 
 const tips = [
     {
@@ -35,14 +36,16 @@ export const Loading = () => {
         setRandomTip(randomTip)
     }, [])
 
+    const {isMobile} = useGlobalContext()
+
     return (
         <div style={{
             width:'100%', height:'100vh', background:'#000', display:'flex', 
             alignItems:'center', flexDirection:'column'
         }}>
-            <div style={{marginTop:'150px'}} />
+            <div style={{marginTop:isMobile ? '75px' : '125px'}} />
 
-            <div style={{width:'30%', textAlign:'center', marginBottom:'10px'}}>
+            <div style={{width:isMobile ? '75%' : '30%', textAlign:'center', marginBottom:'10px'}}>
                 <p style={{fontSize:'30px', margin:'20px 0px 0px 0px'}}>{randomTip.emoji}</p>
                 <p style={{color:'#fff', fontWeight:'bold', fontSize:'16px', lineHeight:'2', marginTop:'10px'}}>
                     {randomTip.text}

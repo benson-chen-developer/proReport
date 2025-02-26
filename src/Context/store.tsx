@@ -230,7 +230,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     }
 
     const currentMatchups = getCurrentMatchups(matchUps);
-    console.log('currentMatchups', currentMatchups)
+
+    if (process.env.NODE_ENV === "development") {
+      console.log('currentMatchups', currentMatchups)
+    }
     return currentMatchups;
     // localStorage.setItem('matchUps', JSON.stringify([]));
     // console.log('cleared cache')
