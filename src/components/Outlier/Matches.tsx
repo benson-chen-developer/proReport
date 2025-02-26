@@ -278,10 +278,13 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
+
     useEffect(() => {
         const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
         setMainBarData(newData);
-    }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
+    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, pickedProjection]);
+    // [period, stat];
+    /*OG Dependencies. Clicking stat, period => auto triggers pickedProjection to update so no need to have it here*/
 
     /* When projected we have to make sure that the peridos match the projection */
     useEffect(() => {
