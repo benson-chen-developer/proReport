@@ -14,7 +14,7 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => 
 
     useEffect(() => {
         const func = async () => {
-            const matchUps = await fetchMatchUps('nba');
+            const matchUps = await fetchMatchUps();
             setMatchUps(matchUps);
         }
 

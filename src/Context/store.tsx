@@ -42,7 +42,7 @@ interface ContextProps {
   setComboPopUp: Dispatch<SetStateAction<boolean>>,
   playersInCombo: PlayerType[],
   setPlayersInCombo: Dispatch<SetStateAction<PlayerType[]>>,
-  fetchMatchUps: () => Promise<MatchUp[]>
+  fetchMatchUps: (league?: string) => Promise<MatchUp[]>
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -79,7 +79,7 @@ const GlobalContext = createContext<ContextProps>({
   setComboPopUp: (): boolean => false,
   playersInCombo: [],
   setPlayersInCombo: (): PlayerType[] => [],
-  fetchMatchUps: async (): Promise<MatchUp[]> => [],
+  fetchMatchUps: async (league?: string): Promise<MatchUp[]> => [],
 });
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
@@ -210,7 +210,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     // const nbaPlayers = await fetchCachedNBAPlayers();
     // return nbaPlayers;
   };
-  const fetchMatchUps = async (): Promise<MatchUp[]> => {
+  const fetchMatchUps = async (league?: string): Promise<MatchUp[]> => {
     const cachedMatchUps = localStorage.getItem('matchUps');
     let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 

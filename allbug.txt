@@ -1,0 +1,2 @@
+Vercel Error: Command "npm run build" exited with 1
+    - its you put a folder of some shit that isn't a page into pages
