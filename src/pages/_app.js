@@ -44,6 +44,7 @@ function App({ Component, pageProps }) {
           <Footer />
         </main>
 
+        <Analytics />
       </GlobalContextProvider>
     </>
   );
