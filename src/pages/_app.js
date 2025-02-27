@@ -8,6 +8,7 @@ import '../styles/Combo.css';
 import '@fontsource/roboto'; // Defaults to weight 400
 import { GlobalContextProvider } from '../Context/store'
 import Head from 'next/head';
+import { Analytics } from '@vercel/analytics/next';
 import { useEffect, useState } from 'react';
 
 function App({ Component, pageProps }) {
