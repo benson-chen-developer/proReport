@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useGlobalContext } from '../../../Context/store';
-import { Promos } from './Promos/Promos'
 import { Search } from './Search/Search'
 import { useRouter } from 'next/router';
 import { Logo } from './Logo';
