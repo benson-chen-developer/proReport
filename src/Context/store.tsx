@@ -189,11 +189,11 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     const nbaPlayers: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
 
     if(nbaPlayers.length > 0){
-      console.log('player is cached')
+      // console.log('player is cached')
       return nbaPlayers;
     } else {
       try {
-        console.log('player is not cached')
+        // console.log('player is not cached')
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/players/nba`);
         if (!response.ok) throw new Error('Failed to fetch NBA players');
         const data = await response.json();
@@ -215,10 +215,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 
     if(matchUps.length > 0){
-      console.log('matchup is cached')
+      // console.log('matchup is cached')
     } else {
       try {
-        console.log('matchUps is not cached')
+        // console.log('matchUps is not cached')
 
         const teams = await fetchNbaTeams();
         matchUps = await cacheMatchups(teams);
@@ -232,7 +232,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     const currentMatchups = getCurrentMatchups(matchUps);
 
     if (process.env.NODE_ENV === "development") {
-      console.log('currentMatchups', currentMatchups)
+      // console.log('currentMatchups', currentMatchups)
     }
     return currentMatchups;
     // localStorage.setItem('matchUps', JSON.stringify([]));

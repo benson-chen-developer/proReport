@@ -135,7 +135,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             // const allGames = await PSport.fetchMatches(playerName, league);
             const allGames = await fetchNbaMatches(playerName);
             setPGames(allGames);
-            console.log("allGames", allGames)
             const players = await fetchNbaPlayers();
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
 
@@ -233,6 +232,10 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         fetchData();
     }, [playerName]);
 
+    /*
+        When we select alt projection we have to ensure the correct periods pop up
+            - (So if its a demon then then we probably will not have a "Q1")
+    */
     const getNewStatsForFilters = (showAllStats: boolean, projections: Projection[]): Filters => {
         let newFilters = filters;
 
@@ -280,41 +283,47 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
 
     useEffect(() => {
+        const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
+        const {pickedProjection, filter} = newFilterAndPickedProjection;
+
         const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
         setMainBarData(newData);
-    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, pickedProjection]);
-    // [period, stat];
-    /*OG Dependencies. Clicking stat, period => auto triggers pickedProjection to update so no need to have it here*/
 
-    // useEffect(() => {
-    //     const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
-    //     setMainBarData(newData);
-    // }, [isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, pickedProjection])
+        let newFilters = getNewStatsForFilters(showAllStats, projections);
+        setFilters(newFilters);
 
+        setPickedProjection(pickedProjection);
+    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection]);
+    
     /* 
         CHANGE (PICKED PROJECTIONS)
         When projected we have to make sure that the peridos match the projection 
     */
-    useEffect(() => {
-        let newFilters = getNewStatsForFilters(showAllStats, projections);
-        setFilters(p => ({ ...newFilters }));
-    
+    const getValidFiltersAndPickedProjection = (): {
+        pickedProjection : Projection | null,
+        filter: Filter
+    } => {
+        const newFilterAndPickedProjection = {
+            pickedProjection: pickedProjection,
+            filters: filters,
+            filter:filter,
+        }
+
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
-    
+
         if (foundProjection) {
             /* Only look for a new one if the current doesn't work */
             if (pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period) {
-                setPickedProjection(foundProjection);
+                newFilterAndPickedProjection.pickedProjection = foundProjection;
             }
-    
             if (foundProjection.overUnder === 1) setFilter(p => ({ ...p, over: true }));
         } else {
-            setPickedProjection(null);
+            newFilterAndPickedProjection.pickedProjection = null;
         }
-    }, [
-        filter.stat, 
-        filter.period, showAllStats]);
+
+        return newFilterAndPickedProjection;
+    }
 
     if(loading) return (
         <Loading />
