@@ -223,6 +223,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                         p.name === newFilters.stats[0] && filter.period === p.period
                     );
                 }
+
                 setPickedProjection(initalPickedProjection ? initalPickedProjection : null);
             }
 
@@ -266,7 +267,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     }
 
     /* Always make sure that the picked stat is in the options given */
-    useEffect(() => {
+    const validateStat = (): Filter => {
         let foundMainStat = filters.stats.find(option => option === filter.stat);
         let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
         let foundPeriod = filters.periods.find(p => p === filter.period);
@@ -276,8 +277,20 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
         if(!foundPeriod) newFilter.period = filters.periods[0];
 
-        setFilter({...newFilter})
-    }, [filters.stats, filters.supportingStats, filters.periods])
+        return newFilter;
+    }
+    // useEffect(() => {
+    //     let foundMainStat = filters.stats.find(option => option === filter.stat);
+    //     let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
+    //     let foundPeriod = filters.periods.find(p => p === filter.period);
+    //     let newFilter = {...filter};
+
+    //     if(!foundMainStat) newFilter.stat = filters.stats[0];
+    //     if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
+    //     if(!foundPeriod) newFilter.period = filters.periods[0];
+
+    //     setFilter({...newFilter})
+    // }, [filters.stats, filters.supportingStats, filters.periods])
 
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
@@ -286,11 +299,19 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
         const {pickedProjection, filter} = newFilterAndPickedProjection;
 
-        const newData = parseBarData(pGames, filter, player, pickedProjection, matchUp);
-        setMainBarData(newData);
-
+        let newFilter = validateStat();
         let newFilters = getNewStatsForFilters(showAllStats, projections);
+        
+        // //When u switch periods the h1 has a null pickedpgroject
+        // //i think its the filter.period isnt change yet
+        // console.log("stat",stat)
+        // console.log("pickedProjection",pickedProjection)
+        
+        const newData = parseBarData(pGames, newFilter, player, pickedProjection, matchUp);
+        setMainBarData(newData);
+        
         setFilters(newFilters);
+        setFilter(newFilter);
 
         setPickedProjection(pickedProjection);
     }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection]);
@@ -308,6 +329,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             filters: filters,
             filter:filter,
         }
+        console.log("filter", filter)
 
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
@@ -317,6 +339,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             if (pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period) {
                 newFilterAndPickedProjection.pickedProjection = foundProjection;
             }
+            
             if (foundProjection.overUnder === 1) setFilter(p => ({ ...p, over: true }));
         } else {
             newFilterAndPickedProjection.pickedProjection = null;

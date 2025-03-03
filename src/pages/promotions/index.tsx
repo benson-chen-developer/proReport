@@ -127,7 +127,7 @@ const Index = () => {
                                 fontSize: isMobile ? '10px' : '18px', color: '#1E1E1E', 
                                 fontWeight: 'bold', textAlign: 'center'
                             }}>
-                                $1,000 Bonus Available
+                                ${promos.reduce((acc, promo) => acc + promo.signUpValue, 0).toLocaleString()} Bonus Available
                             </p>
                         </div>
                     </div>

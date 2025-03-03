@@ -44,12 +44,12 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
             }}
         >
             {/* Logo */}
-            <div style={{ left: isMobile ? -15 : -40, top: isMobile ? -15 : -40, position:'absolute'}}>
+            <div style={{ left: isMobile ? -15 : -40, top: isMobile ? -5 : -40, position:'absolute'}}>
                 <Image
                     alt={'Team Logo'}
                     src={`https://cdn.nba.com/logos/nba/${team?.id}/primary/L/logo.svg`}
-                    width={isMobile ? 125 : 175}
-                    height={isMobile ? 125 : 175}
+                    width={isMobile ? 100 : 175}
+                    height={isMobile ? 100 : 175}
                     style={{ opacity: 0.3 }}
                 />
             </div>
@@ -59,8 +59,8 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                 <Image
                     alt={'Person Pic'}
                     src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
-                    width={isMobile ? 125 : 175}
-                    height={isMobile ? 90 : 125}
+                    width={isMobile ? 100 : 175}
+                    height={isMobile ? 70 : 125}
                     priority
                 />
             </div>
@@ -70,11 +70,11 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                 height:'100%', display:'flex', justifyContent:'flex-end', marginLeft: isMobile ? '0px' : '25px',
                 flexDirection:'column', width:'50%',
             }}>
-                <p style={{margin:0, fontSize: isMobile ? '18px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
+                <p style={{margin:0, fontSize: isMobile ? '16px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
                 
                 <p style={{
                     margin: isMobile ? '0px 0px 20px 0px' : '0px 0px 20px 0px', 
-                    fontSize: isMobile ? '12px' : '20px', fontWeight:'bold', color:'#fff'
+                    fontSize: isMobile ? '10px' : '20px', fontWeight:'bold', color:'#fff'
                 }}>
                     {player.city} | {player.position.replace('-', ' - ')}
                 </p>
@@ -108,7 +108,7 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
             {matchUp ?
                 <div style={{
                     display:'flex', height:'100%', alignItems:'flex-end', justifyContent:'flex-end',
-                    width:'50%', color:'#fff', fontWeight:'bold', 
+                    width:'60%', color:'#fff', fontWeight:'bold', 
                     flexDirection:'column', 
                     marginRight: isMobile ? '0px' : '10px', 
                     fontSize: isMobile ? '10px' : '14px'

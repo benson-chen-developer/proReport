@@ -40,8 +40,11 @@ export const BarInfo: React.FC<Props> = ({
         }
     }
 
-    const fullStatName = convertStatName(filter.stat);
-    console.log(pickedProjection)
+    // The stat name (Rebounds+assists) litearly changes before the pickedprojections for some reaosn
+    // debugger;
+    // console.log("barinfo", pickedProjection)
+    // debugger;
+
     return (
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{
@@ -58,7 +61,7 @@ export const BarInfo: React.FC<Props> = ({
                             </svg>
                         </div>
                         <span style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
-                            {fullStatName} {filter.period !== "All" ? `(${filter.period})` : ''}
+                            {convertStatName(filter.stat)} {filter.period !== "All" ? `(${filter.period})` : ''}
                         </span>
                         <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
                             {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
