@@ -79,7 +79,7 @@ export const Index = () => {
                     return isSameMatch;
                 })
             }
-    
+
             setShownPopularProps(newPopularProps);
         }
     }, [pickedMatchUps])

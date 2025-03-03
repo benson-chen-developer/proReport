@@ -29,7 +29,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
             display:'flex', alignItems:'flex-end', justifyContent:'flex-end',
             color:'#fff', fontWeight:'bold', 
             flexDirection:'column',
-            marginRight: isMobile ? '0px' : '10px', 
+            marginRight: isMobile ? '5px' : '10px', 
             marginLeft: index === 0 ? '5px' : '0px',
             fontSize: isMobile ? '10px' : '12px'
         }}>
@@ -38,19 +38,26 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => {
                     setPickedMatchUps(p => {
-                        const exists = p.some(m => m.teams[0] === matchUp.teams[0] && m.time === matchUp.time);
-                
-                        if (exists) {
-                            return p.filter(m => !(m.teams[0] === matchUp.teams[0] && m.time === matchUp.time)); 
+                        const prev = [...p];
+                        const foundIndex = p.findIndex(pickedMatch => 
+                            pickedMatch.teams.some(m => 
+                                matchUp.teams.some(n => n.name === m.name)
+                            ) && pickedMatch.time === matchUp.time
+                        );
+                        
+                        if (foundIndex !== -1) {
+                            prev.splice(foundIndex, 1);
                         } else {
-                            return [...p, matchUp];
+                            prev.push(matchUp);
                         }
+
+                        return prev;
                     });
                 }}
                 
                 style={{
                     borderRadius:'20px', background:'#1E1E1E',
-                    border: picked || isHovered ? '1px solid #fff' : '1px solid #2B2B2B', 
+                    border: picked || (isHovered && !isMobile) ? '1px solid #fff' : '1px solid #2B2B2B', 
                     padding:'0px 10px',
                     display:'flex', alignItems:'center',cursor:'pointer',
                     justifyContent:'space-between',
