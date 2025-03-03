@@ -135,7 +135,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             // const allGames = await PSport.fetchMatches(playerName, league);
             const allGames = await fetchNbaMatches(playerName);
             setPGames(allGames);
-
+            console.log("allGames", allGames)
             const players = await fetchNbaPlayers();
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
 

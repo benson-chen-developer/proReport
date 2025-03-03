@@ -78,12 +78,57 @@ router.get("/matchUps/:league", async (req, res) => {
     }
 });
 
+// router.get("/matches/nba/:playerName?", async (req, res) => { 
+//     const playerName = req.params.playerName;
+
+//     try {
+//         const query = playerName ? { "players.name": playerName } : {};
+//         const matches = await NBAMatch.find(query).select("-_id"); 
+
+//         res.status(200).json(matches);
+//     } catch (err) {
+//         console.error("Error fetching matches", err);
+//         res.status(500).send({ message: "Error fetching matches" });
+//     }
+// });
+
+/*
+    We only populate the stats field for searched player
+*/
 router.get("/matches/nba/:playerName?", async (req, res) => { 
     const playerName = req.params.playerName;
 
     try {
         const query = playerName ? { "players.name": playerName } : {};
-        const matches = await NBAMatch.find(query).select("-_id"); 
+        console.log(playerName)
+
+        const matches = await NBAMatch.aggregate([
+            { $match: query },  // Find matches where the player exists
+            { 
+                $addFields: {
+                    players: {
+                        $map: {
+                            input: "$players",
+                            as: "player",
+                            in: {
+                                name: "$$player.name",
+                                team: "$$player.team",
+                                playerId: "$$player.playerId",
+                                position: "$$player.position",
+                                periods: { 
+                                    $cond: { 
+                                        if: { $eq: ["$$player.name", playerName] }, 
+                                        then: "$$player.periods", 
+                                        else: {} 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            { $project: { _id: 0 } } // Exclude _id field
+        ]);
 
         res.status(200).json(matches);
     } catch (err) {

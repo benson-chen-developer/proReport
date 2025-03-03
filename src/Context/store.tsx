@@ -251,6 +251,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         const data = await response.json();
 
         let retData = data;
+
         if(playerName){
           const gamesPlayed = data.filter((game: PGame) => {
               const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
