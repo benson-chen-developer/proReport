@@ -40,6 +40,7 @@ export const SupportCard: React.FC<Props> = ({
         //     )
         // )
 
+        // console.log("mainbardata", mainBarData)
         const newBarData = parseSupportBarData(mainBarData, pGames, filter, player);
         setBarData(newBarData);
 
@@ -59,7 +60,7 @@ export const SupportCard: React.FC<Props> = ({
                         <p style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', margin: '0px 0px 0px 5px'}}>Supporting Stats</p>
                     </div>
 
-                    <div style={{marginBottom: '2px'}}>
+                    {/* <div style={{marginBottom: '2px'}}>
                         <span style={{color:'#808080'}}>
                             Avg: <span style={{color:'#fff', fontSize: isMobile ? '11px' : '13px',}}>
                                 {barData.length > 0 
@@ -90,7 +91,7 @@ export const SupportCard: React.FC<Props> = ({
                                 }
                             </span>
                         </span>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div style={{width:'100%', marginTop:'10px', display:'flex'}}>
@@ -99,7 +100,7 @@ export const SupportCard: React.FC<Props> = ({
                         setFilter={setFilter}
                     />
 
-                    <div 
+                    {/* <div 
                         style={{
                             color:'#fff', display:'flex', fontSize:'15px', fontWeight:'bold',
                             alignItems:'center', cursor:'pointer', userSelect:'none'
@@ -117,7 +118,7 @@ export const SupportCard: React.FC<Props> = ({
                                 },
                             }}
                         />
-                    </div>
+                    </div> */}
                 </div>
 
             </div>

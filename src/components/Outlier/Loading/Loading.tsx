@@ -26,6 +26,10 @@ const tips = [
     {
         text: "Filter for games that are away, without players, minutes played, and more in the filters section",
         emoji: '🧐'
+    },
+    {
+        text: "Don't just look at the \"Last Games\". Make sure to check the \"Head To Head\ matches as well",
+        emoji: '🧐'
     }
 ]
 
