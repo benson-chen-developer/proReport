@@ -1,4 +1,5 @@
 import { Dispatch, forwardRef, SetStateAction } from "react";
+import { useGlobalContext } from "../../../../Context/store";
 
 interface Props {
     searchQuery:string, 
@@ -6,11 +7,15 @@ interface Props {
     setIsPopUp: Dispatch<SetStateAction<boolean>>
 }
 export const SearchingBar = forwardRef<HTMLDivElement, Props>(({ searchQuery, setSearchQuery, setIsPopUp }, ref) => {
+    const {isMobile} = useGlobalContext();
+    
     return (
         <div
             ref={ref}
             style={{
-                width: "100%", height: "50px", marginTop:'10px',
+                width: "100%", 
+                height: isMobile ? "40px" : "50px", 
+                marginTop:'10px',
                 borderRadius: "10px", display:'flex',
                 background: "#2B2B2B", alignItems:'center'
             }}
@@ -23,7 +28,8 @@ export const SearchingBar = forwardRef<HTMLDivElement, Props>(({ searchQuery, se
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for players"
                 style={{
-                    width: "95%", fontSize: "15px", 
+                    width: "95%", 
+                    fontSize: isMobile ? "12px" : "15px", 
                     borderRadius: "15px",
                     border: "0px solid #ccc", marginLeft:'10px',
                     background: "#2B2B2B",
