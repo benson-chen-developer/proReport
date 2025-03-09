@@ -28,7 +28,7 @@ export const Landing = () => {
                 {/* 1st Segment */}
                 <div style={{width:'100%', display:'flex'}}>
                     {/* Left Text */}
-                    <div style={{width:'50%', margin: isMobile ? '60px 0px 0px 10%' : '30px 0px 0px 10%'}}>
+                    <div style={{width:'45%', margin: isMobile ? '60px auto 0px 10%' : '30px auto 0px 10%'}}>
                         <Logo />
 
                         <h1 style={{
@@ -102,11 +102,12 @@ export const Landing = () => {
                     </div>
 
                     {/* Right Picture */}
-                    <div style={{ //the width should be same as image and not 50%
-                        // width: '50%', 
-                        width: isMobile ? '650px' : '800px',
+                    <div style={{
+                        width:'40%',
+                        // width: isMobile ? '650px' : '800px',
                         position: 'relative', overflow: 'hidden', 
-                        marginLeft: isMobile ? '40px' : '0px'
+                        marginTop: isMobile ? "20px" : '0px',
+                        marginLeft: isMobile ? 'auto' : '0px'
                     }}>
                         <div 
                             style={{
