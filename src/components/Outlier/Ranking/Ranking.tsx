@@ -28,6 +28,7 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
             setTeams(nbaTeams);
 
             const rankings = getRank(nbaTeams, filter, oppTeam!.name, player.position)
+            console.log('rankings', nbaTeams)
             setRankings(rankings);
         }
 

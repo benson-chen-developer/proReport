@@ -329,7 +329,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
             filters: filters,
             filter:filter,
         }
-        console.log("filter", filter)
+        // console.log("filter", filter)
 
         /* Look for a projection that matches this stat and period */
         const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);

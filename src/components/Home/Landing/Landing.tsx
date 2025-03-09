@@ -102,8 +102,10 @@ export const Landing = () => {
                     </div>
 
                     {/* Right Picture */}
-                    <div style={{ 
-                        width: '50%', position: 'relative', overflow: 'hidden', 
+                    <div style={{ //the width should be same as image and not 50%
+                        // width: '50%', 
+                        width: isMobile ? '650px' : '800px',
+                        position: 'relative', overflow: 'hidden', 
                         marginLeft: isMobile ? '40px' : '0px'
                     }}>
                         <div 

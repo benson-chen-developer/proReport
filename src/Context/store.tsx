@@ -6,6 +6,7 @@ import { getAllData, saveData } from './functions/cookies';
 import { MatchUp } from './Types/Match';
 import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
 import { cacheMatchups, getCurrentMatchups } from './functions/cookies/matchUps';
+import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
 
 
 interface ContextProps {
@@ -336,12 +337,14 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     const cachedNbaTeams = localStorage.getItem('nbaTeams');
     const nbaTeams: Team[] = cachedNbaTeams ? JSON.parse(cachedNbaTeams) : [];
 
-    if(nbaTeams.length > 0){
-      // console.log('nbaTeams is cached')
+    const checkedIn = dailyCheckIn();
+
+    if(checkedIn){
+      console.log('nbaTeams is cached')
       return nbaTeams;
     } else {
       try {
-        // console.log('nbaTeams is not cached')
+        console.log('nbaTeams is not cached')
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
         if (!response.ok) throw new Error('Failed to fetch nba teams');
         const data = await response.json();
@@ -353,21 +356,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         return [];
       }
     }
-
-    // if(nbaTeams.length > 0){
-    //   return nbaTeams;
-    // } else {
-    //   try {
-    //     const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
-    //     if (!response.ok) throw new Error('Failed to fetch nba teams');
-    //     const data = await response.json();
-    //     setNbaTeams(data);
-    //     return data;
-    //   } catch (error) {
-    //     console.error('Error fetching Lol players:', error);
-    //     return [];
-    //   }
-    // }
   }
   
   return (
