@@ -18,7 +18,6 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
         if(filter.isAway && !filter.isHome) strArr.push('At Away')
         if(filter.isHome && !filter.isAway) strArr.push('At Home')
         if(filter.lastGame === "H2H") strArr.push('H2H')
-        // if(filter.)
 
         return strArr;
     }
@@ -104,9 +103,11 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
                                 {rankings.map((rank, i) => 
                                     <div style={{color: "#A2A2A2", marginTop:'5px'}} key={i}>
 
-                                        <span style={{marginRight:'5px'}}>
-                                            {i === 0 ? 'ALL:' : `${popularProp.prop.player.position.split('-')[i-1]}:`} 
-                                        </span>
+                                        {popularProp.prop.player.position.split('-')[i-1] !== undefined &&
+                                            <span style={{marginRight:'5px'}}>
+                                                {i === 0 ? 'ALL:' : `${popularProp.prop.player.position.split('-')[i-1]}:`} 
+                                            </span>
+                                        }
                                         
                                         <span style={{color: getRankColor(rank, teams), marginRight:'20px'}}>
                                             {rank.rank}

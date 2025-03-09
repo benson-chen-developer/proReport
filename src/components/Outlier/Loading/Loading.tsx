@@ -5,7 +5,7 @@ import { useGlobalContext } from '../../../Context/store';
 const tips = [
     {
         text: "$100s of dollars of free promotions are avaiable in the \"Promos Tab\"",
-        emoji: '🤑'
+        emoji: '💰'
     },
     // {
     //     text: "You can filter out injured players with the \"Games Without Players\" filter",
@@ -25,10 +25,10 @@ const tips = [
     },
     {
         text: "Filter for games that are away, without players, minutes played, and more in the filters section",
-        emoji: '🧐'
+        emoji: '📊'
     },
     {
-        text: "Don't just look at the \"Last Games\". Make sure to check the \"Head To Head\ matches as well",
+        text: "Don't just look at the \"Last Games\". Make sure to check the \"Head To Head\" matches as well",
         emoji: '🧐'
     }
 ]
