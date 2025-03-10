@@ -340,11 +340,11 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     const checkedIn = dailyCheckIn();
 
     if(checkedIn){
-      console.log('nbaTeams is cached')
+      // console.log('nbaTeams is cached')
       return nbaTeams;
     } else {
       try {
-        console.log('nbaTeams is not cached')
+        // console.log('nbaTeams is not cached')
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
         if (!response.ok) throw new Error('Failed to fetch nba teams');
         const data = await response.json();

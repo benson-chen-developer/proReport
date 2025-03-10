@@ -21,7 +21,7 @@ export const StatsFilterHeader: React.FC<Props> = ({showAllStats, setShowAllStat
                         setShowAllStats(p => !p)
                     }}
                 >
-                    All Stats
+                    {/* All Stats
                     <Checkbox 
                         style={{padding: '5px 0px 5px 5px'}}
                         checked={showAllStats} 
@@ -31,7 +31,7 @@ export const StatsFilterHeader: React.FC<Props> = ({showAllStats, setShowAllStat
                             color: '#1876D1', // Color when checked
                             },
                         }}
-                    />
+                    /> */}
                 </div> : null
             }
         </div>

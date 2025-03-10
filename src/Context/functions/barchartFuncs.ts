@@ -367,7 +367,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     }
 
     /* Get all games with at least this range of minutes played */
-    if(filter.minutes[0] === -1 || filter.minutes[1] === -1 || filter.minutes[0] > filter.minutes[1]){
+    if(!filter.minutesChecked || filter.minutes[0] > filter.minutes[1]){
         /* Skip the minutes parsing if no time is selected */
     } else {
         displayedGames = displayedGames.filter((game, index) => {

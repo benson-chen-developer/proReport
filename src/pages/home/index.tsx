@@ -38,6 +38,7 @@ export const Index = () => {
             const matchUps = await fetchMatchUps();
 
             setTeams(teams);
+            // console.log('props', props)
             const popularProps: PopularProp[] = props
                 .filter(prop => prop.popularHits.length > 0)
                 .map(prop => {

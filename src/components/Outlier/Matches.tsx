@@ -33,6 +33,7 @@ export type Filter = {
     withOutPlayers: string[],
     daysRested: number,
     minutes: [number, number],
+    minutesChecked: boolean,
     over: boolean
 }
 export type Filters = {
@@ -95,7 +96,8 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         withOutPlayers: [],
         supportingStat: "Minutes", 
         daysRested: -1,
-        minutes: [0, 45],
+        minutes: [0, 50],
+        minutesChecked: false,
         over: true
     });
     const [filters, setFilters] = useState<Filters>({
@@ -103,7 +105,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         supportingStats: ["Minutes", "Fouls"],
         lastGames: ["L5", "L10", "L20"],
         periods: [],
-        minutes: [0, 45]
+        minutes: [0, 50],
     })
 
     const [showAllStats, setShowAllStats] = useState<boolean>(false);
@@ -293,7 +295,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
     // }, [filters.stats, filters.supportingStats, filters.periods])
 
     /* MainBarData */
-    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over } = filter;
+    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, minutesChecked } = filter;
 
     useEffect(() => {
         const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
@@ -314,7 +316,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         setFilter(newFilter);
 
         setPickedProjection(pickedProjection);
-    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection]);
+    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection, minutesChecked]);
     
     /* 
         CHANGE (PICKED PROJECTIONS)
@@ -429,7 +431,7 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                                     setFilter={setFilter} filter={filter}
                                 />
                             </div>
-                            <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
+                            <div style={{width:'95%'}}>
                                 <MinutesSlider 
                                     filter={filter} setFilter={setFilter}
                                     filters={filters}
