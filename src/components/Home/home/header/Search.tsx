@@ -13,9 +13,10 @@ export const Search: React.FC<Props> = ({search, setSearch}) => {
     return (
         <div
             style={{
+                margin: isMobile ? '0px 0px 10px 0px' : '0px 0px 15px 15px', 
                 width: isMobile ? "95%" : "500px", 
-                minHeight: isMobile ? "30px" : "40px", 
-                marginTop:'10px', border: '1px solid #6D6D6D',
+                minHeight: isMobile ? "35px" : "40px", 
+                border: '1px solid #6D6D6D',
                 borderRadius: "10px", display:'flex',
                 background: "#2B2B2B", alignItems:'center'
             }}

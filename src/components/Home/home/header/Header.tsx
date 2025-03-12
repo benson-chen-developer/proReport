@@ -49,7 +49,7 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps, popu
             </p>
 
             {/* Search Player Name */}
-            <div style={{width:'100%', margin: '0px 0px 15px 10px'}}>
+            <div style={{width:'100%', display:'flex', justifyContent: isMobile ? 'center' : 'flex-start'}}>
                 <Search search={search} setSearch={setSearch}/>
             </div>
 
@@ -63,7 +63,7 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps, popu
                 }}>
                     <div style={{
                         height: isMobile ? '30px' : '40px', borderRadius:'5px', width:'80%',
-                        marginLeft:'10%',
+                        marginLeft:'15px',
                         background: matchPicked ? '#fff' : '#2B2B2B', 
                         fontSize: isMobile ? '9px' : '14px',
                         border:'1px solid grey',
