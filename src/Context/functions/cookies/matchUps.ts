@@ -1,6 +1,6 @@
 import { MatchUp } from "../../Types/Match";
 import { Team } from "../../Types/PlayerTypes";
-import { Projection } from "../../Types/ProjectionTypes";
+import { PopularProp, Projection } from "../../Types/ProjectionTypes";
 
 export const cacheMatchups = async (teams: Team[]): Promise<MatchUp[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matchUps/nba`);
@@ -111,6 +111,14 @@ const removeOldMatchups = (matchups: MatchUp[]): MatchUp[] => {
 //     })
 // }
 
+const getUTCDayStr = (timeStr: string): string => {
+    const time = new Date(timeStr);
+    time.setHours(time.getHours() - 5);
+    const formattedTime = time.toISOString().split('T')[0];
+
+    return formattedTime;
+}
+
 /*
     Returns all the games today
         - Also if you pass in props then it will return any matches that match that prop's game
@@ -134,7 +142,35 @@ export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): M
         }
     }
 
-    return filteredGames;
+    let moreMatches: MatchUp[] = [];
+    if(props){
+        moreMatches = matchUps.filter((matchUp) => {
+            return props.find((prop) => {
+                const team = prop.player.city;
+
+                return (getUTCDayStr(prop.start_time) === getUTCDayStr(matchUp.time) &&
+                    (team === matchUp.teams[0].name || team === matchUp.teams[1].name)
+                )
+            })
+        })
+    }
+
+    /* Get rid of dupes */
+    const matchIdentifier = (matchUp: MatchUp) => 
+        `${getUTCDayStr(matchUp.time)}-${matchUp.teams[0].name}-${matchUp.teams[1].name}`;
+    const uniqueMatches = new Set<string>();
+
+    const totalMatchesSet = [...filteredGames, ...moreMatches].filter((matchUp) => {
+        const id = matchIdentifier(matchUp);
+
+        if (!uniqueMatches.has(id)) {
+            uniqueMatches.add(id);
+            return true;
+        }
+        return false;
+    });
+
+    return totalMatchesSet;
 };
 
 /*

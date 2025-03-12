@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners';
 import { SideBar } from '../../components/Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
-import { MatchUp } from '../../Context/Types/Match';
+import { isSameMatchup, MatchUp } from '../../Context/Types/Match';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
 import { Body } from '../../components/Home/home/body/Body';
 import { Header } from '../../components/Home/home/header/Header';
@@ -21,6 +21,7 @@ export const Index = () => {
     const [players, setPlayers] = useState<PPlayer[]>([]);
 
     const [periods, setPeriods] = useState<string[]>([]);
+    const [search, setSearch] = useState<string>("");
     const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
     const {fetchMatchUps, fetchProjections, fetchNbaMatches, fetchNbaPlayers, fetchNbaTeams, isMobile} = useGlobalContext();
@@ -31,16 +32,18 @@ export const Index = () => {
             const teams = await fetchNbaTeams();
             const players = await fetchNbaPlayers();
             setPlayers(players);
+            setTeams(teams);
 
             // /* Gotta to be new each time */
             // const props = await fetchProjections();
             const props = await fetchPopularProjections();
-            const matchUps = await fetchMatchUps();
 
-            setTeams(teams);
-            // console.log('props', props)
-            const popularProps: PopularProp[] = props
-                .filter(prop => prop.popularHits.length > 0)
+            const popularPropWithoutMatchUp: Projection[] = props
+                .filter(prop => prop.popularHits.length > 0);
+            
+            const matchUps = await fetchMatchUps('', popularPropWithoutMatchUp);
+
+            const popularProps: PopularProp[] = popularPropWithoutMatchUp
                 .map(prop => {
                     return ({
                         prop: prop, 
@@ -49,7 +52,7 @@ export const Index = () => {
                         )!
                     })
                 })
-            ;
+                
             setPopularProps(popularProps);
             setShownPopularProps(popularProps);
             
@@ -67,23 +70,31 @@ export const Index = () => {
     useEffect(() => {
         if(!loading){
             let newPopularProps = popularProps;
-    
-            if(pickedMatchUps.length > 0){
-                newPopularProps = newPopularProps.filter(prop => {
-                    if(!prop.matchUp) return false; /* This is due to the game being tmr most likely */
 
-                    const isSameMatch = pickedMatchUps.find((m) =>
-                        m.teams[0].name === prop.matchUp.teams[0].name
-                        // && m.time === prop.matchUp.time
+            if(pickedMatchUps.length > 0){
+                newPopularProps  = popularProps.filter(prop => {
+                    return pickedMatchUps.find(pickedMatchUp => isSameMatchup(pickedMatchUp, prop.matchUp));
+                });
+            }
+            
+            if(search.trim().length > 0){
+                const propsFilteredBySearch = newPopularProps.filter(prop => {
+                    const name = prop.prop.player.name;
+                    const firstName = prop.prop.player.name.split(' ')[0];
+                    const lastName = prop.prop.player.name.split(' ')[1];
+
+                    return (
+                        firstName && firstName.toLowerCase().startsWith(search) ||
+                        lastName && lastName.toLowerCase().startsWith(search) ||
+                        name.toLowerCase().startsWith(search)
                     )
-                    
-                    return isSameMatch;
-                })
+                });
+                newPopularProps = propsFilteredBySearch;
             }
 
             setShownPopularProps(newPopularProps);
         }
-    }, [pickedMatchUps])
+    }, [pickedMatchUps, search])
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
@@ -100,8 +111,10 @@ export const Index = () => {
                         :
                     <>
                         <Header 
+                            popularProps={popularProps}
                             pickedMatchUps={pickedMatchUps}
                             setPickedMatchUps={setPickedMatchUps}
+                            search={search} setSearch={setSearch}
                         />
 
                         <Body 

@@ -1,20 +1,33 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { TeamsMatchUp } from '../../../Outlier/Hero/TeamsMatchUp';
 import { useGlobalContext } from '../../../../Context/store';
-import { MatchUp } from '../../../../Context/Types/Match';
+import { isSameMatchup, MatchUp } from '../../../../Context/Types/Match';
+import { PopularProp } from '../../../../Context/Types/ProjectionTypes';
+import { Search } from './Search';
 
 interface Props {
+    popularProps: PopularProp[],
     pickedMatchUps: MatchUp[],
     setPickedMatchUps: Dispatch<SetStateAction<MatchUp[]>>
+    search: string,
+    setSearch: Dispatch<SetStateAction<string>>
 }
 
-export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => {
+export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps, popularProps, search, setSearch}) => {
     const [matchUps, setMatchUps] = useState<MatchUp[]>([]);
     const {fetchMatchUps, isMobile} = useGlobalContext();
 
     useEffect(() => {
         const func = async () => {
-            const matchUps = await fetchMatchUps();
+            let matchUps = await fetchMatchUps('', popularProps.flatMap(prop => prop.prop));
+
+            /* Only keep matches that have props in the header */
+            matchUps = matchUps.filter((matchUp) => {
+                return popularProps.find((prop) => 
+                    isSameMatchup(prop.matchUp, matchUp)
+                )
+            })
+
             setMatchUps(matchUps);
         }
 
@@ -25,18 +38,25 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => 
 
     return (
         <div style={{
-            width:'100%', height:'20vh', background:'#151515', borderBottom:'1px solid #fff',
+            width:'100%', height:'30vh', background:'#151515', borderBottom:'1px solid #fff',
             display:'flex', flexDirection:'column'
         }}>
             <p style={{
                 color:'#fff', fontSize: isMobile ? '18px' : "22px", fontWeight:'bold',
-                margin: isMobile ? '40px 0px 0px 10px' : '30px 0px 0px 20px', 
+                margin: isMobile ? '40px 0px auto 10px' : '30px 0px auto 20px', 
             }}>
                 Home
             </p>
 
+            {/* Search Player Name */}
+            <div style={{width:'100%', margin: '0px 0px 15px 10px'}}>
+                <Search search={search} setSearch={setSearch}/>
+            </div>
+
             {/* Matches */}
-            <div style={{display:'flex', width:' 100%', marginTop:'auto', marginBottom:'10px'}}>
+            <div style={{display:'flex', width:' 100%', marginBottom:'10px'}}>
+                
+                {/* Match Box */}
                 <div style={{
                     color:'#fff', fontWeight:'bold', margin:0, width: isMobile ? "15%" : '10%',
                     display:'flex', alignItems:'center', justifyContent:'center'
@@ -68,6 +88,7 @@ export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps}) => 
                     </div>
                 </div>
 
+                {/* Selecting MatchUps */}
                 <div
                     style={{
                         display: 'flex', width: isMobile ? '85%' : '90%', overflowX: 'auto', 

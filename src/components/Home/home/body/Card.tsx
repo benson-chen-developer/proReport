@@ -6,6 +6,7 @@ import { getRank, getRankColor, Ranking } from '../../../Outlier/Ranking/Ranking
 import { convertNBATeamName, convertTime } from '../../../../Context/functions/convertNbaName'
 import { Team } from '../../../../Context/Types/PlayerTypes'
 import { PopularProp, Projection } from '../../../../Context/Types/ProjectionTypes'
+import { NBATeamCircle } from '../../../Outlier/Hero/TeamsMatchUp'
 
 interface Props {
     popularProp: PopularProp,
@@ -43,6 +44,8 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
         func();
     }, [])
 
+    if(rankings.length === 0) return null;
+
     return (
         <Link
             href={{
@@ -73,16 +76,9 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
                             />
 
                             {/* Team Logo */}
-                            <Image
-                                src={`https://cdn.nba.com/logos/nba/${team?.id}/primary/L/logo.svg`}
-                                height={22}
-                                width={22}
-                                alt="Team Logo"
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '12px', left: '-4px',
-                                }}
-                            />
+                            <div style={{position: 'absolute', bottom: '12px', left: '-4px',}}>
+                                <NBATeamCircle team={team} />
+                            </div>
                         </div>
                         <p style={{color:'#fff', fontWeight:'bold', margin:'-5px 0px 0px 0px', fontSize:'14px'}}>
                             {popularProp.prop.player.name}
@@ -100,20 +96,19 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
                             </p>
 
                             <div style={{ marginRight:'20px', fontSize:'13px', display:'flex', }}>
-                                {rankings.map((rank, i) => 
-                                    <div style={{color: "#A2A2A2", marginTop:'5px'}} key={i}>
-
-                                        {popularProp.prop.player.position.split('-')[i-1] !== undefined &&
-                                            <span style={{marginRight:'5px'}}>
-                                                {i === 0 ? 'ALL:' : `${popularProp.prop.player.position.split('-')[i-1]}:`} 
+                                {rankings.map((rank, i) => (
+                                    i === 0 || popularProp.prop.player.position.split('-')[i - 1] !== undefined ? (
+                                        <div style={{ color: "#A2A2A2", marginTop: '5px' }} key={i}>
+                                            <span style={{ marginRight: '5px' }}>
+                                                {i === 0 ? 'ALL:' : `${popularProp.prop.player.position.split('-')[i - 1]}:`}
                                             </span>
-                                        }
-                                        
-                                        <span style={{color: getRankColor(rank, teams), marginRight:'20px'}}>
-                                            {rank.rank}
-                                        </span>
-                                    </div>
-                                )}
+                                            
+                                            <span style={{ color: getRankColor(rank, teams), marginRight: '20px' }}>
+                                                {rank.rank}
+                                            </span>
+                                        </div>
+                                    ) : null
+                                ))}
                             </div>
                         </div>
                         

@@ -31,42 +31,9 @@ export const Bars: React.FC<Props> = ({
 
     const [barKey, setBarKey] = useState<number>(0);
     
-    const [barRadiusArr, setBarRadiusArr] = useState<[number, number, number, number][]>([
-        [5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]
-    ])
-    const [barColorArr, setBarColorArr] = useState<string[]>([]);
-
     useEffect(() => {
         setLoading(true);
         
-        /* 
-            Change the radius of the bars based if we have multiple stats displayed 
-                - PTS+REB ex
-
-            - The [0] (top) is always at least [5, 5, x, x] as it is up top
-            - The [2] (bottom) is always at least [x, x, 5, 5] as it is on bottom
-
-            [x,x,x,x] = topR topL botR botL
-
-            dataOverZero => This tells us how many diff stacked bars we have 
-        */
-        let dataPoint = barData[0];
-        if(dataPoint){
-            let dataOverZero = [dataPoint.stat1 > 0, dataPoint.stat2 > 0, dataPoint.stat3 > 0]
-                .filter(isTrue => isTrue)
-                .length; 
-
-            if(dataOverZero === 1){
-                setBarRadiusArr([[5, 5, 5, 5], [0, 0, 0, 0], [0, 0, 0, 0]]);
-                setBarColorArr(["#79F4F4", '#79F4F4', '#79F4F4'])
-            } 
-            else if(dataOverZero === 2) setBarRadiusArr([[0, 0, 5, 5], [5, 5, 0, 0], [0, 0, 0, 0]])
-            else {
-                setBarRadiusArr([[0, 0, 5, 5], [0, 0, 0, 0], [5, 5, 0, 0]])
-                setBarColorArr(['#529b9b', '#65c7c7', "#79F4F4"])
-            }
-        }
-
         /* Set the y where the reference line will be */
         let refLineAmt = -1;
         setRefLineAmt(refLineAmt);
@@ -191,7 +158,7 @@ export const Bars: React.FC<Props> = ({
                     <Tooltip content={<CustomTooltip player={player} chartType={chartType}/>} />
 
                     {/* Bars */}
-                    <Bar dataKey="statTotal" radius={5} animationDuration={200}>
+                    <Bar dataKey={(entry) => Math.max(0, entry.statTotal)} radius={5} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
@@ -199,12 +166,11 @@ export const Bars: React.FC<Props> = ({
                                     ? entry.statTotal === lineValue 
                                         ? "#FFFFFF" 
                                         : entry.hit 
-                                            // ? "#14EE9D"
                                             ? "#79F4F4" 
                                             : '#A2A2A2' 
                                     : '#EEEEEE'}
                             />
-                        ))}
+                    ))}
                         <LabelList
                             dataKey="statTotal"  // Number floating up top
                             position="top"

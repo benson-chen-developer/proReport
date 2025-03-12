@@ -130,6 +130,7 @@ interface Props2 {
     teamName? : string
 }
 
+/* Either pass in team or teamId */
 export const NBATeamCircle: React.FC<Props2> = ({team, teamId, teamName}) => {
     const {isMobile} = useGlobalContext();
 

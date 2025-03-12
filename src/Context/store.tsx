@@ -1,7 +1,7 @@
 'use client';
 import React, { createContext, useContext, Dispatch, SetStateAction, useState, useEffect, ReactNode } from 'react';
 import { CSPlayer, LolPlayer, PGame, PlayerType, PPlayer, RainbowPlayer, Team, ValorantPlayer } from './Types/PlayerTypes';
-import { Projection } from './Types/ProjectionTypes';
+import { PopularProp, Projection } from './Types/ProjectionTypes';
 import { getAllData, saveData } from './functions/cookies';
 import { MatchUp } from './Types/Match';
 import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
@@ -43,7 +43,7 @@ interface ContextProps {
   setComboPopUp: Dispatch<SetStateAction<boolean>>,
   playersInCombo: PlayerType[],
   setPlayersInCombo: Dispatch<SetStateAction<PlayerType[]>>,
-  fetchMatchUps: (league?: string) => Promise<MatchUp[]>
+  fetchMatchUps: (league?: string, props?: Projection[]) => Promise<MatchUp[]>
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -80,7 +80,7 @@ const GlobalContext = createContext<ContextProps>({
   setComboPopUp: (): boolean => false,
   playersInCombo: [],
   setPlayersInCombo: (): PlayerType[] => [],
-  fetchMatchUps: async (league?: string): Promise<MatchUp[]> => [],
+  fetchMatchUps: async (league?: string, props?: Projection[]): Promise<MatchUp[]> => [],
 });
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
@@ -211,7 +211,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     // const nbaPlayers = await fetchCachedNBAPlayers();
     // return nbaPlayers;
   };
-  const fetchMatchUps = async (league?: string): Promise<MatchUp[]> => {
+  const fetchMatchUps = async (league?: string, props?: Projection[]): Promise<MatchUp[]> => {
     const cachedMatchUps = localStorage.getItem('matchUps');
     let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 
@@ -230,14 +230,12 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       }
     }
 
-    const currentMatchups = getCurrentMatchups(matchUps);
+    const currentMatchups = getCurrentMatchups(matchUps, props);
 
     if (process.env.NODE_ENV === "development") {
       // console.log('currentMatchups', currentMatchups)
     }
     return currentMatchups;
-    // localStorage.setItem('matchUps', JSON.stringify([]));
-    // console.log('cleared cache')
   }
   const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
     if(nbaMatches.length > 0){
