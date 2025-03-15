@@ -16,7 +16,8 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
 
-    const [isOverLayFilter, setIsOverLayFilter] = useState(false);
+    /* For Mobile Filter */
+    const [filterShow, setFilterShow] = useState(false);
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
@@ -27,17 +28,17 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
 
             <Matches 
                 loading={loading} setLoading={setLoading}
-                isOverLayFilter={isOverLayFilter}
+                sidebarVisible={sidebarVisible}
             />
 
-            {isMobile && !sidebarVisible && !loading ? 
+            {/* {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 
                     isOverLayFilter={isOverLayFilter} 
                     setIsOverLayFilter={setIsOverLayFilter}
                 /> 
                     : 
                 null
-            }
+            } */}
         </div>
     );
 }

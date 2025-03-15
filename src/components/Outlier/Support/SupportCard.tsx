@@ -51,6 +51,7 @@ export const SupportCard: React.FC<Props> = ({
         <div style={{
             width:'100%', background:'#1E1E1E', display:'flex',
             justifyContent:'center', flexDirection:'column', alignItems:'center',
+            marginBottom:'20px'
         }}>
             <div style={{width:'95%', marginBottom:'30px'}}>
                 {/* Supportin Stats and Averages */}

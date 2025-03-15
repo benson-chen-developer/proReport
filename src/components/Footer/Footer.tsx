@@ -27,7 +27,7 @@ export const Footer = () => {
                         <p style={{ color: '#fff', fontSize: '10px',}}>
                             Contact our support and report bugs at
                         </p>
-                        <p style={{ color: '#a2a2a2', fontSize:'12px' }}>proreport.helper@gmail.com</p>
+                        <p style={{ color: '#a2a2a2', fontSize:'10px' }}>proreport.helper@gmail.com</p>
                     </div>
                 </div>
             ) : (

@@ -19,7 +19,7 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
             ref={ref}
             style={{
                 borderRadius: "10px",
-                minHeight: '100px', maxHeight: "400px",
+                minHeight: isMobile ? '75px' : '100px', maxHeight: "400px",
                 width: '100%',
                 overflowY: "auto", border: '1px solid #A2A2A2',
                 backgroundColor: "#1E1E1E", marginTop: '5px', zIndex: 3,
@@ -63,9 +63,6 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                                         <Image
                                             src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
                                             alt="Profile"
-                                            // style={{
-                                            //     width: "130%", height: '95%'
-                                            // }}
                                             width={isMobile ? 55 : 75} 
                                             height={isMobile ? 30 : 40} 
                                         /> :
@@ -84,7 +81,9 @@ export const SuggestedPlayers = forwardRef<HTMLDivElement, Props>(({ similarPlay
                     )
                 })
             ) : (
-                <div style={{ padding: "15px", color: "#999" }}>
+                <div style={{
+                    padding: "15px", color: "#999", fontSize: isMobile ? '10px' : '14px' 
+                }}>
                     No players found.
                 </div>
             )}

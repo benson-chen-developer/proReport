@@ -3,11 +3,11 @@ import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import { Filter } from '../Matches';
 
-const IOSSwitch = styled((props: SwitchProps) => (
+export const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
-  width: 42,
-  height: 26,
+  width: 34,
+  height: 18,
   padding: 0,
   '& .MuiSwitch-switchBase': {
     padding: 0,
@@ -47,8 +47,8 @@ const IOSSwitch = styled((props: SwitchProps) => (
   },
   '& .MuiSwitch-thumb': {
     boxSizing: 'border-box',
-    width: 22,
-    height: 22,
+    width: 14,
+    height: 14,
   },
   '& .MuiSwitch-track': {
     borderRadius: 26 / 2,
@@ -66,51 +66,48 @@ const IOSSwitch = styled((props: SwitchProps) => (
 interface Props {
   filter: Filter,
   setFilter: Dispatch<SetStateAction<Filter>>
+  homeGame: boolean
 }
-export const HomeSwitches: React.FC<Props> = ({filter, setFilter}) => {
+export const HomeSwitches: React.FC<Props> = ({filter, setFilter, homeGame}) => {
   return (
-      <div style={{display:'flex', margin: '0px 0px 10px -10px'}}>
-        <div
-          style={{display:'flex', alignItems:'center', cursor:'pointer'}}
-          onClick={() => {
-            if(!filter.isAway){
-                setFilter(p => ({...p, isAway:true, isHome: false})); 
-            } else {
+      <div style={{display:'flex'}}>
+        {homeGame ?
+          <div
+            style={{display:'flex', alignItems:'center', cursor:'pointer'}}
+            onClick={() => {
               setFilter(p => ({...p, isHome: !p.isHome})); 
-            }
-          }}
-        >
-          <Switch 
-            checked={filter.isHome} 
-          />
-          <p style={{
-              color: filter.isHome ? '#fff' : 'grey',
-              fontSize:'14px', fontWeight:'bold',
-          }}>
-              Home
-          </p>
-        </div>
+            }}
+          >
+            <p style={{
+                color: filter.isHome ? '#fff' : 'grey',
+                fontSize:'14px', fontWeight:'bold',
+            }}>
+                Home
+            </p>
+            <Switch 
+              checked={filter.isHome} 
+            />
+          </div> : null
+        }
         
-        <div
-          style={{display:'flex', alignItems:'center', cursor:'pointer'}}
-          onClick={() => {
-            if(!filter.isHome){
-                setFilter(p => ({...p, isAway:false, isHome: true})); 
-            } else {
-                setFilter(p => ({...p, isAway: !p.isAway})); 
-            }
-          }}
-        >
-          <Switch 
-            checked={filter.isAway} 
-          />
-          <p style={{
-              color: filter.isAway ? '#fff' : 'grey',
-              fontSize:'14px', fontWeight:'bold'
-          }}>
-              Away
-          </p>
-        </div>
+        {!homeGame ? 
+          <div
+            style={{display:'flex', alignItems:'center', cursor:'pointer'}}
+            onClick={() => {
+              setFilter(p => ({...p, isAway: !p.isAway})); 
+            }}
+          >
+            <p style={{
+                color: filter.isAway ? '#fff' : 'grey',
+                fontSize:'14px', fontWeight:'bold'
+            }}>
+                Away
+            </p>
+            <Switch 
+              checked={filter.isAway} 
+            />
+          </div>: null
+        }
       </div>
   );
 }

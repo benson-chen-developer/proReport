@@ -11,7 +11,7 @@ interface Props {
     setFilter: Dispatch<SetStateAction<Filter>>
 }
 export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) => {
-    const {fetchNbaPlayers} = useGlobalContext();
+    const {fetchNbaPlayers, isMobile} = useGlobalContext();
     const [players, setPlayers] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
@@ -111,7 +111,7 @@ export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) 
                     width:'300px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
                     position:'absolute', marginTop:'3px', display:'flex',
                     alignItems:'center', flexDirection:'column', zIndex:2, cursor:'pointer',
-                    maxHeight:'300px', overflow:'auto'
+                    maxHeight: isMobile ? '175px' : '300px', overflow:'auto'
                 }} ref={popupRef}>
                     {players.map((player, i) => {
                         return <div 

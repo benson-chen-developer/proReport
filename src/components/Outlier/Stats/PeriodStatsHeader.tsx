@@ -10,7 +10,7 @@ export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({
     filter, setFilter, filters
 }) => {
     return (
-        <div style={{display:'flex', width:'100%', marginBottom:'20px'}}>
+        <div style={{display:'flex', width:'100%', marginBottom:'10px'}}>
             {filters.periods.map((stat, index) => 
                 <div 
                     key={index}

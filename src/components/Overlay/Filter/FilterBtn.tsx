@@ -11,10 +11,10 @@ export const FilterBtn: React.FC<Props> = ({isOverLayFilter, setIsOverLayFilter}
             style={{
                 position: 'fixed', // Ensures it stays in the viewport
                 zIndex: 1000, // Ensures it's above other elements
-                bottom: '20px', // 20px from the bottom of the viewport
+                bottom: '25px', // 20px from the bottom of the viewport
                 right: '20px', // 20px from the right of the viewport
-                width: '65px',
-                height: '30px',
+                width: '80px',
+                height: '35px',
                 borderRadius: '20px',
                 background: '#fff',
                 display: 'flex',
@@ -24,7 +24,7 @@ export const FilterBtn: React.FC<Props> = ({isOverLayFilter, setIsOverLayFilter}
             }}
             onClick={() => setIsOverLayFilter(p => !p)}
         >
-            <p style={{ fontSize: '12px', fontWeight: 'bold', margin: 0 }}>
+            <p style={{ fontSize: '14px', fontWeight: 'bold', margin: 0 }}>
                 {isOverLayFilter ? 'Close' : 'Filter'}
             </p>
 

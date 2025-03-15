@@ -21,7 +21,7 @@ export const Bars: React.FC<Props> = ({
     player, barData, chartType, seasonAvg, refLineOn, lineValue
 }) => {
     const {isMobile} = useGlobalContext();
-    const barHeight = '350px';
+    const barHeight = isMobile ? '275px' : '350px';
 
     const [loading, setLoading] = useState<boolean>(true);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
@@ -124,7 +124,7 @@ export const Bars: React.FC<Props> = ({
     }
 
     return (
-        <div style={{ width: '100%', height:barHeight, marginBottom:'20px'}}>
+        <div style={{ width: '100%', height:barHeight, marginBottom: isMobile ? '0px' : '20px'}}>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     key={barKey}
@@ -149,7 +149,7 @@ export const Bars: React.FC<Props> = ({
                     />
                     <YAxis 
                         {...(!defaultYAxis && chartType === "main" && { domain: [0, yAxisMax] })}
-                        tick={{ fill: 'grey', fontWeight:'bold', fontSize:'14px' }} 
+                        tick={{ fill: 'grey', fontWeight:'bold', fontSize:isMobile ? "12px" :'14px' }} 
                         tickLine={false} 
                         axisLine={false}
                     />
@@ -191,6 +191,7 @@ export const Bars: React.FC<Props> = ({
                                     position: 'left', 
                                     fontWeight:'bold',
                                     fill: '#fff', 
+                                    fontSize: isMobile ? "14px" : '16px'
                                 }}
                             />
                         ) : (

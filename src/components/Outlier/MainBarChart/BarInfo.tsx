@@ -49,7 +49,7 @@ export const BarInfo: React.FC<Props> = ({
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{
                 width:'95%', display:'flex', justifyContent:'space-between', 
-                alignItems:'center', marginLeft:'20px', 
+                alignItems:'center', marginLeft:'20px',
                 fontSize: isMobile ? '12px' : '14px',
             }}>
                 {/* The 90% 9 of 10 */}
@@ -94,12 +94,12 @@ export const BarInfo: React.FC<Props> = ({
                     pickedProjection.period === filter.period  && 
                     projections.length > 0 
                 ?
-                    <div style={{ display:'flex'}}>
+                    <div style={{ display:'flex', marginRight: isMobile ? '15px' : '0px'}}>
                         {/* The Over/Under */}
                         {pickedProjection?.overUnder === 3 ?
                             <div style={{
                                 width: isMobile ? '25px' : '30px', height: isMobile ? '25px' : '30px', 
-                                border: 'solid 3px #5B5B5B',
+                                border: isMobile ? '2px solid #5B5B5B' : 'solid 3px #5B5B5B',
                                 borderRadius:'8px', display:'flex', alignItems:'center',
                                 justifyContent:'center', marginRight:'8px', cursor:'pointer',
                                 transition: 'transform 0.3s ease',

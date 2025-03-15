@@ -39,7 +39,7 @@ export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
                         }}
                     >
                         <div style={{color: stat === filter.stat ? '#fff' : 'grey',}}>
-                            <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '10px' : '14px',}}>
+                            <p style={{margin: 0, fontWeight: 'bold', fontSize: isMobile ? '12px' : '14px',}}>
                                 {stat}
                             </p>
                         </div>

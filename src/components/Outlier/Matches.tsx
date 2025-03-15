@@ -22,6 +22,14 @@ import { BarInfo } from './MainBarChart/BarInfo';
 import { Bars } from './Bars';
 import { MatchUp } from '../../Context/Types/Match';
 import { fetchProjections } from '../../Context/functions/fetch/fetchProjections';
+import { MobileFilter } from './Filter/MobileFilter';
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import { Drawer } from '@mui/material';
+import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 
 export type Filter = {
     isHome: boolean,
@@ -66,16 +74,15 @@ export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 interface Props {
     loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>
-    isOverLayFilter: boolean
+    sidebarVisible: boolean
 }
-export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading}) => {
+export const Matches: React.FC<Props> = ({sidebarVisible, loading, setLoading}) => {
     const router = useRouter();
     const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
     
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
-    const [seasonAvg, setSeasonAvg] = useState<{ name: string; value: number }[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
     const [rightBtn, setRightBtn] = useState<"Filters" | "Rankings">("Filters");
 
@@ -88,8 +95,8 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
     /* Filter */
     const [filter, setFilter] = useState<Filter>({
-        isHome: true,
-        isAway: true,
+        isHome: false,
+        isAway: false,
         stat: "PTS", 
         lastGame: "L10", 
         period: "All",
@@ -107,6 +114,9 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
         periods: [],
         minutes: [0, 50],
     })
+
+    /* For Mobile Filter */
+    const [filterShow, setFilterShow] = useState(false);
 
     const [showAllStats, setShowAllStats] = useState<boolean>(false);
 
@@ -152,28 +162,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                     position: player!.position,
                     city: player!.city
                 });
-
-                /* Get the season averages for fantasy stats */
-                let newSeasonAvg = PSport.getFantasyStats(league).map((stat) => ({
-                    ...stat,
-                    value: 0,
-                }));
-                allGames.forEach((game) => {
-                    const playerPeriods = game.players.find((p) => p.name === player?.name);
-                
-                    playerPeriods?.periods.forEach((period) => {
-                        Object.entries(period).forEach(([statName, statValue]) => {
-                            const matchingStat = newSeasonAvg.find((s) => s.name === statName);
-                
-                            if (matchingStat && statValue > 0) {
-                                matchingStat.value += statValue;
-                            }
-                        });
-                    });
-                });
-                setSeasonAvg([...newSeasonAvg, {
-                    name: 'FAN', value: PSport.calcFantasyScore(league, newSeasonAvg, allGames.length)
-                }])
 
                 /* Intial Projections and Intial Stats Filters set up */
                 const projections = await fetchProjections(player.name);
@@ -281,18 +269,6 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
 
         return newFilter;
     }
-    // useEffect(() => {
-    //     let foundMainStat = filters.stats.find(option => option === filter.stat);
-    //     let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
-    //     let foundPeriod = filters.periods.find(p => p === filter.period);
-    //     let newFilter = {...filter};
-
-    //     if(!foundMainStat) newFilter.stat = filters.stats[0];
-    //     if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
-    //     if(!foundPeriod) newFilter.period = filters.periods[0];
-
-    //     setFilter({...newFilter})
-    // }, [filters.stats, filters.supportingStats, filters.periods])
 
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, minutesChecked } = filter;
@@ -402,7 +378,35 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                         mainBarData={mainBarData}
                         pickedProjection={pickedProjection}
                     />
+
+                    <div key={'bottom'}>
+                        <Drawer
+                            anchor={'bottom'}
+                            open={filterShow}
+                            onClose={() => setFilterShow(false)}
+                            PaperProps={{
+                                style: {
+                                    backgroundColor: '#2B2B2B',
+                                    borderTopLeftRadius: '20px',
+                                    borderTopRightRadius: '20px',
+                                    minHeight: '50vh', 
+                                    maxHeight: '50vh', 
+                                    overflow: 'hidden',
+                                }
+                            }}
+                        >
+                            <MobileFilter 
+                                projections={projections}
+                                showAllStats={showAllStats} setShowAllStats={setShowAllStats}
+                                filter={filter} setFilter={setFilter}
+                                filters={filters} 
+                                player={player}
+                                matchUp={matchUp}
+                            />
+                        </Drawer>
+                    </div>
                 </div>
+
 
                 {/* Filters */}
                 {!isMobile ?
@@ -421,7 +425,11 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                                 filters={filters}
                             />
 
-                            <HomeSwitches filter={filter} setFilter={setFilter} />
+                            <HomeSwitches 
+                                filter={filter} setFilter={setFilter} 
+                                homeGame={matchUp?.teams[0].name === player.city}
+                            />
+
                             <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                                 <WithOutPlayers 
                                     ourPlayer={player}
@@ -443,55 +451,18 @@ export const Matches: React.FC<Props> = ({isOverLayFilter, loading, setLoading})
                                 /> : null
                             }
                         </div>
-                    </div>
-                        : 
-                    <div style={{
-                        position:'fixed', height:'auto%', width:'100%', zIndex: 4,
-                        backgroundColor: '#2B2B2B', bottom:0, 
-                        // border:'2px solid #fff',
-                        borderTopLeftRadius:'20px', borderTopRightRadius:'20px'
-                    }}>
-                        {isOverLayFilter ?
-                            <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
-                                <StatsFilterHeader 
-                                    hasProjections={projections.length > 0}
-                                    showAllStats={showAllStats}
-                                    setShowAllStats={setShowAllStats}
-                                />
-                                <SecondStatsHeader 
-                                    filter={filter} filters={filters} setFilter={setFilter}
-                                />
-                                <PeriodStatsHeader
-                                    setFilter={setFilter} filter={filter}
-                                    filters={filters}
-                                />
-
-                                <HomeSwitches filter={filter} setFilter={setFilter} />
-                                <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                                    <WithOutPlayers 
-                                        ourPlayer={player}
-                                        setFilter={setFilter} filter={filter}
-                                    />
-                                    <DaysOfRest 
-                                        setFilter={setFilter} filter={filter}
-                                    />
-                                </div>
-                                <div style={{width:'95%', display:'flex', alignItems:'center', height:'70px'}}>
-                                    <MinutesSlider 
-                                        filter={filter} setFilter={setFilter}
-                                        filters={filters}
-                                    />
-                                </div>
-                                {matchUp ? 
-                                    <Rankings 
-                                        filter={filter} matchUp={matchUp} player={player}
-                                    /> : null
-                                }
-                            </div> : null
-                        }
-                    </div>
+                    </div> : null
                 }
             </div>
+
+            {isMobile && !sidebarVisible && !loading ? 
+                <FilterBtn
+                    isOverLayFilter={filterShow} 
+                    setIsOverLayFilter={setFilterShow}
+                /> 
+                    : 
+                null
+            }
         </div>
     )
 
