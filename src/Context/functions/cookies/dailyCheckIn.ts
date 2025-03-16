@@ -21,6 +21,7 @@ export const dailyCheckIn = (): boolean => {
     // If past 1 AM and last check-in was over 24 hours ago, reset check-in
     if (now >= oneAM && diffHours >= 24) {
         localStorage.setItem("dailyCheckIn", now.toISOString());
+
         return false; // We haven't checked in today
     }
 

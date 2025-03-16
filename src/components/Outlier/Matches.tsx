@@ -24,10 +24,6 @@ import { MatchUp } from '../../Context/Types/Match';
 import { fetchProjections } from '../../Context/functions/fetch/fetchProjections';
 import { MobileFilter } from './Filter/MobileFilter';
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 import { Drawer } from '@mui/material';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 

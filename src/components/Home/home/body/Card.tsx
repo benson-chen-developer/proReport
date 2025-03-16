@@ -42,7 +42,7 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
         } 
 
         func();
-    }, [])
+    }, [popularProp])
 
     if(rankings.length === 0) return null;
 
