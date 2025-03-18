@@ -34,10 +34,9 @@ export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
             <div style={{display: 'flex', alignItems:'center', flexDirection:'column'}}>
                 {popularProps.length > 0 ?
                     <div style={{
-                        display: 'grid', justifyContent:'start',
-                        gridTemplateColumns: !isMobile ? 'repeat(auto-fit, 32%)' : 'repeat(auto-fit, 100%)',
-                        gap: isMobile ? "0px 0px" : '5px 1%', 
-                        width: '95%',
+                        display: 'grid', justifyContent:'space-evenly',
+                        gridTemplateColumns: !isMobile ? 'repeat(auto-fit, 375px)' : 'repeat(auto-fit, 100%)',
+                        width: isMobile ? '95%' : '100%',
                     }}>
                         {popularProps
                             .filter(prop => prop.matchUp && prop.prop) // Remove invalid items before mapping

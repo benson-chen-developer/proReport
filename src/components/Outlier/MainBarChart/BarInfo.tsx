@@ -140,7 +140,7 @@ export const BarInfo: React.FC<Props> = ({
                 }
             </div>
 
-            <div style={{width:'100%', marginTop:'10px', overflowX:'scroll'}}>
+            <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>
                 <DropDownStatsHeader 
                     filter={filter} setFilter={setFilter}
                     filters={filters} 

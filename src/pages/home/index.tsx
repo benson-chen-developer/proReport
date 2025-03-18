@@ -10,10 +10,10 @@ import { Loading } from '../../components/Outlier/Loading/Loading';
 import { fetchNBAMatchesViaTeams } from '../../Context/functions/fetchNbaMatches';
 import { PopularProp, Projection } from '../../Context/Types/ProjectionTypes';
 import { fetchPopularProjections } from '../../Context/functions/fetch/fetchProjections';
+import { prettierPopularProps } from '../../components/Home/home/body/functions';
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [sidebarVisible, setSidebarVisible] = useState(false);
 
     const [popularProps, setPopularProps] = useState<PopularProp[]>([]);
     const [shownPopularProps, setShownPopularProps] = useState<PopularProp[]>([]);
@@ -54,7 +54,9 @@ export const Index = () => {
                 })
                 
             setPopularProps(popularProps);
-            setShownPopularProps(popularProps);
+            
+            const prettyProps = prettierPopularProps(popularProps);
+            setShownPopularProps(prettyProps);
             
             // /* Set all the filter options */
             // const uniquePeriods = Array.from(new Set(popularProps.flatMap(prop => prop.filter.period)));
@@ -92,16 +94,18 @@ export const Index = () => {
                 newPopularProps = propsFilteredBySearch;
             }
 
-            setShownPopularProps(newPopularProps);
+            if(search.trim().length === 0 && pickedMatchUps.length === 0){
+                const prettyProps = prettierPopularProps(popularProps);
+                setShownPopularProps(prettyProps);
+            } else {
+                setShownPopularProps(newPopularProps);
+            }
         }
     }, [pickedMatchUps, search])
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
-            <SideBar 
-                sidebarVisible={sidebarVisible} 
-                setSidebarVisible={setSidebarVisible}
-            />
+            <SideBar />
 
             <div style={{width: isMobile ? '100%' : '80%', height:'100%'}}>
                 {loading ? 

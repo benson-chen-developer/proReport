@@ -50,13 +50,8 @@ export const Search: React.FC<Props> = ({search, setSearch}) => {
                 }}
                 placeholder="Search for players"
                 style={{
-                    width: "80%", 
-                    fontSize: isMobile ? "12px" : "15px", 
-                    borderRadius: "15px", height:'95%',
-                    border: "0px solid #ccc",
-                    background: "#2B2B2B",
-                    color: "#fff",
-                    outline: "none", boxShadow: "none",
+                    all: "unset", fontSize: isMobile ? "12px" : "15px", 
+                    color: "#fff", width: "80%", minHeight:'100%', 
                 }}
             />
 

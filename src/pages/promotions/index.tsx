@@ -26,9 +26,6 @@ const Index = () => {
     const [promos, setPromos] = useState<Promo[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    /* SideBar Mobiele Responsive */
-    const [sidebarVisible, setSidebarVisible] = useState(false);
-
     useEffect(() => {
         const func = async () => {
             const promos = await fetchPromos();
@@ -93,7 +90,7 @@ const Index = () => {
         
             {/* Main Content */}
             <div style={{display:'flex', zIndex: 1}}>
-                <SideBar setSidebarVisible={setSidebarVisible} sidebarVisible={sidebarVisible} />
+                <SideBar />
         
                 {/* Right Side */}
                 <div style={{
@@ -153,7 +150,7 @@ const Index = () => {
 
     return (
         <div style={{background:'#1E1E1E', width:'100%', minHeight:'100vh', display:'flex', overflow:'hidden'}}>
-            <SideBar setSidebarVisible={setSidebarVisible} sidebarVisible={sidebarVisible}/>
+            <SideBar />
 
             {/* Right Side */}
             <div style={{width: isMobile ? '100%' : '80%', alignItems:'center', display:'flex', overflowX:'hidden',flexDirection:'column'}}>

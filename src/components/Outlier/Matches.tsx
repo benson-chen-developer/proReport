@@ -70,9 +70,8 @@ export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 interface Props {
     loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>
-    sidebarVisible: boolean
 }
-export const Matches: React.FC<Props> = ({sidebarVisible, loading, setLoading}) => {
+export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const router = useRouter();
     const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
@@ -451,7 +450,7 @@ export const Matches: React.FC<Props> = ({sidebarVisible, loading, setLoading}) 
                 }
             </div>
 
-            {isMobile && !sidebarVisible && !loading ? 
+            {isMobile && !loading ? 
                 <FilterBtn
                     isOverLayFilter={filterShow} 
                     setIsOverLayFilter={setFilterShow}

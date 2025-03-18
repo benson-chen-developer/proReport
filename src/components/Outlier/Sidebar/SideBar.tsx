@@ -6,26 +6,28 @@ import { useRouter } from 'next/router';
 import { Logo } from './Logo';
 
 interface Props {
-    sidebarVisible: boolean,
-    setSidebarVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export const SideBar: React.FC<Props> = ({sidebarVisible, setSidebarVisible}) => {
-    const {isMobile} = useGlobalContext();
+export const SideBar: React.FC<Props> = () => {
     const router = useRouter();
+
+    const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+
+    const {isMobile} = useGlobalContext();
     const { paramLeague, paramPlayer } = router.query; 
     const isPlayerPage = router.pathname.startsWith('/player');
 
     const links: {text:string, link:string}[] = [
         {text: 'Home', link: '/home'},
-        // {text: 'Ranking', link: '/ranking'},
         {text: 'Promos', link: '/promotions'},
+        {text: 'Team Rankings', link: '/team-rank'},
     ]
 
     const getIcon = (text:string, picked: boolean) => {
-        if(text === "Promos") return <svg xmlns="http://www.w3.org/2000/svg" style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 16 16"><path fill={picked ? "#fff" : "#A2A2A2"}  fillRule="evenodd" d="M9.744 2.072L7.818.917L5.892 2.072l-2.237.198l-.88 2.066l-1.693 1.475L1.585 8l-.503 2.189l1.693 1.475l.88 2.066l2.237.198l1.926 1.155l1.926-1.155l2.237-.198l.88-2.066l1.694-1.475L14.05 8l.504-2.189l-1.694-1.475l-.88-2.066zM5.5 6.5a.5.5 0 1 1 1 0a.5.5 0 0 1-1 0M6 5a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3m-.146 5.854l5-5l-.708-.708l-5 5zM9.5 10a.5.5 0 1 1 1 0a.5.5 0 0 1-1 0m.5-1.5a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3" clipRule="evenodd"/></svg>
         if(text === "Popular Picks") return <svg xmlns="http://www.w3.org/2000/svg" style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 24 24"><path fill={picked ? "#fff" : "#A2A2A2"} d="M9.153 5.408C10.42 3.136 11.053 2 12 2s1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182s.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776c.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18c-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506s-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452s-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01c-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46c-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882S3.58 8.328 6.04 7.772l.636-.144c.699-.158 1.048-.237 1.329-.45s.46-.536.82-1.182z"/></svg>
+        if(text === "Promos") return <svg xmlns="http://www.w3.org/2000/svg"  style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 24 24"><path fill={picked ? "#fff" : "#A2A2A2"} d="M12.005 22.003c-5.523 0-10-4.477-10-10s4.477-10 10-10s10 4.477 10 10s-4.477 10-10 10m-3.5-8v2h2.5v2h2v-2h1a2.5 2.5 0 1 0 0-5h-4a.5.5 0 1 1 0-1h5.5v-2h-2.5v-2h-2v2h-1a2.5 2.5 0 1 0 0 5h4a.5.5 0 0 1 0 1z"/></svg>
         if(text === "Home") return <svg xmlns="http://www.w3.org/2000/svg" style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 24 24"><g fill={picked ? "#fff" : "#A2A2A2"}><path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06z"/><path d="m12 5.432l8.159 8.159q.045.044.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198l.091-.086z"/></g></svg>
+        if(text === "Team Rankings") return <svg xmlns="http://www.w3.org/2000/svg" style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 24 24"><path fill={picked ? "#fff" : "#A2A2A2"} d="M3 21q-.425 0-.712-.288T2 20V10q0-.425.288-.712T3 9h3.5q.425 0 .713.288T7.5 10v10q0 .425-.288.713T6.5 21zm7.25 0q-.425 0-.712-.288T9.25 20V4q0-.425.288-.712T10.25 3h3.5q.425 0 .713.288T14.75 4v16q0 .425-.288.713T13.75 21zm7.25 0q-.425 0-.712-.288T16.5 20v-8q0-.425.288-.712T17.5 11H21q.425 0 .713.288T22 12v8q0 .425-.288.713T21 21z"/></svg>
         if(text === "player") return <svg xmlns="http://www.w3.org/2000/svg" style={{margin:'0px 10px'}} width="20" height="20" viewBox="0 0 24 24"><path fill="#79F4F4" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4"/></svg>
     }
 

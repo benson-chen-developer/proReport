@@ -12,7 +12,7 @@ interface Props {
 }
 
 export type Ranking = {
-    name: string, value: string, rank: number
+    name: string, value: string, rank: number, teamName: string, position: string
 }
 
 export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
@@ -27,7 +27,7 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
             const nbaTeams = await fetchNbaTeams();
             setTeams(nbaTeams);
 
-            const rankings = getRank(nbaTeams, filter, oppTeam!.name, player.position)
+            const rankings = getRank(nbaTeams, filter.stat, oppTeam!.name, player.position)
             setRankings(rankings);
         }
 
@@ -87,17 +87,20 @@ const calcFantasyScore = (stats: Record<string, number>): number => {
 };
 
 export const getRank = (
-    teams: Team[], filter: Filter, oppTeam: string, position:string
+    teams: Team[], stat: string, oppTeam: string, position:string
 ): Ranking[] => {
-    const positions = ["All", ...position.split('-')];
+    const positions = position === "All" ? [...position.split('-')] : ["All", ...position.split('-')];
+    
     const rankings = positions.map((pos) => {
-        const orderedTeams = orderTeamsByStatAmount(filter.stat, teams, pos);
+        const orderedTeams = orderTeamsByStatAmount(stat, teams, pos);
         const teamIndex = orderedTeams.findIndex(team => team.name === oppTeam);
 
         return {
-            name: `${filter.stat} Allowed`,
+            name: stat,
             rank: teamIndex+1,
-            value: (0 / teams[teamIndex].gp).toFixed(1)
+            value: (0 / teams[teamIndex].gp).toFixed(1),
+            teamName: oppTeam,
+            position: pos
         }
     })
 

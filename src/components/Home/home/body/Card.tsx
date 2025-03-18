@@ -37,7 +37,7 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
 
     useEffect(() => {
         const func = async () => {
-            const rankings = getRank(teams, popularProp.prop.popularGameFilter, oppTeam?.name!, `${popularProp.prop.player.position}`)
+            const rankings = getRank(teams, popularProp.prop.popularGameFilter.stat, oppTeam?.name!, `${popularProp.prop.player.position}`)
             setRankings(rankings);
         } 
 
