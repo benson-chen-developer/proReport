@@ -2,19 +2,15 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useGlobalContext } from '../../../Context/store';
 import { Projection } from '../../../Context/Types/ProjectionTypes';
 import { bgColor } from '../../Player/PPlayerPage';
-import { Filter, Filters } from '../Matches';
 
 interface CustomLabelProps {
-    filter: Filter,
-    filters: Filters,
-    setFilter: Dispatch<SetStateAction<Filter>>
     projections: Projection[],
     showAllStats: boolean
 }
 export const DropDownStatsHeader: React.FC<CustomLabelProps> = ({
-    filter, filters, setFilter, projections, showAllStats
+    projections, showAllStats
 }) => {
-    const {isMobile} = useGlobalContext();
+    const {isMobile, filter, filters, setFilter} = useGlobalContext();
     
     return (
         <div style={{marginLeft:'20px', display: 'flex', overflowX:'auto', height: isMobile ? '30px' : '50px', paddingTop:'5px'}}>

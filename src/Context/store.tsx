@@ -7,7 +7,7 @@ import { MatchUp } from './Types/Match';
 import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
 import { cacheMatchups, getCurrentMatchups } from './functions/cookies/matchUps';
 import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
-import { Filter } from '../components/Outlier/Matches';
+import { Filter, Filters } from '../components/Outlier/Matches';
 
 const defaultFilter: Filter = {
   isHome: false,
@@ -21,6 +21,13 @@ const defaultFilter: Filter = {
   minutes: [0, 50],
   minutesChecked: false,
   over: true
+}
+const defaultFilters: Filters = {
+  stats: [],
+  supportingStats: ["Minutes", "Fouls"],
+  lastGames: ["L5", "L10", "L20"],
+  periods: [],
+  minutes: [0, 50],
 }
 const defaultPlayer: PPlayer = {
   name: "", playerId: "", city: "",
@@ -48,8 +55,12 @@ interface ContextProps {
   fetchMatchUps: (league?: string, props?: Projection[]) => Promise<MatchUp[]>
   
   // Player Page Props
+  pickedProjection: Projection | null,
+  setPickedProjection: Dispatch<SetStateAction<Projection | null>>
   filter: Filter
   setFilter: Dispatch<SetStateAction<Filter>>
+  filters: Filters
+  setFilters: Dispatch<SetStateAction<Filters>>
   player: PPlayer
   setPlayer: Dispatch<SetStateAction<PPlayer>>
 }
@@ -75,8 +86,12 @@ const GlobalContext = createContext<ContextProps>({
   fetchMatchUps: async (league?: string, props?: Projection[]): Promise<MatchUp[]> => [],
 
   // Player Page Props
+  pickedProjection: null,
+  setPickedProjection: (): Projection | null => null,
   filter: defaultFilter,
   setFilter: (): Filter => defaultFilter,
+  filters: defaultFilters,
+  setFilters: (): Filters => defaultFilters,
   player: defaultPlayer,
   setPlayer: (): PPlayer => defaultPlayer
 });
@@ -88,7 +103,9 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [projections, setProjections] = useState<Projection[]>([]);
 
   /* Player Page Props */
+  const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [player, setPlayer] = useState<PPlayer>({
     name: "", playerId: "", city: "",
     team: "", sport: "", position: ''
@@ -260,7 +277,9 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       fetchMatchUps,
 
       // Player Page Props
+      pickedProjection, setPickedProjection,
       filter, setFilter,
+      filters, setFilters,
       player, setPlayer
     }}>
       {children}

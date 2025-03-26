@@ -14,16 +14,13 @@ interface Props {
     mainBarData: BarData[],
     projections: Projection[],
     setProjections: Dispatch<SetStateAction<Projection[]>>
-    pickedProjection:Projection | null
-    setPickedProjection: Dispatch<SetStateAction<Projection | null>>
-    filters: Filters,
     showAllStats: boolean
 }
 export const BarInfo: React.FC<Props> = ({
-    avg, seasonAvg, mainBarData, projections, setProjections, pickedProjection, setPickedProjection,
-    filters, showAllStats
+    avg, seasonAvg, mainBarData, projections, setProjections,
+    showAllStats
 }) => {
-    const {isMobile, filter, setFilter} = useGlobalContext()
+    const {isMobile, filter, setFilter, pickedProjection, setPickedProjection} = useGlobalContext()
 
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
@@ -146,8 +143,6 @@ export const BarInfo: React.FC<Props> = ({
 
             <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>
                 <DropDownStatsHeader 
-                    filter={filter} setFilter={setFilter}
-                    filters={filters} 
                     projections={projections}
                     showAllStats={showAllStats}
                 />

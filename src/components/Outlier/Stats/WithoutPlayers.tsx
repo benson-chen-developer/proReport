@@ -6,10 +6,9 @@ import { PPlayer } from '../../../Context/Types/PlayerTypes';
 import Image from 'next/image';
 
 interface Props {
-    ourPlayer: PPlayer,
 }
-export const WithOutPlayers: React.FC<Props> = ({ourPlayer}) => {
-    const {fetchNbaPlayers, isMobile, filter, setFilter} = useGlobalContext();
+export const WithOutPlayers: React.FC<Props> = () => {
+    const {fetchNbaPlayers, isMobile, filter, setFilter, player} = useGlobalContext();
     const [players, setPlayers] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
@@ -19,7 +18,7 @@ export const WithOutPlayers: React.FC<Props> = ({ourPlayer}) => {
         const func = async () => {
             const players = await fetchNbaPlayers();
             setPlayers(players
-                .filter(player => player.city === ourPlayer.city && player.name !== ourPlayer.name)
+                .filter(player => player.city === player.city && player.name !== player.name)
             );
         }
 

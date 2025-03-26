@@ -7,19 +7,18 @@ import { MatchUp } from '../../../Context/Types/Match'
 
 interface Props {
     matchUp: MatchUp
-    player: PPlayer
 }
 
 export type Ranking = {
     name: string, value: string, rank: number, teamName: string, position: string
 }
 
-export const Rankings: React.FC<Props> = ({matchUp, player}) => {
+export const Rankings: React.FC<Props> = ({matchUp}) => {
+    const {fetchNbaTeams, filter, player} = useGlobalContext();
     const [rankings, setRankings] = useState<Ranking[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
-    const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
 
-    const {fetchNbaTeams, filter} = useGlobalContext();
+    const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
 
     useEffect(() => {
         const func = async () => {

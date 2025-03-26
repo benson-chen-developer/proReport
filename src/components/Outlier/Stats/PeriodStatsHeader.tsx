@@ -1,13 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { useGlobalContext } from '../../../Context/store';
 import { bgColor } from '../../Player/PPlayerPage'
-import { Filter, Filters } from '../Matches'
 
 interface CustomLabelProps {
-    filters: Filters,
 }
-export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({filters}) => {
-    const {filter, setFilter} = useGlobalContext();
+export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({}) => {
+    const {filter, setFilter, filters} = useGlobalContext();
 
     return (
         <div style={{display:'flex', width:'100%', marginBottom:'10px'}}>

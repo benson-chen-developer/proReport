@@ -3,11 +3,12 @@ import { useGlobalContext } from '../../../Context/store';
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 
 interface Props {
-    prop: Projection
 }
 const height = "50px";
 
-export const PropHistory: React.FC<Props> = ({prop}) => {
+export const PropHistory: React.FC<Props> = () => {
+    const {pickedProjection} = useGlobalContext();
+
     return (
         <div style={{width:'100%', display:'flex', justifyContent:'center'}}>
 
@@ -17,16 +18,16 @@ export const PropHistory: React.FC<Props> = ({prop}) => {
                 <BarHeader/>
 
                 {/* Bars */}
-                {prop?.values.map((value, i) => {
-                    const isLast = i === prop.values.length-1;
+                {pickedProjection?.values.map((value, i) => {
+                    const isLast = i === pickedProjection.values.length-1;
                     const isFirst = i === 0;
 
-                    let changeNum = isFirst ? 0 : `${value - prop.values[i-1]}`;
+                    let changeNum = isFirst ? 0 : `${value - pickedProjection.values[i-1]}`;
                     const change = changeNum === 0 ? '' : `${changeNum > 0 ? '+' : ''}${changeNum}`;
                     
                     return <Bar 
                         value={value}
-                        updatetAt={prop.updated_ats[i]} 
+                        updatetAt={pickedProjection.updated_ats[i]} 
                         change={change}
                         isLast={isLast}
                         isFirst={isFirst}

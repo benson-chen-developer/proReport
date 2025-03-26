@@ -12,23 +12,22 @@ import { SecondStatsHeader } from '../Stats/SecondStatHeader'
 import { ExtraSideSelection } from '../Stats/ExtraSideSelection'
 import { WithOutPlayers } from '../Stats/WithoutPlayers'
 import { PropHistory } from '../PropHistory/PropHistory'
+import { useGlobalContext } from '../../../Context/store'
 
 interface Props {
     extraInfo: string,
     setExtraInfo: Dispatch<SetStateAction<string>>
     projections: Projection[],
     showAllStats: boolean, setShowAllStats: Dispatch<SetStateAction<boolean>>
-    filters: Filters,
-    player: PPlayer,
     matchUp?: MatchUp
-    pickedProjection: Projection | null
 }
 
 export const MobileFilter: React.FC<Props> = ({ 
-    extraInfo, setExtraInfo, pickedProjection,
+    extraInfo, setExtraInfo,
     projections, showAllStats, setShowAllStats,
-     filters, player, matchUp
+    matchUp
 }) => {
+    const {player} = useGlobalContext();
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
     return (
@@ -63,25 +62,19 @@ export const MobileFilter: React.FC<Props> = ({
                     {showAdvanced ? 
                         <div style={{marginLeft:'5%'}}>
                             <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                                <WithOutPlayers
-                                    ourPlayer={player}
-                                />
+                                <WithOutPlayers />
                                 <DaysOfRest />
                             </div>
 
                             <div style={{width:'95%', display:'flex', alignItems:'center', height:'125px'}}>
-                                <MinutesSlider
-                                    filters={filters}
-                                />
+                                <MinutesSlider />
                             </div> 
                         </div>
                             :
                         <div style={{marginLeft:'5%'}}>
-                            <SecondStatsHeader filters={filters}/>
+                            <SecondStatsHeader />
 
-                            <PeriodStatsHeader
-                                filters={filters}
-                            />
+                            <PeriodStatsHeader />
                             
                             <div style={{width:'100%',margin: '0px 0px 10px 0px'}}>
                                 <HomeSwitches 
@@ -96,13 +89,13 @@ export const MobileFilter: React.FC<Props> = ({
             {matchUp && extraInfo === "MatchUp Given" ?
                 <div style={{marginTop:'20px'}}>
                     <Rankings
-                        matchUp={matchUp} player={player}
+                        matchUp={matchUp} 
                     /> 
                 </div> : null
             }
 
             {extraInfo === "Prop History" ?
-                <PropHistory prop={pickedProjection!}/> : null
+                <PropHistory /> : null
             }
         </div>
     )
