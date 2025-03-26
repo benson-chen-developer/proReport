@@ -6,13 +6,14 @@ import { PPlayer } from '../../../Context/Types/PlayerTypes';
 import { Filter } from '../Matches';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { height } from '@mui/system';
+import { useGlobalContext } from '../../../Context/store';
 
 interface Props {
     ourPlayer?: PPlayer,
-    filter: Filter,
-    setFilter: Dispatch<SetStateAction<Filter>>
 }
-export const DaysOfRest: React.FC<Props> = ({filter, setFilter, ourPlayer}) => {
+export const DaysOfRest: React.FC<Props> = ({ ourPlayer}) => {
+    const {filter, setFilter} = useGlobalContext();
+
     const [popUps, setPopUps] = useState<{value:number, text: string}[]>([
       {value: 0, text:'Back to Back'},
       {value: 1, text:'1 Day Rest'},

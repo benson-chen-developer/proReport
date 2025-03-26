@@ -20,7 +20,7 @@ interface Props {
 export const Bars: React.FC<Props> = ({ 
     player, barData, chartType, seasonAvg, refLineOn, lineValue
 }) => {
-    const {isMobile} = useGlobalContext();
+    const {isMobile, filter} = useGlobalContext();
     const barHeight = isMobile ? '275px' : '350px';
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -132,7 +132,11 @@ export const Bars: React.FC<Props> = ({
                     width={500}
                     height={300}
                     data={barData}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+                    margin={
+                        isMobile ? 
+                        { top: 20, right: 15, left: -15, bottom: 0 } :
+                        { top: 20, right: 30, left: 0, bottom: 0 }
+                    }
                 >
                     {/* Background */}
                     <rect width="100%" height="100%" fill={'#1F1F1F'} /> 
@@ -171,11 +175,16 @@ export const Bars: React.FC<Props> = ({
                                     : '#EEEEEE'}
                             />
                     ))}
-                        <LabelList
-                            dataKey="statTotal"  // Number floating up top
-                            position="top"
-                            style={{fontSize:isMobile ? '12px' : '14px', fontWeight: 'bold'}}
-                        />
+                        {!(filter.lastGame === "L20" && filter.stat === "FAN" && isMobile) && (
+                            <LabelList
+                                dataKey="statTotal"
+                                position="top"
+                                style={{
+                                    fontSize: isMobile ? (filter.lastGame === "L20" ? '10px' : '12px') : '14px',
+                                    fontWeight: 'bold'
+                                }}
+                            />
+                        )}
                     </Bar>
 
                     {/* The reference lines */}
@@ -191,7 +200,7 @@ export const Bars: React.FC<Props> = ({
                                     position: 'left', 
                                     fontWeight:'bold',
                                     fill: '#fff', 
-                                    fontSize: isMobile ? "14px" : '16px'
+                                    fontSize: isMobile ? "12px" : '16px'
                                 }}
                             />
                         ) : (

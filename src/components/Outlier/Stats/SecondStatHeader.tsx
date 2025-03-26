@@ -3,6 +3,7 @@ import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import { Filter, Filters } from '../Matches';
+import { useGlobalContext } from '../../../Context/store';
 
 const PinkSwitch = styled(Switch)(({ theme }) => ({
   '& .MuiSwitch-switchBase.Mui-checked': {
@@ -19,10 +20,10 @@ const PinkSwitch = styled(Switch)(({ theme }) => ({
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
 interface CustomLabelProps {
     filters: Filters;
-    filter: Filter,
-    setFilter: Dispatch<SetStateAction<Filter>>
 }
-export const SecondStatsHeader: React.FC<CustomLabelProps> = ({filters, filter, setFilter}) => {
+export const SecondStatsHeader: React.FC<CustomLabelProps> = ({filters}) => {
+    const {filter, setFilter} = useGlobalContext();
+
     return (
         <div style={{
             width:'100%', alignItems:'center', margin:'0px 0px 15px -3px',

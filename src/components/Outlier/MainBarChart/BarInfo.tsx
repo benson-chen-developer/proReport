@@ -9,7 +9,6 @@ import { BarData, Filter, Filters } from '../Matches'
 import { DropDownStatsHeader } from '../Stats/DropDownStatsHeader'
 
 interface Props {
-    filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
     avg: number,
     seasonAvg: number,
     mainBarData: BarData[],
@@ -21,10 +20,10 @@ interface Props {
     showAllStats: boolean
 }
 export const BarInfo: React.FC<Props> = ({
-    filter, avg, seasonAvg, mainBarData, projections, setProjections, pickedProjection, setPickedProjection, setFilter,
+    avg, seasonAvg, mainBarData, projections, setProjections, pickedProjection, setPickedProjection,
     filters, showAllStats
 }) => {
-    const {isMobile} = useGlobalContext()
+    const {isMobile, filter, setFilter} = useGlobalContext()
 
     const hits = mainBarData.reduce((count, item) => {
         return item.hit === true ? count + 1 : count;
@@ -44,16 +43,21 @@ export const BarInfo: React.FC<Props> = ({
     // debugger;
     // console.log("barinfo", pickedProjection)
     // debugger;
+    const maxLength = 12;
+    const statText = `${convertStatName(filter.stat)}`;
+    const truncatedStatText = statText.length > maxLength ? statText.slice(0, maxLength - 3) + "..." : statText;
+
+    const periodText = `${filter.period !== "All" ? `(${filter.period})` : ''}`;
+    const projectionText = pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : '';
 
     return (
         <div style={{width: '100%', marginTop:'10px'}}>
             <div style={{
-                width:'95%', display:'flex', justifyContent:'space-between', 
-                alignItems:'center', marginLeft:'20px',
-                fontSize: isMobile ? '12px' : '14px',
+                width:'100%', display:'flex', justifyContent:'space-between', 
+                alignItems:'center', fontSize: isMobile ? '12px' : '14px'
             }}>
                 {/* The 90% 9 of 10 */}
-                <div>
+                <div style={{marginLeft:'20px'}}>
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={isMobile ? "18px" : "24px"} height={isMobile ? "18px" : "24px"} viewBox="0 0 24 24">
@@ -61,10 +65,10 @@ export const BarInfo: React.FC<Props> = ({
                             </svg>
                         </div>
                         <span style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
-                            {convertStatName(filter.stat)} {filter.period !== "All" ? `(${filter.period})` : ''}
+                            {isMobile ? truncatedStatText : statText} {periodText}
                         </span>
                         <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
-                            {pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : ''} 
+                            {projectionText}
                         </span>
                     </div> 
 
@@ -88,14 +92,13 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projections */}
-                {
+                {(
                     pickedProjection && 
                     pickedProjection.name === filter.stat && 
                     pickedProjection.period === filter.period  && 
-                    projections.length > 0 
-                ?
-                    <div style={{ display:'flex', marginRight: isMobile ? '15px' : '0px'}}>
-                        {/* The Over/Under */}
+                    projections.length > 0
+                ) ?
+                    <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
                         {pickedProjection?.overUnder === 3 ?
                             <div style={{
                                 width: isMobile ? '25px' : '30px', height: isMobile ? '25px' : '30px', 
@@ -130,13 +133,14 @@ export const BarInfo: React.FC<Props> = ({
                             }
                         </div>
                         <ProjectionSquare 
-                            filter={filter} setFilter={setFilter}
                             pickedProjection={pickedProjection}
                             setPickedProjection={setPickedProjection}
                             projections={projections}
                             setProjections={setProjections}
                         />
-                    </div> : null
+                    </div> 
+                        :
+                    null
                 }
             </div>
 

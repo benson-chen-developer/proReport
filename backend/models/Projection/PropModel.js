@@ -33,8 +33,9 @@ const PropsModel = new mongoose.Schema({
 PropsModel.index({ start_time: 1 }, { expireAfterSeconds: 0 });
 
 const Props = mongoose.model("props", PropsModel);
+const TestProps = mongoose.model("testProps", PropsModel);
 
 module.exports = {
-    Props
+    Props, TestProps
 };
 

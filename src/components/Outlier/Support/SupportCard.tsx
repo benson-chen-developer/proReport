@@ -10,7 +10,6 @@ import { useGlobalContext } from '../../../Context/store';
 import { MatchUp } from '../../../Context/Types/Match';
 
 interface Props {
-    filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>,
     filters: Filters, 
     matchUp: MatchUp | undefined, 
     pGames: PGame[],
@@ -19,14 +18,14 @@ interface Props {
     pickedProjection: Projection | null
 }
 export const SupportCard: React.FC<Props> = ({
-    filter, setFilter, pGames, player,
+    pGames, player,
     filters, matchUp, pickedProjection, mainBarData
 }) => {
     const [barData, setBarData] = useState<BarData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [refLineOn, setRefLineOn] = useState<boolean>(false);
 
-    const {isMobile} = useGlobalContext();
+    const {isMobile, filter, setFilter} = useGlobalContext();
 
     useEffect(() => {
         setLoading(true);

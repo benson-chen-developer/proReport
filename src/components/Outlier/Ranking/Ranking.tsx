@@ -7,7 +7,6 @@ import { MatchUp } from '../../../Context/Types/Match'
 
 interface Props {
     matchUp: MatchUp
-    filter: Filter,
     player: PPlayer
 }
 
@@ -15,12 +14,12 @@ export type Ranking = {
     name: string, value: string, rank: number, teamName: string, position: string
 }
 
-export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
+export const Rankings: React.FC<Props> = ({matchUp, player}) => {
     const [rankings, setRankings] = useState<Ranking[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
 
-    const {fetchNbaTeams} = useGlobalContext();
+    const {fetchNbaTeams, filter} = useGlobalContext();
 
     useEffect(() => {
         const func = async () => {
@@ -36,9 +35,9 @@ export const Rankings: React.FC<Props> = ({filter, matchUp, player}) => {
 
 
     return (
-        <div style={{width:"95%", borderRadius:'15px'}}>
+        <div style={{width:"95%", borderRadius:'15px', marginLeft:'5%'}}>
             <h1 style={{
-                fontWeight:'bold', fontSize:'16px', color:'#fff', margin:'10px 0px 5px 0px',
+                fontWeight:'bold', fontSize:'16px', color:'#fff', margin:'0px 0px 5px 0px',
                 display: 'flex'
             }}>
                 <NBATeamCircle team={oppTeam}/>

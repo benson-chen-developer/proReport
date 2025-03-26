@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import { Filter } from '../Matches';
+import { useGlobalContext } from '../../../Context/store';
 
 export const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -64,11 +65,11 @@ export const IOSSwitch = styled((props: SwitchProps) => (
 }));
 
 interface Props {
-  filter: Filter,
-  setFilter: Dispatch<SetStateAction<Filter>>
   homeGame: boolean
 }
-export const HomeSwitches: React.FC<Props> = ({filter, setFilter, homeGame}) => {
+export const HomeSwitches: React.FC<Props> = ({homeGame}) => {
+  const {filter, setFilter} = useGlobalContext();
+
   return (
       <div style={{display:'flex'}}>
         {homeGame ?

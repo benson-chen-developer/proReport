@@ -9,90 +9,100 @@ import { HomeSwitches, IOSSwitch } from '../Stats/HomeSwitches'
 import { MinutesSlider } from '../Stats/MinutesSlider'
 import { PeriodStatsHeader } from '../Stats/PeriodStatsHeader'
 import { SecondStatsHeader } from '../Stats/SecondStatHeader'
-import { StatsFilterHeader } from '../Stats/StatsFilterHeader'
+import { ExtraSideSelection } from '../Stats/ExtraSideSelection'
 import { WithOutPlayers } from '../Stats/WithoutPlayers'
+import { PropHistory } from '../PropHistory/PropHistory'
 
 interface Props {
+    extraInfo: string,
+    setExtraInfo: Dispatch<SetStateAction<string>>
     projections: Projection[],
     showAllStats: boolean, setShowAllStats: Dispatch<SetStateAction<boolean>>
-    filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>
     filters: Filters,
     player: PPlayer,
     matchUp?: MatchUp
+    pickedProjection: Projection | null
 }
 
 export const MobileFilter: React.FC<Props> = ({ 
+    extraInfo, setExtraInfo, pickedProjection,
     projections, showAllStats, setShowAllStats,
-    filter, filters, setFilter, player, matchUp
+     filters, player, matchUp
 }) => {
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
     return (
-        <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column', width:'100%'}}>
+        <div style={{height:'auto', display:'flex', flexDirection:'column', width:'100%'}}>
             
             {/* Header */}
-            <div style={{width:'95%', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                <div style={{display:'flex', height:'auto', alignItems:'center'}}>
-                    <p style={{fontWeight:'bold', fontSize:'18px', color:'#fff'}}>
-                        Stats Filter
-                    </p>
-
+            <div style={{width:'100%', justifyContent:'space-between', alignItems:'center'}}>
+                <ExtraSideSelection 
+                    hasProjections={projections.length > 0}
+                    extraInfo={extraInfo}
+                    setExtraInfo={setExtraInfo}
+                />
+            </div>
+            
+            {extraInfo === "Stats Filter" ?
+                <>
                     <div 
-                        style={{display:'flex', alignItems:'center'}}
+                        style={{
+                            display:'flex', alignItems:'center', 
+                            margin:'0px 0px 5px 5%'
+                        }}
                         onClick={() => setShowAdvanced(p => !p)}
                     >
                         <p style={{
-                            fontWeight:'bold', fontSize:'10px', color:'#a2a2a2', 
-                            margin:'0px 5px 0px 10px'
+                            fontWeight:'bold', fontSize:'12px', color:'#a2a2a2', 
+                            marginRight:'5px'
                         }}>
                             Advanced
                         </p>
                         <IOSSwitch checked={showAdvanced} />
                     </div>
-                </div>
-            </div>
+                    {showAdvanced ? 
+                        <div style={{marginLeft:'5%'}}>
+                            <div style={{width:'95%', display:'flex', alignItems:'center'}}>
+                                <WithOutPlayers
+                                    ourPlayer={player}
+                                />
+                                <DaysOfRest />
+                            </div>
 
-            {showAdvanced ? 
-                <>
-                    <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                        <WithOutPlayers
-                            ourPlayer={player}
-                            setFilter={setFilter} filter={filter}
-                        />
-                        <DaysOfRest
-                            setFilter={setFilter} filter={filter}
-                        />
-                    </div>
+                            <div style={{width:'95%', display:'flex', alignItems:'center', height:'125px'}}>
+                                <MinutesSlider
+                                    filters={filters}
+                                />
+                            </div> 
+                        </div>
+                            :
+                        <div style={{marginLeft:'5%'}}>
+                            <SecondStatsHeader filters={filters}/>
 
-                    <div style={{width:'95%', display:'flex', alignItems:'center', height:'125px'}}>
-                        <MinutesSlider
-                            filter={filter} setFilter={setFilter}
-                            filters={filters}
-                        />
-                    </div> 
-                </>
-                    :
-                <>
-                    <SecondStatsHeader 
-                        filter={filter} filters={filters} setFilter={setFilter}
-                    />
-                    <PeriodStatsHeader
-                        setFilter={setFilter} filter={filter}
-                        filters={filters}
-                    />
-                    
-                    <div style={{width:'100%',margin: '0px 0px 10px 0px'}}>
-                        <HomeSwitches 
-                            filter={filter} setFilter={setFilter} 
-                            homeGame={matchUp?.teams[0].name === player.city}
-                        />
-                    </div>
-                    {matchUp ? 
-                        <Rankings
-                            filter={filter} matchUp={matchUp} player={player}
-                        /> : null
+                            <PeriodStatsHeader
+                                filters={filters}
+                            />
+                            
+                            <div style={{width:'100%',margin: '0px 0px 10px 0px'}}>
+                                <HomeSwitches 
+                                    homeGame={matchUp?.teams[0].name === player.city}
+                                />
+                            </div>
+                        </div>
                     }
-                </>
+                </> : null
+            }
+
+            {matchUp && extraInfo === "MatchUp Given" ?
+                <div style={{marginTop:'20px'}}>
+                    <Rankings
+                        matchUp={matchUp} player={player}
+                    /> 
+                </div> : null
+            }
+
+            {extraInfo === "Prop History" ?
+                <PropHistory prop={pickedProjection!}/> : null
             }
         </div>
     )

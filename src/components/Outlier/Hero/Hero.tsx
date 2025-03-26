@@ -9,13 +9,10 @@ import { MatchUp } from '../../../Context/Types/Match'
 import { NBATeamCircle, TeamsMatchUp } from './TeamsMatchUp'
 
 interface Props {
-    player: PPlayer
-    rightBtn: "Filters" | "Rankings",
-    setRightBtn: Dispatch<SetStateAction<"Filters" | "Rankings">>
     matchUp: MatchUp | undefined
 }
-export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) => {
-    const {fetchNbaTeams, isMobile} = useGlobalContext();
+export const Hero: React.FC<Props> = ({matchUp}) => {
+    const {fetchNbaTeams, isMobile, player} = useGlobalContext();
 
     const [team, setTeam] = useState<Team>();
     useEffect(() => {
@@ -55,7 +52,7 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
             </div>
             
             {/* Headshot */}
-            <div style={{height:'100%', display:'flex', alignItems:'flex-end', marginLeft: isMobile ? '15px' : '25px', zIndex:1}}>
+            <div style={{height:'100%', display:'flex', alignItems:'flex-end', marginLeft: isMobile ? '8px' : '25px', zIndex:1}}>
                 <Image
                     alt={'Person Pic'}
                     src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
@@ -67,10 +64,10 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
 
             {/* Name + Position */}
             <div style={{
-                height:'100%', display:'flex', justifyContent:'flex-end', marginLeft: isMobile ? '0px' : '25px',
+                height:'100%', display:'flex', justifyContent:'flex-end', marginLeft: isMobile ? '-5px' : '25px',
                 flexDirection:'column', width:'50%',
             }}>
-                <p style={{margin:0, fontSize: isMobile ? '16px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
+                <p style={{margin:0, fontSize: isMobile ? '14px' : '35px', fontWeight:'bold', color:'#fff'}}>{player.name}</p>
                 
                 <p style={{
                     margin: isMobile ? '0px 0px 20px 0px' : '0px 0px 20px 0px', 
@@ -116,7 +113,7 @@ export const Hero: React.FC<Props> = ({player, rightBtn, setRightBtn, matchUp}) 
                     <p style={{ 
                         marginRight: isMobile ? '10px' : '15px', 
                         marginBottom: isMobile ? '5px' : '10px', 
-                        fontSize: isMobile ? '11px' : '16px' 
+                        fontSize: isMobile ? '9px' : '16px' 
                     }}>
                         ({matchUp.teams[0].name === player.city ? "Home" : "Away"}) {" "}
                         {(() => {

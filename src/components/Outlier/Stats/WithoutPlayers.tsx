@@ -7,11 +7,9 @@ import Image from 'next/image';
 
 interface Props {
     ourPlayer: PPlayer,
-    filter: Filter,
-    setFilter: Dispatch<SetStateAction<Filter>>
 }
-export const WithOutPlayers: React.FC<Props> = ({ourPlayer, filter, setFilter}) => {
-    const {fetchNbaPlayers, isMobile} = useGlobalContext();
+export const WithOutPlayers: React.FC<Props> = ({ourPlayer}) => {
+    const {fetchNbaPlayers, isMobile, filter, setFilter} = useGlobalContext();
     const [players, setPlayers] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 

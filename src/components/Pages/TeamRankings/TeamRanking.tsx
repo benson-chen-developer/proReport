@@ -91,21 +91,24 @@ export const TeamRanking = () => {
         func();
     }, [pickedPosition, ascending, pickedStat])
 
-    const entryWidth = "50px";
-    const entryHeight = "40px";
+    const entryWidth = isMobile ? "60px" : "100px";
+    const entryHeight = isMobile ? "30px" : "40px";
+    const upDownIconSize = isMobile ? "12" : "15";
+
+    const teamWidth = isMobile ? '100px' : "150px";
     const borderEdgeColor = "#2B2B2B";
     // A2A2A2 2B2B2B
     return (
         <div style={{ minHeight: '100%', width: isMobile ? "100%" : "80%" }}>
-            <div style={{margin:'40px 0px 20px 20px'}}>
-                <h1 style={{color:'#fff', fontSize:'20px'}}>
+            <div style={{margin: isMobile ? '50px 0px 15px 20px' : '40px 0px 20px 20px'}}>
+                <h1 style={{color:'#fff', fontSize: isMobile ? '14px' : '20px'}}>
                     Teams Ranked By How Many Stats Are Given Up (per game)
                 </h1>
 
-                <h4 style={{color:'#B1B1B1', fontSize:'12px', margin: 0}}>
+                <h4 style={{color:'#B1B1B1', fontSize: isMobile ? '10px' : '12px', margin: 0}}>
                     A lower number means the team gives up more points compared to others
                 </h4>
-                <h4 style={{fontSize:'12px', margin: '10px 0px 0px 0px' }}>
+                <h4 style={{fontSize: isMobile ? '10px' : '12px', margin: '10px 0px 0px 0px' }}>
                     <span style={{color:'#FF3556', marginRight:'5px'}}>Worse Matchup</span>
                     <span style={{color:'#ede515', marginRight:'5px'}}>Average Matchup</span>
                     <span style={{color:'#18ED9D'}}>Better Matchup</span>
@@ -114,17 +117,24 @@ export const TeamRanking = () => {
 
             {/* Position Selectors */}
             <div style={{width:'100%', borderTop:'1px solid #808080', background:'#151515'}}>
-                <div style={{padding:'20px 0px 20px 20px'}}>
-                    <p style={{margin: '0px 0px 10px 0px', fontWeight:'bold', fontSize:'14px', color:'#B1B1B1'}}>
+                <div style={{padding: isMobile ? '10px 0px 10px 20px' : '20px 0px 20px 20px'}}>
+                    <p style={{
+                        margin: '0px 0px 10px 0px', fontWeight:'bold', 
+                        fontSize: isMobile ? '10px' : '14px', 
+                        color:'#B1B1B1'
+                    }}>
                         Defense against position
                     </p>
 
                     <div style={{display:'flex',}}>
                         {["All", "G", "F", "C"].map((position) => <div 
                                 style={{
-                                    fontWeight:'bold', width:'50px', height:'30px',
+                                    fontWeight:'bold', 
+                                    width: isMobile ? '40px' : '50px', 
+                                    height: isMobile ? '25px' : '30px',
                                     display:'flex', justifyContent:'center', alignItems:'center',
-                                    borderRadius:'25px', fontSize:'13px', marginRight:'10px',
+                                    borderRadius:'25px', fontSize: isMobile ? '10px' : '13px', 
+                                    marginRight:'10px',
                                     background: position === pickedPosition ? '#fff' : '#000',
                                     color: position === pickedPosition ? '' : '#fff', cursor:'pointer'
                                 }}
@@ -145,7 +155,8 @@ export const TeamRanking = () => {
                         <thead>
                             <tr>
                                 <th style={{
-                                    textAlign: 'center', height:entryHeight, width: '150px', color:'#EAEAEA',
+                                    textAlign: 'center', height:entryHeight, fontSize: isMobile ? '10px' : '14px', 
+                                    width: teamWidth, color:'#EAEAEA',
                                     position: 'sticky', left: 0, zIndex: 2,
                                     borderBottom: '2px solid #2B2B2B', borderRight: '2px solid #2B2B2B',
                                     borderTop: '2px solid #2B2B2B',
@@ -158,10 +169,13 @@ export const TeamRanking = () => {
                             {shownRankings[0]?.ranking.map((_, rowIndex) => (
                                 <tr key={rowIndex}>
                                     <td style={{
-                                        textAlign: 'center', width: '150px', height: entryHeight, color:'#A2A2A2',
+                                        textAlign: 'center', 
+                                        height: entryHeight, color:'#A2A2A2',
                                         fontWeight: 'bold', position: 'sticky', 
                                         borderRight: `1px solid ${borderEdgeColor}`, borderBottom: `1px solid ${borderEdgeColor}`,
-                                        left: 0, zIndex: 1, fontSize:'14px', background: "#151515",
+                                        left: 0, zIndex: 1, 
+                                        fontSize: isMobile ? '10px' : '14px', 
+                                        background: "#151515",
                                     }}>
                                         {shownRankings[0]?.ranking[rowIndex]?.teamName ?? '-'}
                                     </td>
@@ -176,13 +190,13 @@ export const TeamRanking = () => {
                     <table style={{ borderCollapse: 'collapse', width: '100%' }}>
                         <thead>
                             <tr style={{ 
-                                fontWeight: 'bold', color: '#EAEAEA', fontSize: '14px', 
+                                fontWeight: 'bold', color: '#EAEAEA', fontSize: isMobile ? '10px' : '14px', 
                                 borderBottom: `2px solid ${borderEdgeColor}`,
                                 cursor:'pointer'
                             }}>
                                 {shownRankings.map((shownRanking, i) => (
                                     <th key={i} style={{ 
-                                        height:entryHeight, minWidth: '100px', borderTop: '2px solid #2B2B2B',
+                                        height:entryHeight, minWidth: entryWidth, borderTop: '2px solid #2B2B2B',
                                         borderRight: `2px solid ${borderEdgeColor}` 
                                     }} onClick={() => {
                                         const currentStat = shownRanking.name;
@@ -203,11 +217,11 @@ export const TeamRanking = () => {
                                             {pickedStat === shownRanking.name ?
                                                <div style={{marginLeft: '5px', marginTop:'5px'}}>
                                                     {ascending ? 
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" style={{ transform: "rotate(180deg)" }}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width={upDownIconSize} height={upDownIconSize} viewBox="0 0 24 24" style={{ transform: "rotate(180deg)" }}>
                                                             <path fill="currentColor" d="M12.53 7.97a.75.75 0 0 0-1.06 0l-7 7A.75.75 0 0 0 5 16.25h14a.75.75 0 0 0 .53-1.28z"/>
                                                         </svg>
                                                             :
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width={upDownIconSize} height={upDownIconSize} viewBox="0 0 24 24">
                                                             <path fill="currentColor" d="M12.53 7.97a.75.75 0 0 0-1.06 0l-7 7A.75.75 0 0 0 5 16.25h14a.75.75 0 0 0 .53-1.28z"/>
                                                         </svg>
                                                     }
@@ -227,10 +241,11 @@ export const TeamRanking = () => {
                                     {shownRankings.map((shownRanking, colIndex) => (
                                         <td key={colIndex} style={{ 
                                             color: getRankColor(shownRanking.ranking[rowIndex], teams), 
-                                            textAlign: 'center', height: entryHeight, minWidth: '100px',
+                                            textAlign: 'center', height: entryHeight, 
+                                            minWidth: entryWidth,
                                             borderRight: `1px solid ${borderEdgeColor}`, 
                                             borderBottom: `1px solid ${borderEdgeColor}`,
-                                            fontWeight:'bold', fontSize: '14px', 
+                                            fontWeight:'bold', fontSize: isMobile ? '10px' : '14px', 
                                         }}>
                                             {shownRanking.ranking[rowIndex]?.rank ?? '-'}
                                         </td>

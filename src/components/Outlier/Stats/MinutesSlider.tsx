@@ -2,6 +2,7 @@ import { Checkbox } from '@mui/material';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useGlobalContext } from '../../../Context/store';
 import { Filter, Filters } from '../Matches';
 
 function valuetext(value: number) {
@@ -9,15 +10,15 @@ function valuetext(value: number) {
 }
 
 interface Props {
-    filter: Filter,
-    filters: Filters,
-    setFilter: Dispatch<SetStateAction<Filter>>
+  filters: Filters
 }
 
 /*
   Filter.minutes = [0, 45, 1] if last digit is -1 then we disabled this
 */
-export const MinutesSlider: React.FC<Props> = ({filter, filters, setFilter}) => {
+export const MinutesSlider: React.FC<Props> = ({filters}) => {
+    const {filter, setFilter} = useGlobalContext();
+
     const [value, setValue] = useState<number[]>(filter.minutes);
 
     const handleChange = (event: Event, newValue: number | number[]) => {

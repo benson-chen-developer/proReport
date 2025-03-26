@@ -15,7 +15,7 @@ import { MinutesSlider } from './Stats/MinutesSlider';
 import { Hero } from './Hero/Hero';
 import { HomeSwitches } from './Stats/HomeSwitches';
 import { Projection } from '../../Context/Types/ProjectionTypes';
-import { StatsFilterHeader } from './Stats/StatsFilterHeader';
+import { ExtraSideSelection } from './Stats/ExtraSideSelection';
 import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
 import { BarInfo } from './MainBarChart/BarInfo';
@@ -26,6 +26,8 @@ import { MobileFilter } from './Filter/MobileFilter';
 
 import { Drawer } from '@mui/material';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
+import { DesktopFilter } from './Filter/DesktopFilter';
+import { PropHistory } from './PropHistory/PropHistory';
 
 export type Filter = {
     isHome: boolean,
@@ -79,29 +81,28 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
-    const [rightBtn, setRightBtn] = useState<"Filters" | "Rankings">("Filters");
 
     /* Player Page States */
     const [pGames, setPGames] = useState<PGame[]>([]);
-    const [player, setPlayer] = useState<PPlayer>({
-        name: "", playerId: "", city: "",
-        team: "", sport: "", position: ''
-    });
+    // const [player, setPlayer] = useState<PPlayer>({
+    //     name: "", playerId: "", city: "",
+    //     team: "", sport: "", position: ''
+    // });
 
     /* Filter */
-    const [filter, setFilter] = useState<Filter>({
-        isHome: false,
-        isAway: false,
-        stat: "PTS", 
-        lastGame: "L10", 
-        period: "All",
-        withOutPlayers: [],
-        supportingStat: "Minutes", 
-        daysRested: -1,
-        minutes: [0, 50],
-        minutesChecked: false,
-        over: true
-    });
+    // const [filter, setFilter] = useState<Filter>({
+    //     isHome: false,
+    //     isAway: false,
+    //     stat: "PTS", 
+    //     lastGame: "L10", 
+    //     period: "All",
+    //     withOutPlayers: [],
+    //     supportingStat: "Minutes", 
+    //     daysRested: -1,
+    //     minutes: [0, 50],
+    //     minutesChecked: false,
+    //     over: true
+    // });
     const [filters, setFilters] = useState<Filters>({
         stats: [],
         supportingStats: ["Minutes", "Fouls"],
@@ -114,6 +115,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const [filterShow, setFilterShow] = useState(false);
 
     const [showAllStats, setShowAllStats] = useState<boolean>(false);
+    const [extraInfo, setExtraInfo] = useState<string>('Stats Filter');
 
     const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
     const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
@@ -132,7 +134,10 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
         return PSport.sortStats(league, statsInProjections);
     }
 
-    const {fetchNbaPlayers, fetchMatchUps, fetchNbaMatches, isMobile} = useGlobalContext();
+    const {
+        fetchNbaPlayers, fetchMatchUps, fetchNbaMatches, isMobile,
+        filter, setFilter, player, setPlayer
+    } = useGlobalContext();
 
     /* Initial */
     useEffect(() => {
@@ -160,6 +165,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                 /* Intial Projections and Intial Stats Filters set up */
                 const projections = await fetchProjections(player.name);
+                console.log('props', projections)
                 let newFilters: Filters;
                 if(projections.length === 0) {
                     newFilters = getNewStatsForFilters(true, []);
@@ -331,11 +337,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
     if(!loading) return (
         <div style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
-            <Hero 
-                player={player}
-                matchUp={matchUp}
-                rightBtn={rightBtn} setRightBtn={setRightBtn}
-            />
+            <Hero matchUp={matchUp}/>
             
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
@@ -351,7 +353,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             setProjections={setProjections}
                             avg={0} 
                             seasonAvg={0}
-                            filter={filter} setFilter={setFilter}
                             mainBarData={mainBarData}
                         />
                         <Bars
@@ -365,7 +366,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                     </div>
                     
                     <SupportCard 
-                        filter={filter} setFilter={setFilter}
                         matchUp={matchUp}
                         filters={filters}
                         pGames={pGames}
@@ -391,9 +391,10 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             }}
                         >
                             <MobileFilter 
+                                pickedProjection={pickedProjection}
+                                extraInfo={extraInfo} setExtraInfo={setExtraInfo}
                                 projections={projections}
                                 showAllStats={showAllStats} setShowAllStats={setShowAllStats}
-                                filter={filter} setFilter={setFilter}
                                 filters={filters} 
                                 player={player}
                                 matchUp={matchUp}
@@ -406,45 +407,38 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 {/* Filters */}
                 {!isMobile ?
                     <div style={{width:'35%', background:'#2B2B2B', borderLeft:'1px solid #808080'}}>
-                        <div style={{marginLeft:'5%', height:'auto', display:'flex', flexDirection:'column'}}>
-                            <StatsFilterHeader 
+                        <div style={{
+                            // marginLeft:'5%', 
+                        height:'auto', display:'flex', flexDirection:'column'}}>
+                            <ExtraSideSelection 
                                 hasProjections={projections.length > 0}
                                 showAllStats={showAllStats}
                                 setShowAllStats={setShowAllStats}
-                            />
-                            <SecondStatsHeader 
-                                filter={filter} filters={filters} setFilter={setFilter}
-                            />
-                            <PeriodStatsHeader
-                                setFilter={setFilter} filter={filter}
-                                filters={filters}
+                                extraInfo={extraInfo} 
+                                setExtraInfo={setExtraInfo}
                             />
 
-                            <HomeSwitches 
-                                filter={filter} setFilter={setFilter} 
-                                homeGame={matchUp?.teams[0].name === player.city}
-                            />
-
-                            <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                                <WithOutPlayers 
-                                    ourPlayer={player}
-                                    setFilter={setFilter} filter={filter}
-                                />
-                                <DaysOfRest 
-                                    setFilter={setFilter} filter={filter}
-                                />
-                            </div>
-                            <div style={{width:'95%'}}>
-                                <MinutesSlider 
-                                    filter={filter} setFilter={setFilter}
+                            {extraInfo === "Stats Filter" ?
+                                <DesktopFilter 
+                                    player={player}
+                                    filter={filter} setFilter={setFilter} 
                                     filters={filters}
-                                />
-                            </div>
-                            {matchUp ? 
-                                <Rankings 
-                                    filter={filter} matchUp={matchUp} player={player}
+                                    homeGame={matchUp?.teams[0].name === player.city}
                                 /> : null
                             }
+
+                            {extraInfo === "MatchUp Given" && matchUp ?
+                                <Rankings 
+                                    matchUp={matchUp} player={player}
+                                /> : null
+                            }
+
+                            {extraInfo === "Prop History" && pickedProjection ?
+                                <PropHistory 
+                                    prop={pickedProjection}
+                                /> : null
+                            }
+
                         </div>
                     </div> : null
                 }

@@ -1,14 +1,14 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import { useGlobalContext } from '../../../Context/store';
 import { bgColor } from '../../Player/PPlayerPage'
 import { Filter, Filters } from '../Matches'
 
 interface CustomLabelProps {
-    filter: Filter, filters: Filters,
-    setFilter: Dispatch<SetStateAction<Filter>>
+    filters: Filters,
 }
-export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({
-    filter, setFilter, filters
-}) => {
+export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({filters}) => {
+    const {filter, setFilter} = useGlobalContext();
+
     return (
         <div style={{display:'flex', width:'100%', marginBottom:'10px'}}>
             {filters.periods.map((stat, index) => 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Props } = require("../models/Projection/PropModel");
+const { Props, TestProps } = require("../models/Projection/PropModel");
 
 router.get('/popular', async (req, res) => {
     try {
@@ -27,10 +27,12 @@ router.get('/', async (req, res) => {
     }
 });
 
+// router.get('/:playerName', async (req, res) => {
 router.get('/:playerName', async (req, res) => {
     try {
         const { playerName } = req.params;
 
+        // const projections = await TestProps.aggregate([
         const projections = await Props.aggregate([
             {
                 $lookup: {
@@ -50,5 +52,6 @@ router.get('/:playerName', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router;

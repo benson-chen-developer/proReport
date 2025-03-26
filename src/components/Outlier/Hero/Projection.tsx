@@ -8,11 +8,9 @@ interface Props {
     projections: Projection[], setProjections: Dispatch<SetStateAction<Projection[]>>
     pickedProjection: Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
-    filter: Filter
-    setFilter: Dispatch<SetStateAction<Filter>>
 }
 
-export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, filter, setFilter, projections, setProjections}) => {
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, projections, setProjections}) => {
     const currentProjections = projections.filter(p => 
         p.name === pickedProjection?.name && p.period === pickedProjection.period
     );
@@ -23,7 +21,7 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
 
-    const {isMobile} = useGlobalContext();
+    const {isMobile, filter, setFilter} = useGlobalContext();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

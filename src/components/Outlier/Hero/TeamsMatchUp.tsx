@@ -95,14 +95,17 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
         }}>
             <div 
                 style={{
-                    borderRadius:'20px', background:'#1E1E1E',
-                    border: '1px solid #2B2B2B', 
-                    padding: isMobile ? "0px 5px" : '0px 10px',
-                    display:'flex', alignItems:'center',cursor:'pointer',
-                    justifyContent:'space-between',
-                    width:'auto', 
-                    height: isMobile ? '25px' : '40px', 
+                    display: 'flex', flexWrap: 'nowrap', whiteSpace: 'nowrap',
+                    borderRadius: '20px', background: '#1E1E1E',
+                    border: '1px solid #2B2B2B',
+                    padding: isMobile ? "0px 5px" : '0px 15px',
+                    alignItems: 'center', cursor: 'pointer',
+                    justifyContent: 'space-between',
+                    width: 'fit-content', // Adjusts width based on content but prevents wrapping
+                    minWidth: isMobile ? '60px' : '100px',
+                    height: isMobile ? '25px' : '40px',
                 }}
+                
             >
                 <div style={{display:'flex', alignItems:'center'}}>
                     <NBATeamCircle team={team1} />
