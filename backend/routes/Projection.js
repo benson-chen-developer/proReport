@@ -32,8 +32,8 @@ router.get('/:playerName', async (req, res) => {
     try {
         const { playerName } = req.params;
 
-        const projections = await TestProps.aggregate([
-        // const projections = await Props.aggregate([
+        // const projections = await TestProps.aggregate([
+        const projections = await Props.aggregate([
             {
                 $lookup: {
                     from: 'nbaplayers', // Collection name of the referenced model
