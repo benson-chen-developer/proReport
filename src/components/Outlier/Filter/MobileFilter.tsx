@@ -31,7 +31,10 @@ export const MobileFilter: React.FC<Props> = ({
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
     return (
-        <div style={{height:'auto', display:'flex', flexDirection:'column', width:'100%'}}>
+        <div style={{
+            height:'auto', display:'flex', flexDirection:'column', width:'100%',
+            overflowY: 'auto',
+        }}>
             
             {/* Header */}
             <div style={{width:'100%', justifyContent:'space-between', alignItems:'center'}}>

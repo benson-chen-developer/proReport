@@ -99,7 +99,7 @@ export const TeamRanking = () => {
     const borderEdgeColor = "#2B2B2B";
     // A2A2A2 2B2B2B
     return (
-        <div style={{ minHeight: '100%', width: isMobile ? "100%" : "80%" }}>
+        <div style={{ height: '100%', width: isMobile ? "100%" : "80%" }}>
             <div style={{margin: isMobile ? '50px 0px 15px 20px' : '40px 0px 20px 20px'}}>
                 <h1 style={{color:'#fff', fontSize: isMobile ? '14px' : '20px'}}>
                     Teams Ranked By How Many Stats Are Given Up (per game)
@@ -148,7 +148,7 @@ export const TeamRanking = () => {
             </div>
 
             {/* Table */}
-            <div style={{display:'flex', width:'100%'}}>
+            <div style={{display:'flex', width:'100%', overflow:'scroll'}}>
                 {/* Left Table: Team Names (Fixed) */}
                 <div style={{ flex: '0 0 auto', overflow: 'hidden' }}>
                     <table style={{ borderCollapse: 'collapse' }}>

@@ -60,7 +60,8 @@ export const SideBar: React.FC<Props> = () => {
             width: isMobile ? "100vw" : "20%",
             position: isMobile ? "fixed" : "relative",
             bottom: isMobile ? 0 : "auto",
-            height: "100vh", display: "flex",
+            height: isMobile ? "100vh" : "auto", 
+            display: "flex",
             flexDirection: "column", alignItems: "center",
             background: "#000", zIndex: 5, overflowX: "hidden",
         }}>
