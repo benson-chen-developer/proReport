@@ -7,7 +7,7 @@ export const Footer = () => {
     return (
         <div style={{
             width: '100%', height: '200px', display: 'flex', alignItems: 'center',
-            flexDirection: 'column', background: "#1E1E1E", fontSize: '14px', zIndex: 100
+            flexDirection: 'column', background: "#1E1E1E", fontSize: '14px', zIndex: 5
         }}>
             <div style={{ width: '100%', height: '1px', background: '#808080', borderRadius: '10px' }} />
 
