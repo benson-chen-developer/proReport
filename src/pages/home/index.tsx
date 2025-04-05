@@ -11,8 +11,14 @@ import { fetchNBAMatchesViaTeams } from '../../Context/functions/fetchNbaMatches
 import { PopularProp, Projection } from '../../Context/Types/ProjectionTypes';
 import { fetchPopularProjections } from '../../Context/functions/fetch/fetchProjections';
 import { prettierPopularProps } from '../../components/Home/home/body/functions';
+import { useRouter } from 'next/router';
+import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 
 export const Index = () => {
+    const router = useRouter();
+    const { paramLeague } = router.query;
+    const league = paramLeague as string;
+
     const [loading, setLoading] = useState<boolean>(true);
 
     const [popularProps, setPopularProps] = useState<PopularProp[]>([]);
@@ -24,13 +30,13 @@ export const Index = () => {
     const [search, setSearch] = useState<string>("");
     const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
-    const {fetchMatchUps, fetchProjections, fetchNbaMatches, fetchNbaPlayers, fetchNbaTeams, isMobile} = useGlobalContext();
+    const {fetchMatchUps, fetchProjections, fetchNbaMatches, fetchNbaTeams, isMobile} = useGlobalContext();
     useEffect(() => {
         const func = async () => {
             setLoading(true);
             /* Cached */
             const teams = await fetchNbaTeams();
-            const players = await fetchNbaPlayers();
+            const players = await fetchPlayers(league);
             setPlayers(players);
             setTeams(teams);
 

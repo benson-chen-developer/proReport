@@ -128,6 +128,7 @@ export const TeamRanking = () => {
 
                     <div style={{display:'flex',}}>
                         {["All", "G", "F", "C"].map((position) => <div 
+                                key={position}
                                 style={{
                                     fontWeight:'bold', 
                                     width: isMobile ? '40px' : '50px', 

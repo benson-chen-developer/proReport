@@ -22,6 +22,7 @@ import { Drawer } from '@mui/material';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
+import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 
 export type Filter = {
     isHome: boolean,
@@ -102,7 +103,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     }
 
     const {
-        fetchNbaPlayers, fetchMatchUps, fetchNbaMatches, isMobile,
+        fetchMatchUps, fetchNbaMatches, isMobile,
         filter, setFilter, player, setPlayer, filters, setFilters,
         pickedProjection, setPickedProjection
     } = useGlobalContext();
@@ -115,7 +116,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
             // const allGames = await PSport.fetchMatches(playerName, league);
             const allGames = await fetchNbaMatches(playerName);
             setPGames(allGames);
-            const players = await fetchNbaPlayers();
+            const players = await fetchPlayers(league);
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
 
             if(!player) { 
@@ -133,7 +134,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                 /* Intial Projections and Intial Stats Filters set up */
                 const projections = await fetchProjections(player.name);
-                console.log('props', projections)
                 let newFilters: Filters;
                 if(projections.length === 0) {
                     newFilters = getNewStatsForFilters(true, []);
@@ -153,6 +153,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                 /* Set up filters */
                 setFilters(newFilters);
+                setFilter(p => ({ ...p, period: newFilters.periods[0] }));
 
                 /* Inital Bar Setting */
                 const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
@@ -231,7 +232,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
         let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
         let foundPeriod = filters.periods.find(p => p === filter.period);
         let newFilter = {...filter};
-
+        
         if(!foundMainStat) newFilter.stat = filters.stats[0];
         if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
         if(!foundPeriod) newFilter.period = filters.periods[0];
@@ -243,24 +244,26 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, minutesChecked } = filter;
 
     useEffect(() => {
-        const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
-        const {pickedProjection, filter} = newFilterAndPickedProjection;
-
-        let newFilter = validateStat();
-        let newFilters = getNewStatsForFilters(showAllStats, projections);
-        
-        // //When u switch periods the h1 has a null pickedpgroject
-        // //i think its the filter.period isnt change yet
-        // console.log("stat",stat)
-        // console.log("pickedProjection",pickedProjection)
-        
-        const newData = parseBarData(pGames, newFilter, player, pickedProjection, matchUp);
-        setMainBarData(newData);
-        
-        setFilters(newFilters);
-        setFilter(newFilter);
-
-        setPickedProjection(pickedProjection);
+        if(!loading){
+            const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
+            const {pickedProjection, filter} = newFilterAndPickedProjection;
+    
+            let newFilter = validateStat();
+            let newFilters = getNewStatsForFilters(showAllStats, projections);
+            
+            // //When u switch periods the h1 has a null pickedpgroject
+            // //i think its the filter.period isnt change yet
+            // console.log("stat",stat)
+            // console.log("pickedProjection",pickedProjection)
+            
+            const newData = parseBarData(pGames, newFilter, player, pickedProjection, matchUp);
+            setMainBarData(newData);
+            
+            setFilters(newFilters);
+            setFilter(newFilter);
+    
+            setPickedProjection(pickedProjection);
+        }
     }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection, minutesChecked]);
     
     /* 

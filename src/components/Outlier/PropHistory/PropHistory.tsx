@@ -26,6 +26,7 @@ export const PropHistory: React.FC<Props> = () => {
                     const change = changeNum === 0 ? '' : `${changeNum > 0 ? '+' : ''}${changeNum}`;
                     
                     return <Bar 
+                        key={i}
                         value={value}
                         updatetAt={pickedProjection.updated_ats[i]} 
                         change={change}

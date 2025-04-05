@@ -13,6 +13,9 @@ const EsportRoute = require('./routes/Esport');
 const PsportRoute = require('./routes/Psport');
 const ProjectionRoute = require('./routes/Projection');
 
+const NBARoute = require('./routes/NBA');
+const MLBRoute = require('./routes/MLB');
+
 const { Promo } = require("./models/Promos/PromoModel");
 
 const app = express();
@@ -33,6 +36,9 @@ app.use('/esport', EsportRoute);
 app.use('/psport', PsportRoute);
 app.use('/projections', ProjectionRoute);
 
+app.use('/nba', NBARoute);
+app.use('/mlb', MLBRoute);
+
 app.get("/promo", async (req, res) => {
     try {
         const promos = await Promo.find({});
@@ -41,38 +47,6 @@ app.get("/promo", async (req, res) => {
     } catch (err) {
         console.error("Error fetching players", err);
         res.status(500).send({ message: "Error fetching players" });
-    }
-});
-
-app.get('/mlbSchedule', async (req, res) => {
-    const startDate = req.headers.startdate;
-    const endDate = req.headers.enddate;
-    const url = ` https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=${startDate}&endDate=${endDate}&timeZone=America/New_York&gameType=E&&&gameType=R&&gameType=A&language=en`;
-    
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'startDate': startDate,
-                'endDate': endDate,
-                'sportId': 1,
-                'timeZone': 'America/New_York',
-                'gameType': 'R'
-            }
-        });
-        // console.log('Received MLB schedule request', response);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch schedule: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching MLB schedule:', error);
-        res.status(500).json({ error: 'Something went wrong' });
     }
 });
 

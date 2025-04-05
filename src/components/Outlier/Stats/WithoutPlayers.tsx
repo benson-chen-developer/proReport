@@ -4,11 +4,17 @@ import { Filter } from '../Matches';
 import { useGlobalContext } from '../../../Context/store';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { fetchPlayers } from '../../../Context/functions/fetch/players/fetchPlayers';
 
 interface Props {
 }
 export const WithOutPlayers: React.FC<Props> = () => {
-    const {fetchNbaPlayers, isMobile, filter, setFilter, player} = useGlobalContext();
+    const router = useRouter();
+    const { paramLeague } = router.query;
+    const league = paramLeague as string;
+
+    const {isMobile, filter, setFilter, player} = useGlobalContext();
     const [players, setPlayers] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
@@ -16,7 +22,7 @@ export const WithOutPlayers: React.FC<Props> = () => {
 
     useEffect(() => {
         const func = async () => {
-            const players = await fetchNbaPlayers();
+            const players = await fetchPlayers(league);
             setPlayers(players
                 .filter(player => player.city === player.city && player.name !== player.name)
             );

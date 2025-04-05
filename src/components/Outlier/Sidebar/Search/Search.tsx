@@ -3,6 +3,7 @@ import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../../Context/store';
 import { SearchingBar } from './SearchingBar';
 import { SuggestedPlayers } from './SuggestedPlayers';
+import { fetchPlayers } from '../../../../Context/functions/fetch/players/fetchPlayers';
 
 interface Props {
     length: string, 
@@ -11,7 +12,6 @@ interface Props {
 export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [similarPlayers, setSimilarPlayers] = useState<PPlayer[]>([]);
-    const {fetchNbaPlayers} = useGlobalContext();
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const popupRef = useRef<HTMLDivElement>(null);
@@ -34,7 +34,7 @@ export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
 
     useEffect(() => {
         const searchForPlayer = async () => {
-            const players = await fetchNbaPlayers();
+            const players = await fetchPlayers('nba');
             let query = searchQuery.trim().toLowerCase();
             
             // const similarPlayers = findSimilarNamesNew(players, searchQuery)

@@ -42,9 +42,6 @@ interface ContextProps {
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
   
-  nbaPlayers: PPlayer[];
-  setNbaPlayers: Dispatch<SetStateAction<PPlayer[]>>;
-  fetchNbaPlayers: () => Promise<PPlayer[]>;
   nbaMatches: PGame[];
   setNbaMatches: Dispatch<SetStateAction<PGame[]>>;
   fetchNbaMatches: (playerName?: string) => Promise<PGame[]>;
@@ -73,9 +70,6 @@ const GlobalContext = createContext<ContextProps>({
   setProjections: (): Projection[] => [],
   fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
 
-  nbaPlayers: [],
-  setNbaPlayers: (): PPlayer[] => [],
-  fetchNbaPlayers: async (): Promise<PPlayer[]> => [],
   nbaMatches: [],
   setNbaMatches: (): PGame[] => [],
   fetchNbaMatches: async (playerName?: string): Promise<PGame[]> => [],
@@ -130,32 +124,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-  const fetchNbaPlayers = async (): Promise<PPlayer[]> => {
-    const storedPlayers = localStorage.getItem('nbaplayers');
-    const nbaPlayers: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
-
-    if(nbaPlayers.length > 0){
-      // console.log('player is cached')
-      return nbaPlayers;
-    } else {
-      try {
-        // console.log('player is not cached')
-        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/players/nba`);
-        if (!response.ok) throw new Error('Failed to fetch NBA players');
-        const data = await response.json();
-
-        localStorage.setItem('nbaplayers', JSON.stringify(data));
-        setNbaPlayers(data);
-        return data;
-      } catch (error) {
-        console.error('Error fetching Lol players:', error);
-        return [];
-      }
-    }
-    
-    // const nbaPlayers = await fetchCachedNBAPlayers();
-    // return nbaPlayers;
-  };
   const fetchMatchUps = async (league?: string, props?: Projection[]): Promise<MatchUp[]> => {
     const cachedMatchUps = localStorage.getItem('matchUps');
     let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
@@ -269,7 +237,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   return (
     <GlobalContext.Provider value={{ 
       projections, setProjections, fetchProjections,
-      nbaPlayers, setNbaPlayers, fetchNbaPlayers,
       nbaMatches, setNbaMatches, fetchNbaMatches,
       nbaTeams, setNbaTeams, fetchNbaTeams,
       isMobile, setIsMobile,
