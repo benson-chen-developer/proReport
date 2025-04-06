@@ -1,6 +1,5 @@
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import { Filter } from '../Matches';
 import { useGlobalContext } from '../../../Context/store';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
 import Image from 'next/image';
@@ -30,21 +29,6 @@ export const WithOutPlayers: React.FC<Props> = () => {
 
         func();
     }, [])
-
-    const handleChange = (event: SelectChangeEvent<string[]>) => {
-        const {
-            target: { value },
-        } = event;
-    
-        // Update both personName and filter.withOutPlayers
-        const updatedWithOutPlayers = typeof value === 'string' ? value.split(',') : value;
-    
-        setPersonName(updatedWithOutPlayers);
-        setFilter((prev) => ({
-            ...prev,
-            withOutPlayers: updatedWithOutPlayers,
-        }));
-    };
 
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);

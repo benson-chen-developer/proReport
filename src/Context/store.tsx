@@ -8,6 +8,7 @@ import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
 import { cacheMatchups, getCurrentMatchups } from './functions/cookies/matchUps';
 import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
 import { Filter, Filters } from '../components/Outlier/Matches';
+import { fetchTeams } from './functions/fetch/team/fetchTeams';
 
 const defaultFilter: Filter = {
   isHome: false,
@@ -42,14 +43,7 @@ interface ContextProps {
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
   
-  nbaMatches: PGame[];
-  setNbaMatches: Dispatch<SetStateAction<PGame[]>>;
-  fetchNbaMatches: (playerName?: string) => Promise<PGame[]>;
-  nbaTeams: Team[];
-  setNbaTeams: Dispatch<SetStateAction<Team[]>>;
-  fetchNbaTeams: () => Promise<Team[]>;
-
-  fetchMatchUps: (league?: string, props?: Projection[]) => Promise<MatchUp[]>
+  fetchMatchUps: (league: string, props?: Projection[]) => Promise<MatchUp[]>
   
   // Player Page Props
   pickedProjection: Projection | null,
@@ -70,14 +64,7 @@ const GlobalContext = createContext<ContextProps>({
   setProjections: (): Projection[] => [],
   fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
 
-  nbaMatches: [],
-  setNbaMatches: (): PGame[] => [],
-  fetchNbaMatches: async (playerName?: string): Promise<PGame[]> => [],
-  nbaTeams: [],
-  setNbaTeams: (): Team[] => [],
-  fetchNbaTeams: async (): Promise<Team[]> => [],
-
-  fetchMatchUps: async (league?: string, props?: Projection[]): Promise<MatchUp[]> => [],
+  fetchMatchUps: async (league: string, props?: Projection[]): Promise<MatchUp[]> => [],
 
   // Player Page Props
   pickedProjection: null,
@@ -91,8 +78,6 @@ const GlobalContext = createContext<ContextProps>({
 });
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
-  const [nbaPlayers, setNbaPlayers] = useState<PPlayer[]>([]);
-  const [nbaMatches, setNbaMatches] = useState<PGame[]>([]);
   const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
   const [projections, setProjections] = useState<Projection[]>([]);
 
@@ -124,7 +109,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-  const fetchMatchUps = async (league?: string, props?: Projection[]): Promise<MatchUp[]> => {
+  const fetchMatchUps = async (league: string, props?: Projection[]): Promise<MatchUp[]> => {
     const cachedMatchUps = localStorage.getItem('matchUps');
     let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 
@@ -134,7 +119,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       try {
         // console.log('matchUps is not cached')
 
-        const teams = await fetchNbaTeams();
+        const teams = await fetchTeams(league);
         matchUps = await cacheMatchups(teams);
         localStorage.setItem('matchUps', JSON.stringify(matchUps));
       } catch (error) {
@@ -150,40 +135,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     }
     return currentMatchups;
   }
-  const fetchNbaMatches = async (playerName?: string): Promise<PGame[]> => {
-    if(nbaMatches.length > 0){
-      return nbaMatches;
-    } else {
-      try {
-        let url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba`;
-        if(playerName) url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/nba/${playerName}`;
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch NBA players');
-        const data = await response.json();
-
-        let retData = data;
-
-        if(playerName){
-          const gamesPlayed = data.filter((game: PGame) => {
-              const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
-              return foundPlayer?.periods.some(period => period['MIN'] > 0);
-          });
-          const sortedGames = gamesPlayed.sort((a: { date: string }, b: { date: string }) => {
-              return new Date(b.date).getTime() - new Date(a.date).getTime();
-          });
-
-          retData = sortedGames;
-        } 
-
-        setNbaMatches(retData);
-        return retData;
-      } catch (error) {
-        console.error('Error fetching Lol players:', error);
-        return [];
-      }
-    }
-  };
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];
 
@@ -211,34 +162,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       return newProjections;
     }
   }
-  const fetchNbaTeams = async (): Promise<Team[]> => {
-    const cachedNbaTeams = localStorage.getItem('nbaTeams');
-    const nbaTeams: Team[] = cachedNbaTeams ? JSON.parse(cachedNbaTeams) : [];
-
-    const checkedIn = dailyCheckIn();
-
-    if(checkedIn){
-      return nbaTeams;
-    } else {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/teams/nba`);
-        if (!response.ok) throw new Error('Failed to fetch nba teams');
-        const data = await response.json();
-
-        localStorage.setItem('nbaTeams', JSON.stringify(data));
-        return data;
-      } catch (error) {
-        console.error('Error fetching matchUps', error);
-        return [];
-      }
-    }
-  }
   
   return (
     <GlobalContext.Provider value={{ 
       projections, setProjections, fetchProjections,
-      nbaMatches, setNbaMatches, fetchNbaMatches,
-      nbaTeams, setNbaTeams, fetchNbaTeams,
       isMobile, setIsMobile,
       
       fetchMatchUps,

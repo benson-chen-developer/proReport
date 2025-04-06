@@ -1,12 +1,22 @@
 const mongoose = require("mongoose");
-const PlayerSchema = require("../player/PlayerSchema");
 
-const Schema = new mongoose.Schema({
+const PlayerSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    team: { type: String, required: true },
+    picId: { type: String, required: false },
+    playerId: { type: String, required: false },
+    sport: { type: String, required: true },
+});
+
+const PPlayerSchema = new mongoose.Schema({
     ...PlayerSchema.obj,
     city: { type: String, required: false},
     position: { type: String, required: false},
 });
 
-const NBAPlayer = mongoose.model("nbaplayers", Schema);
+const NBAPlayer = mongoose.model("nbaplayers", PPlayerSchema);
+const MLBPlayer = mongoose.model("mlbplayers", PPlayerSchema)
 
-module.exports = {NBAPlayer};
+module.exports = {
+    NBAPlayer, MLBPlayer
+};

@@ -23,6 +23,7 @@ import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
+import { fetchMatches } from '../../Context/functions/fetch/matches/fetchMatches';
 
 export type Filter = {
     isHome: boolean,
@@ -103,7 +104,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     }
 
     const {
-        fetchMatchUps, fetchNbaMatches, isMobile,
+        fetchMatchUps, isMobile,
         filter, setFilter, player, setPlayer, filters, setFilters,
         pickedProjection, setPickedProjection
     } = useGlobalContext();
@@ -114,7 +115,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
             setLoading(true);
             
             // const allGames = await PSport.fetchMatches(playerName, league);
-            const allGames = await fetchNbaMatches(playerName);
+            const allGames = await fetchMatches(league, playerName);
             setPGames(allGames);
             const players = await fetchPlayers(league);
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
@@ -141,6 +142,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 } else {
                     newFilters = getNewStatsForFilters(false, projections);
                 }
+                console.log('newFilters', newFilters)
                 setProjections(projections);
 
                 /* Get the team they are playing against */
@@ -192,6 +194,10 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
       
         fetchData();
     }, [playerName]);
+
+    useEffect(() => {
+        // console.log('filter', filter)
+    }, [filter])
 
     /*
         When we select alt projection we have to ensure the correct periods pop up

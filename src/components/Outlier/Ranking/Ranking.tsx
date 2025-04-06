@@ -4,6 +4,7 @@ import { useGlobalContext } from '../../../Context/store'
 import { Filter } from '../Matches'
 import { NBATeamCircle } from '../Hero/TeamsMatchUp'
 import { MatchUp } from '../../../Context/Types/Match'
+import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams'
 
 interface Props {
     matchUp: MatchUp
@@ -14,7 +15,7 @@ export type Ranking = {
 }
 
 export const Rankings: React.FC<Props> = ({matchUp}) => {
-    const {fetchNbaTeams, filter, player} = useGlobalContext();
+    const {filter, player} = useGlobalContext();
     const [rankings, setRankings] = useState<Ranking[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
 
@@ -22,7 +23,7 @@ export const Rankings: React.FC<Props> = ({matchUp}) => {
 
     useEffect(() => {
         const func = async () => {
-            const nbaTeams = await fetchNbaTeams();
+            const nbaTeams = await fetchTeams(matchUp.league);
             setTeams(nbaTeams);
 
             const rankings = getRank(nbaTeams, filter.stat, oppTeam!.name, player.position)
@@ -88,7 +89,6 @@ export const getRank = (
     teams: Team[], stat: string, oppTeam: string, position:string
 ): Ranking[] => {
     const positions = position === "All" ? [...position.split('-')] : ["All", ...position.split('-')];
-    
     const rankings = positions.map((pos) => {
         const orderedTeams = orderTeamsByStatAmount(stat, teams, pos);
         const teamIndex = orderedTeams.findIndex(team => team.name === oppTeam);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../../Context/store';
 import { Team } from '../../../Context/Types/PlayerTypes';
 import { NbaStats } from '../../../Context/Types/Stats';
@@ -26,7 +27,10 @@ import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
     }[]
 */
 
-export const TeamRanking = () => {
+interface Props {
+    league :string
+} 
+export const TeamRanking: React.FC<Props> = ({league}) => {
     const [pickedStat, setPickedStat] = useState<string>("PTS");
     const [ascending, setAscending] = useState<boolean>(false);
 
@@ -40,11 +44,12 @@ export const TeamRanking = () => {
         FTA: 0, FTM: 0, DRB: 0, ORB: 0, 
     }) as (keyof NbaStats)[];
 
-    const {fetchNbaTeams, isMobile} = useGlobalContext();
+    const {isMobile} = useGlobalContext();
     
     useEffect(() => {
         const func = async () => {
-            const newTeams = await fetchNbaTeams();
+            const league = 'nba';
+            const newTeams = await fetchTeams(league);
             setTeams(newTeams);
     
             const newAllRankings: { name: string, ranking: Ranking[] }[] = [];

@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const PPlayer = require("../models/Sport/PSport");
 
 router.get("/player/:abbr", async (req, res) => {
     const team = req.params.abbr;

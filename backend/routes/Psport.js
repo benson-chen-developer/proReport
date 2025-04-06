@@ -1,63 +1,50 @@
 const express = require("express");
-const { NBAMatch } = require("../models/Sport/PSport");
-const { NBAPlayer } = require("../models/Sport/PPlayerModel");
-const { NBATeam } = require("../models/Sport/Team");
+const { NBAPlayer, MLBPlayer } = require("../models/Sport/PPlayerModel");
+const { NBATeam, MLBTeam } = require("../models/Sport/Team");
+const { MLBMatch, NBAMatch } = require("../models/Sport/Match");
 const router = express.Router();
 
-router.get("/players/nba/", async (req, res) => {
-    try {
-        const players = await NBAPlayer.find({});
+router.get("/players/:league", async (req, res) => {
+    const { league } = req.params;
 
+    const modelMap = {
+        nba: NBAPlayer,
+        mlb: MLBPlayer,
+    };
+
+    const Model = modelMap[league.toLowerCase()];
+
+    if (!Model) {
+        return res.status(400).json({ message: "Invalid league provided" });
+    }
+
+    try {
+        const players = await Model.find({});
         res.status(200).json(players);
     } catch (err) {
-        console.error("Error fetching players", err);
-        res.status(500).send({ message: "Error fetching players" });
+        console.error(`Error fetching ${league} players`, err);
+        res.status(500).send({ message: `Error fetching ${league} players` });
     }
 });
 
-router.get("/matches/nba", async (req, res) => {
-    try {
-        const matches = await NBAMatch.find({});
-        // console.log(matches)
+router.get("/teams/:league", async (req, res) => {
+    const { league } = req.params;
 
-        res.status(200).json(matches);
-    } catch (err) {
-        console.error("Error fetching matches", err);
-        res.status(500).send({ message: "Error fetching matches" });
+    const modelMap = {
+        nba: NBATeam,
+        mlb: MLBTeam,
+    };
+    const Model = modelMap[league.toLowerCase()];
+    if (!Model) {
+        return res.status(400).json({ message: "Invalid league provided" });
     }
-});
 
-router.get("/teams/nba", async (req, res) => {
     try {
-        const teams = await NBATeam.find({});
-
+        const teams = await Model.find({});
         res.status(200).json(teams);
     } catch (err) {
-        console.error("Error fetching matches", err);
-        res.status(500).send({ message: "Error fetching matches" });
-    }
-});
-
-router.get("/players/short/nba", async (req, res) => {
-    try {
-        const players = await NBAMatch.aggregate([
-            { $unwind: "$players" },
-            {
-                $project: {
-                    _id: 0, // Exclude the MongoDB document ID
-                    name: "$players.name",
-                    team: "$players.team",
-                    playerId: "$players.playerId",
-                    position: "$players.position",
-                    periods: "$players.periods"
-                }
-            }
-        ]);
-
-        res.status(200).json(players);
-    } catch (err) {
-        console.error("Error fetching players", err);
-        res.status(500).json({ message: "Error fetching players" });
+        console.error(`Error fetching ${league} teams`, err);
+        res.status(500).send({ message: `Error fetching ${league} teams` });
     }
 });
 
@@ -78,31 +65,27 @@ router.get("/matchUps/:league", async (req, res) => {
     }
 });
 
-// router.get("/matches/nba/:playerName?", async (req, res) => { 
-//     const playerName = req.params.playerName;
-
-//     try {
-//         const query = playerName ? { "players.name": playerName } : {};
-//         const matches = await NBAMatch.find(query).select("-_id"); 
-
-//         res.status(200).json(matches);
-//     } catch (err) {
-//         console.error("Error fetching matches", err);
-//         res.status(500).send({ message: "Error fetching matches" });
-//     }
-// });
-
 /*
     We only populate the stats field for searched player
 */
-router.get("/matches/nba/:playerName?", async (req, res) => { 
-    const playerName = req.params.playerName;
+router.get("/matches/:league/:playerName?", async (req, res) => { 
+    const {league, playerName} = req.params;
 
     try {
         const query = playerName ? { "players.name": playerName } : {};
-        console.log(playerName)
 
-        const matches = await NBAMatch.aggregate([
+        /* Map the Model */
+        const modelMap = {
+            nba: NBAMatch,
+            mlb: MLBMatch,
+        };
+        const Model = modelMap[league.toLowerCase()];
+        if (!Model) {
+            return res.status(400).json({ message: "Invalid league provided" });
+        }
+
+        /* Call the Mongo API */
+        const matches = await Model.aggregate([
             { $match: query },  // Find matches where the player exists
             { 
                 $addFields: {

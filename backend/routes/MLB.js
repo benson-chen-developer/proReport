@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const PPlayer = require("../models/Sport/PSport");
 
-router.get("/player/:abbr", async (req, res) => {
+router.get("/players", async (req, res) => {
     const team = req.params.abbr;
     try {
         const matches = await WNBAMatch.find({$or: [ { team1: team }, { team2: team } ]})

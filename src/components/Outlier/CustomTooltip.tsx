@@ -4,6 +4,7 @@ import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { convertNBATeamName } from '../../Context/functions/convertNbaName';
 import { convertSupportName } from '../../Context/functions/convertStatName';
+import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../Context/store';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
 import { NBATeamCircle } from './Hero/TeamsMatchUp';
@@ -12,11 +13,10 @@ type CustomTooltipProps = TooltipProps<ValueType, NameType> & { player: PPlayer,
 
 const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTooltipProps) => {
     const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
-    const {fetchNbaTeams} = useGlobalContext();
 
     useEffect(() => {
         const func = async () => {
-            const teams = await fetchNbaTeams();
+            const teams = await fetchTeams(player.sport);
             setNbaTeams(teams);
         }
 

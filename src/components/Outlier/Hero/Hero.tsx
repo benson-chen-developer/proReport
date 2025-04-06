@@ -7,17 +7,21 @@ import { useGlobalContext } from '../../../Context/store'
 import { convertNBATeamName } from '../../../Context/functions/convertNbaName'
 import { MatchUp } from '../../../Context/Types/Match'
 import { NBATeamCircle, TeamsMatchUp } from './TeamsMatchUp'
+import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams'
+import { useRouter } from 'next/router'
 
 interface Props {
     matchUp: MatchUp | undefined
 }
 export const Hero: React.FC<Props> = ({matchUp}) => {
-    const {fetchNbaTeams, isMobile, player} = useGlobalContext();
+    const router = useRouter();
+    const { paramLeague } = router.query;
+    const {isMobile, player} = useGlobalContext();
 
     const [team, setTeam] = useState<Team>();
     useEffect(() => {
         const func = async () => {
-            const teams = await fetchNbaTeams();
+            const teams = await fetchTeams(paramLeague as string);
             const team = teams.find(t => t.name === player.city);
             setTeam(team);
         }
