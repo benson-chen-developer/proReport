@@ -181,32 +181,4 @@ export class PSport {
 
     //     return displayStats;
     // }
-
-
-    static fetchMatches = async (playerName: string, league: string): Promise<PGame[]> => {
-        const parsedName = playerName.replace(/_/g, ' ');
-
-        // const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matches/${league}/${parsedName}`, {
-        //     method: 'GET', 
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        // });
-
-        const allGames = await getAllData();
-        // console.log('allGames', allGames)
-        const gamesPlayed = allGames.filter((game: PGame) => {
-            const foundPlayer = game.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
-            return foundPlayer?.periods.some(period => period['MIN'] > 0);
-        });
-        const sortedGames = gamesPlayed.sort((a: { date: string }, b: { date: string }) => {
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-
-        return sortedGames;
-    }  
-
-    // static convertTeamStrings = (ogStr:string, param:string): string => {
-    //     if(param === "")
-    // }
 }

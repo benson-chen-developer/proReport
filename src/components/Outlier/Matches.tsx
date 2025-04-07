@@ -24,6 +24,7 @@ import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 import { fetchMatches } from '../../Context/functions/fetch/matches/fetchMatches';
+import { getNewStatsForFilters } from './Matches/functions';
 
 export type Filter = {
     isHome: boolean,
@@ -39,7 +40,7 @@ export type Filter = {
     over: boolean
 }
 export type Filters = {
-    stats: string[], 
+    stats: string[], //PTS, REB, STL
     supportingStats: string[], //Minutes, fouls,
     lastGames: string[], //L10, H2H,
     periods: string[], //Q1, H1,
@@ -88,20 +89,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const [extraInfo, setExtraInfo] = useState<string>('Stats Filter');
 
     const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
-    const getProjectionStats = (projections:Projection[]): string[] => {
-        const statsInProjections: string[] = [];
-        const stats = PSport.getAllPickedStats('nba');
-
-        projections.forEach((proj) => {
-            const foundProjStat = stats.find(s => s === proj.name);
-
-            if(foundProjStat){
-                statsInProjections.push(foundProjStat);
-            }
-        })
-
-        return PSport.sortStats(league, statsInProjections);
-    }
 
     const {
         fetchMatchUps, isMobile,
@@ -114,7 +101,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
         const fetchData = async () => {
             setLoading(true);
             
-            // const allGames = await PSport.fetchMatches(playerName, league);
             const allGames = await fetchMatches(league, playerName);
             setPGames(allGames);
             const players = await fetchPlayers(league);
@@ -137,12 +123,11 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 const projections = await fetchProjections(player.name);
                 let newFilters: Filters;
                 if(projections.length === 0) {
-                    newFilters = getNewStatsForFilters(true, []);
+                    newFilters = getNewStatsForFilters(true, [], filter, filters, league);
                     setShowAllStats(true)
                 } else {
-                    newFilters = getNewStatsForFilters(false, projections);
+                    newFilters = getNewStatsForFilters(false, projections, filter, filters, league);
                 }
-                console.log('newFilters', newFilters)
                 setProjections(projections);
 
                 /* Get the team they are playing against */
@@ -199,41 +184,8 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
         // console.log('filter', filter)
     }, [filter])
 
-    /*
-        When we select alt projection we have to ensure the correct periods pop up
-            - (So if its a demon then then we probably will not have a "Q1")
-    */
-    const getNewStatsForFilters = (showAllStats: boolean, projections: Projection[]): Filters => {
-        let newFilters = filters;
-
-        if(!showAllStats && projections.length > 0) { /* Game */
-            const periods: string[] = Array.from(
-                new Set(
-                    projections
-                        .filter((proj) => proj.name === filter.stat)
-                        .map((proj) => proj.period)
-                )
-            );
-            
-            newFilters.periods = organizePeriods(periods);
-            newFilters.stats = getProjectionStats(projections);
-        } else { /* No Game */
-            newFilters.periods = PSport.getAllPeriods('nba');
-            newFilters.stats = PSport.getAllPickedStats('nba');
-        }
-
-        return newFilters;
-    }
-    const organizePeriods = (arr: string[]): string[] => {
-        const order = ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4'];
-    
-        return arr.sort((a, b) => {
-            return order.indexOf(a) - order.indexOf(b);
-        });
-    }
-
     /* Always make sure that the picked stat is in the options given */
-    const validateStat = (): Filter => {
+    const validateStat = (changedFilter: Filter): Filter => {
         let foundMainStat = filters.stats.find(option => option === filter.stat);
         let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
         let foundPeriod = filters.periods.find(p => p === filter.period);
@@ -246,6 +198,20 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
         return newFilter;
     }
 
+    /* Make sure the filter is valid when changing it */
+    const validateFilter = (changedFilter: Filter, currentFilters: Filters): Filter => {
+        let foundMainStat = filters.stats.find(option => option === filter.stat);
+        let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
+        let foundPeriod = filters.periods.find(p => p === filter.period);
+        let validatedFilter = {...filter};
+        
+        if(!foundMainStat) validatedFilter.stat = filters.stats[0];
+        if(!foundSupportStat) validatedFilter.supportingStat = filters.supportingStats[0];
+        if(!foundPeriod) validatedFilter.period = filters.periods[0];
+
+        return validatedFilter;
+    }
+
     /* MainBarData */
     const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, minutesChecked } = filter;
 
@@ -254,8 +220,8 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
             const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
             const {pickedProjection, filter} = newFilterAndPickedProjection;
     
-            let newFilter = validateStat();
-            let newFilters = getNewStatsForFilters(showAllStats, projections);
+            let newFilter = validateStat(filter);
+            let newFilters = getNewStatsForFilters(showAllStats, projections, filter, filters, league);
             
             // //When u switch periods the h1 has a null pickedpgroject
             // //i think its the filter.period isnt change yet

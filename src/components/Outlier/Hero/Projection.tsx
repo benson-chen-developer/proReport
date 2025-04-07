@@ -14,6 +14,8 @@ export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedPr
     const currentProjections = projections.filter(p => 
         p.name === pickedProjection?.name && p.period === pickedProjection.period
     );
+    console.log('projections', projections)
+    console.log('currentProjections', currentProjections)
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
