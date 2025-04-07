@@ -17,7 +17,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
     useEffect(() => {
         const func = async () => {
             const teams = await fetchTeams(player.sport);
-            console.log('playersport', player.sport)
+            // console.log('teams', teams)
+            // console.log('playersport', player.sport)
             setNbaTeams(teams);
         }
 
@@ -46,15 +47,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                 {/* Row 1 */}
                 <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between', marginTop:'10px',alignItems:'center'}}>
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        {/* <Image
-                            alt={'Team Logo'}
-                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === oppTeam)?.id}/primary/L/logo.svg`}
-                            width={22} height={22}
-                            style={{ marginRight:'3px' }}
-                        />   */}
                         <NBATeamCircle 
-                            teamId={nbaTeams.find(t => t.name === oppTeam)!.id}
-                            teamName={nbaTeams.find(t => t.name === oppTeam)!.name}
+                            team={nbaTeams.find(t => t.name === oppTeam)}
                         />
                         <b style={{ color: '#fff', marginLeft:'5px' }}>{convertNBATeamName(oppTeam, 0)}</b>
                     </div>
@@ -65,15 +59,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
                         <b style={{ color: '#fff', marginRight:'5px' }}>{convertNBATeamName(playerTeam, 0)}</b>
-                        {/* <Image
-                            alt={'Team Logo'}
-                            src={`https://cdn.nba.com/logos/nba/${nbaTeams.find(t => t.name === playerTeam)?.id}/primary/L/logo.svg`}
-                            width={22} height={22}
-                            style={{ marginLeft:'3px' }}
-                        />  */}
                         <NBATeamCircle 
-                            teamId={nbaTeams.find(t => t.name === playerTeam)!.id}
-                            teamName={nbaTeams.find(t => t.name === playerTeam)!.name}
+                            team={nbaTeams.find(t => t.name === playerTeam)}
                         />
                     </div>
                 </div>

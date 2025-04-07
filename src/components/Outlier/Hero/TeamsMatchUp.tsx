@@ -128,23 +128,23 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
 }
 
 interface Props2 {
-    team?: Team, 
-    teamId?: string,
-    teamName? : string
+    team: Team | undefined, 
 }
 
 /* Either pass in team or teamId */
-export const NBATeamCircle: React.FC<Props2> = ({team, teamId, teamName}) => {
+export const NBATeamCircle: React.FC<Props2> = ({team}) => {
     const {isMobile} = useGlobalContext();
+
+    if(!team) return null;
 
     return(
         <div style={{
             width: isMobile ? '18px' : '22px', height:isMobile ? '18px' : '22px', borderRadius:'100px', 
             display:'flex', justifyContent:'center', alignItems:'center',
-            background: teamColors(team ? team.name : teamName!)
+            background: teamColors(team.name)
         }}>
             <Image 
-                src={`https://cdn.nba.com/logos/nba/${team ? team.id : teamId!}/primary/L/logo.svg`}
+                src={`https://cdn.nba.com/logos/nba/${team.id}/primary/L/logo.svg`}
                 alt="Team Logo"
                 width={isMobile ? 16 : 18} height={isMobile ? 16 : 18}
             />

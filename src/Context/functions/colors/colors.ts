@@ -5,7 +5,7 @@ export const teamColors = (name: string) => {
     if (name === "boston") return "#3E7A58";
     if (name === "brooklyn") return "#FFFFFF";
     if (name === "new york") return "#F48328";
-    if (name === "philadelphia") return "#00408D";
+    if (name === "philadelphia") return "#0369B4";
     if (name === "toronto") return "#F00A3F";
 
     /* Central */
