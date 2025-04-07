@@ -133,7 +133,6 @@ export const BarInfo: React.FC<Props> = ({
                             pickedProjection={pickedProjection}
                             setPickedProjection={setPickedProjection}
                             projections={projections}
-                            setProjections={setProjections}
                         />
                     </div> 
                         :

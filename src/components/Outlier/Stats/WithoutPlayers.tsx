@@ -22,9 +22,13 @@ export const WithOutPlayers: React.FC<Props> = () => {
     useEffect(() => {
         const func = async () => {
             const players = await fetchPlayers(league);
-            setPlayers(players
-                .filter(player => player.city === player.city && player.name !== player.name)
-            );
+            
+            const teamMates = players
+                .filter(otherPlayer => 
+                    otherPlayer.city === player.city && 
+                    player.name !== otherPlayer.name
+                );
+            setPlayers(teamMates);
         }
 
         func();

@@ -17,6 +17,7 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
     useEffect(() => {
         const func = async () => {
             const teams = await fetchTeams(player.sport);
+            console.log('playersport', player.sport)
             setNbaTeams(teams);
         }
 

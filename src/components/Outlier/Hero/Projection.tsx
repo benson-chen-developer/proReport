@@ -5,17 +5,17 @@ import { useGlobalContext } from '../../../Context/store';
 import { Filter } from '../Matches';
 
 interface Props {
-    projections: Projection[], setProjections: Dispatch<SetStateAction<Projection[]>>
+    projections: Projection[], 
     pickedProjection: Projection | null
     setPickedProjection: Dispatch<SetStateAction<Projection | null>>
 }
 
-export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, projections, setProjections}) => {
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, projections}) => {
     const currentProjections = projections.filter(p => 
         p.name === pickedProjection?.name && p.period === pickedProjection.period
     );
-    console.log('projections', projections)
-    console.log('currentProjections', currentProjections)
+    // console.log('projections', projections)
+    // console.log('currentProjections', currentProjections)
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);

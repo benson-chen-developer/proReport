@@ -140,7 +140,12 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                 /* Set up filters */
                 setFilters(newFilters);
-                setFilter(p => ({ ...p, period: newFilters.periods[0] }));
+
+                const newFilter = {
+                    ...filter, 
+                    period: newFilters.periods[0],
+                }
+                setFilter(newFilter);
 
                 /* Inital Bar Setting */
                 const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
