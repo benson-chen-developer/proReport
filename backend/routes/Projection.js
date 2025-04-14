@@ -53,5 +53,31 @@ router.get('/:playerName', async (req, res) => {
     }
 });
 
+router.get('/:league/:playerName', async (req, res) => {
+    try {
+        const { playerName, league } = req.params;
+
+        const projections = await TestProps.aggregate([
+        // const projections = await Props.aggregate([
+            {
+                $lookup: {
+                    from: `${league.toLowerCase()}players`,
+                    localField: 'player',
+                    foreignField: '_id',
+                    as: 'playerData'
+                }
+            },
+            { $unwind: '$playerData' }, // Convert array to object
+            { $match: { 'playerData.name': playerName } } // Filter by player's name
+        ]);
+
+
+        res.status(200).json(projections);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 module.exports = router;

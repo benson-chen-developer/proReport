@@ -6,6 +6,7 @@ const TeamSchema = new mongoose.Schema(
     name: { type: String, required: true },
     id: { type: String, required: false },
     gp: { type: Number, default: 0 },
+    league: {type: String, required: true },
   },
   { discriminatorKey: "sport", timestamps: true }
 );

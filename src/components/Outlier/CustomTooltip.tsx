@@ -7,19 +7,19 @@ import { convertSupportName } from '../../Context/functions/convertStatName';
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../Context/store';
 import { PPlayer, Team } from '../../Context/Types/PlayerTypes';
-import { NBATeamCircle } from './Hero/TeamsMatchUp';
+import { TeamCircle } from './Hero/TeamsMatchUp';
 
 type CustomTooltipProps = TooltipProps<ValueType, NameType> & { player: PPlayer, chartType: 'support' | 'main' };
 
 const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTooltipProps) => {
-    const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
 
     useEffect(() => {
         const func = async () => {
-            const teams = await fetchTeams(player.sport);
+            const newTeams = await fetchTeams(player.sport);
             // console.log('teams', teams)
             // console.log('playersport', player.sport)
-            setNbaTeams(teams);
+            setTeams(newTeams);
         }
 
         func();
@@ -47,8 +47,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                 {/* Row 1 */}
                 <div style={{ display: 'flex', width: '90%', justifyContent: 'space-between', marginTop:'10px',alignItems:'center'}}>
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <NBATeamCircle 
-                            team={nbaTeams.find(t => t.name === oppTeam)}
+                        <TeamCircle 
+                            team={teams.find(t => t.name === oppTeam)}
                         />
                         <b style={{ color: '#fff', marginLeft:'5px' }}>{convertNBATeamName(oppTeam, 0)}</b>
                     </div>
@@ -59,8 +59,8 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
                         <b style={{ color: '#fff', marginRight:'5px' }}>{convertNBATeamName(playerTeam, 0)}</b>
-                        <NBATeamCircle 
-                            team={nbaTeams.find(t => t.name === playerTeam)}
+                        <TeamCircle 
+                            team={teams.find(t => t.name === playerTeam)}
                         />
                     </div>
                 </div>

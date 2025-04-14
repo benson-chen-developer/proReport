@@ -13,6 +13,7 @@ import { prettierPopularProps } from '../../components/Home/home/body/functions'
 import { useRouter } from 'next/router';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
+import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +27,7 @@ export const Index = () => {
     const [search, setSearch] = useState<string>("");
     const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
-    const {fetchMatchUps, fetchProjections, isMobile} = useGlobalContext();
+    const {fetchProjections, isMobile} = useGlobalContext();
     useEffect(() => {
         const league = 'nba';
 
@@ -45,7 +46,7 @@ export const Index = () => {
             const popularPropWithoutMatchUp: Projection[] = props
                 .filter(prop => prop.popularHits.length > 0);
             
-            const matchUps = await fetchMatchUps('', popularPropWithoutMatchUp);
+            const matchUps = await fetchMatchUps('nba', popularPropWithoutMatchUp);
 
             const popularProps: PopularProp[] = popularPropWithoutMatchUp
                 .map(prop => {

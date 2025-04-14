@@ -5,6 +5,7 @@ import { convertNBATeamName } from '../../../Context/functions/convertNbaName';
 import { useGlobalContext } from '../../../Context/store';
 import { MatchUp } from '../../../Context/Types/Match';
 import { Team } from '../../../Context/Types/PlayerTypes';
+import { getTeamUrl } from '../../../Context/functions/urls/getUrls';
 
 interface Props {
     matchUp: MatchUp
@@ -66,7 +67,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                 }}
             >
                 <div style={{display:'flex', alignItems:'center'}}>
-                    <NBATeamCircle team={team1} />
+                    <TeamCircle team={team1} />
                     <span style={{margin:'0px 5px'}}>
                         {`
                             ${convertNBATeamName(team1.name, 0)} 
@@ -74,7 +75,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                             ${convertNBATeamName(team2.name, 0)}
                         `} 
                     </span>
-                    <NBATeamCircle team={team2} />
+                    <TeamCircle team={team2} />
                 </div>
 
                 <span style={{fontWeight: 'normal', marginLeft:'10px'}}>
@@ -108,7 +109,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                 
             >
                 <div style={{display:'flex', alignItems:'center'}}>
-                    <NBATeamCircle team={team1} />
+                    <TeamCircle team={team1} />
                     <span style={{margin:'0px 5px'}}>
                         {`
                             ${convertNBATeamName(team1.name, 0)} 
@@ -116,7 +117,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                             ${convertNBATeamName(team2.name, 0)}
                         `} 
                     </span>
-                    <NBATeamCircle team={team2} />
+                    <TeamCircle team={team2} />
                 </div>
 
                 <span style={{fontWeight: 'normal', marginLeft: isMobile ? '3px' : '10px'}}>
@@ -131,20 +132,19 @@ interface Props2 {
     team: Team | undefined, 
 }
 
-/* Either pass in team or teamId */
-export const NBATeamCircle: React.FC<Props2> = ({team}) => {
+export const TeamCircle: React.FC<Props2> = ({team}) => {
     const {isMobile} = useGlobalContext();
 
     if(!team) return null;
-
+    
     return(
         <div style={{
             width: isMobile ? '18px' : '22px', height:isMobile ? '18px' : '22px', borderRadius:'100px', 
             display:'flex', justifyContent:'center', alignItems:'center',
-            background: teamColors(team.name)
+            background: teamColors(team.league, team.name)
         }}>
             <Image 
-                src={`https://cdn.nba.com/logos/nba/${team.id}/primary/L/logo.svg`}
+                src={getTeamUrl(team)}
                 alt="Team Logo"
                 width={isMobile ? 16 : 18} height={isMobile ? 16 : 18}
             />

@@ -1,0 +1,137 @@
+import Image from 'next/image'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import {Projection} from '../../../../Context/Types/ProjectionTypes'
+import { useGlobalContext } from '../../../../Context/store';
+import { Filter } from '../../Matches';
+
+interface Props {
+    projections: Projection[], 
+    pickedProjection: Projection | null
+    setPickedProjection: Dispatch<SetStateAction<Projection | null>>
+}
+
+export const ProjectionSquare: React.FC<Props> = ({pickedProjection, setPickedProjection, projections}) => {
+    const currentProjections = projections.filter(p => 
+        p.name === pickedProjection?.name && p.period === pickedProjection.period
+    );
+
+    const [isPopUp, setIsPopUp] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const popupRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLDivElement>(null);
+
+    const {isMobile, filter, setFilter} = useGlobalContext();
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if(
+                buttonRef.current && !buttonRef.current.contains(event.target as Node) &&
+                popupRef.current && !popupRef.current.contains(event.target as Node)
+            ){
+                setIsPopUp(false);
+            } 
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        if(pickedProjection?.overUnder !== 3) setFilter((p: Filter) => ({...p, over: true}));
+    }, [pickedProjection])
+
+    // if(loading) return null;
+    if(!pickedProjection) return null;
+
+    return (
+        <div>
+            <div 
+                style={{
+                    width: isMobile ? "100px" : '140px', height: isMobile ? '25px' : '30px', borderRadius:'8px',
+                    border: isMobile ?  '2px solid #18ED9D' : '3px solid #18ED9D', 
+                    background:'#236F53',
+                    // border:'3px solid #04CDCD', background:'#274242',
+                    // border:'3px solid #7803E8', background:'#27004C',
+                    display:'flex', alignItems:'center', cursor:'pointer',
+                    justifyContent:'space-between', userSelect: 'none',
+                    padding: '0px 10px'
+                }}
+                ref={buttonRef}
+                onClick={() => {
+                    if(currentProjections.length > 1) setIsPopUp(p => !p)
+                }}
+            >
+                <Image 
+                    src="/promos/PrizePicks.png" 
+                    height={20} width={20} 
+                    alt="Projection icon" 
+                />
+                <p style={{margin:0, fontSize: isMobile  ? "12px" : '14px', fontWeight:'bold', color:'#fff'}}>
+                    {filter.over ? 'O ' : 'U '} 
+                    {pickedProjection?.values[pickedProjection.values.length-1].toFixed(1)} 
+                </p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <g fill={"#246E53"} fillRule="evenodd"><path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/>
+                        <path fill={currentProjections.length === 1 ? "#246E53" : "#fff"} d="M13.06 16.06a1.5 1.5 0 0 1-2.12 0l-5.658-5.656a1.5 1.5 0 1 1 2.122-2.121L12 12.879l4.596-4.596a1.5 1.5 0 0 1 2.122 2.12l-5.657 5.658Z"/>
+                    </g>
+                </svg>
+            </div>
+
+            {/* DropDown */}
+            {isPopUp ?
+                <div 
+                    style={{
+                        width: isMobile ? "100px" : '140px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
+                        position:'absolute', height:'auto', marginTop:'3px', display:'flex',
+                        alignItems:'center', flexDirection:'column', zIndex: 2, padding: '0px 10px'
+                    }}
+                    ref={popupRef}
+                >
+                    {currentProjections
+                        .sort((a, b) => b.values[b.values.length-1] - a.values[a.values.length-1])
+                        .map((projection, i) => {
+                            const lineValue = projection.values[projection.values.length-1].toFixed(1);
+                            const odds = projection.odds;
+
+                            return <div 
+                                key={i} 
+                                className='hoverBg' 
+                                style={{
+                                    height:'40px', color:'#fff', cursor:'pointer', display:'flex',
+                                    alignItems:'center', width:'100%',padding: '0px 10px',
+                                    fontSize: isMobile ? "12px" : '14px', fontWeight:'bold'
+                                }} 
+                                onClick={() => {
+                                    setPickedProjection(projection)
+                                    setIsPopUp(false);
+                                }}
+                            > 
+                                <div style={{width:'30%', display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
+                                    {odds !== 100 ?
+                                        <Image 
+                                            src={odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
+                                            height={16} width={16} 
+                                            alt="Projection icon" 
+                                            style={{margin:'0px 10px 0px 0px'}}
+                                        /> : null
+                                    }
+                                    {projection.discount ? 
+                                        <p style={{fontSize: isMobile ? "10px" : '12px', margin:0, color:'#79F4F4'}}>
+                                            -{projection.discount}%
+                                        </p> : null
+                                    }
+                                </div>
+                                
+                                <div style={{width:'40%', display:'flex', justifyContent:'center', alignItems:'center', color:projection.discount ? '#79F4F4' : '#fff'}}>
+                                    <div>{lineValue}</div>
+                                </div>
+                            </div>
+                        })}
+                </div> : null
+            }
+        </div>
+    )
+}

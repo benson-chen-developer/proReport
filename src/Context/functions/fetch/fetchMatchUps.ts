@@ -4,28 +4,83 @@ import { Projection } from "../../Types/ProjectionTypes";
 import { cacheMatchups, getCurrentMatchups } from "../cookies/matchUps";
 import { fetchTeams } from "./team/fetchTeams";
 
+export type UnPopulatedMatch = {
+    league: string,
+    teams: string[], //Just the team name 
+    time: string, 
+}
+
 export const fetchMatchUps = async (league: string, props?: Projection[]): Promise<MatchUp[]> => {
-    const cachedMatchUps = localStorage.getItem('matchUps');
-    let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
+    const leagueMatchups = `${league}MatchUps`;
+    const teams = await fetchTeams(league);
+
+    const cachedMatchUps = localStorage.getItem(leagueMatchups);
+    let unPopulatedMatchUps: UnPopulatedMatch[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
 
     /* All this does is bring up the cached schedule */
-    if(matchUps.length > 0){
+    if(unPopulatedMatchUps.length > 0){
         console.log('matchup is cached')
     } else {
         try {
             console.log('matchUps is not cached')
+            const leagueSchedule: UnPopulatedMatch[] = await fetchSchedule(league);
+            unPopulatedMatchUps = getCurrentAndFutureMatchUpsOnly(leagueSchedule);
 
-            const teams = await fetchTeams(league);
-            matchUps = await cacheMatchups(teams);
-            localStorage.setItem('matchUps', JSON.stringify(matchUps));
+            localStorage.setItem(leagueMatchups, JSON.stringify(unPopulatedMatchUps));
         } 
         catch (error) {
-            console.error('Error fetching matchUps', error);
+            console.error(`Error fetching schedule for ${league}`, error);
             return [];
         }
     }
 
-    const currentMatchups = getCurrentMatchups(matchUps, props);
-    console.log('currentMatchups', currentMatchups)
+    /* Populate the teams field */
+    const populatedMatchUps: MatchUp[] = unPopulatedMatchUps.map((unPopMatch) => {
+        const homeTeam = teams.find(team => 
+            team.name === unPopMatch.teams[0] && 
+            team.league.toLowerCase() === unPopMatch.league.toLowerCase()
+        );
+        const awayTeam = teams.find(team => 
+            team.name === unPopMatch.teams[1] && 
+            team.league.toLowerCase() === unPopMatch.league.toLowerCase()
+        );
+        
+        return {
+            ...unPopMatch,
+            teams: [homeTeam!, awayTeam!]
+        }
+    })
+
+    const currentMatchups = getCurrentMatchups(populatedMatchUps, props);
     return currentMatchups;
 }
+
+const getCurrentAndFutureMatchUpsOnly = (matchUps: UnPopulatedMatch[]): UnPopulatedMatch[] => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of the day
+
+    const filteredGames = matchUps.filter((game) => {
+        const gameDate = new Date(game.time);
+        return gameDate >= today;
+    });
+
+    return filteredGames;
+}
+
+const fetchSchedule = async (league: string): Promise<UnPopulatedMatch[]> => {
+    try {
+        const url = `http://localhost:3003/${league}/schedule/cacheFutureMatchups`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error("Error fetching MLB schedule:", error);
+        return [];
+    }
+};
+
+
+//     if (process.env.NODE_ENV === "development") {
+//       // console.log('currentMatchups', currentMatchups)
+//     }

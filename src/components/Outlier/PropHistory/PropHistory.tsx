@@ -7,7 +7,8 @@ interface Props {
 const height = "50px";
 
 export const PropHistory: React.FC<Props> = () => {
-    const {pickedProjection} = useGlobalContext();
+    const {filter} = useGlobalContext();
+    const {pickedProjection} = filter;
 
     return (
         <div style={{width:'100%', display:'flex', justifyContent:'center'}}>

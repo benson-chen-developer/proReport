@@ -5,13 +5,14 @@ import { useGlobalContext } from '../../../Context/store';
 interface Props {
     showAllStats?: boolean,
     setShowAllStats?: Dispatch<SetStateAction<boolean>>
-    hasProjections: boolean,
     extraInfo: string
     setExtraInfo: Dispatch<SetStateAction<string>>
 }
-export const ExtraSideSelection: React.FC<Props> = ({showAllStats, setShowAllStats,hasProjections,extraInfo, setExtraInfo}) => {
+export const ExtraSideSelection: React.FC<Props> = ({showAllStats, setShowAllStats,extraInfo, setExtraInfo}) => {
+    const {isMobile, projections} = useGlobalContext();
+
+    const hasProjections = projections.length > 0;
     const options = hasProjections ? ["Stats Filter", "MatchUp Given", "Prop History"] : ["Stats Filter"];
-    const {isMobile} = useGlobalContext();
 
     return (
         <div style={{

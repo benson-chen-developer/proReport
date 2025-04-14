@@ -4,6 +4,8 @@ import { useGlobalContext } from '../../../Context/store';
 import { Team } from '../../../Context/Types/PlayerTypes';
 import { NbaStats } from '../../../Context/Types/Stats';
 import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
+import { TeamCircle } from '../../Outlier/Hero/TeamsMatchUp';
+import { useRouter } from 'next/router';
 
 /*
     allRankings => {
@@ -27,10 +29,12 @@ import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
     }[]
 */
 
-interface Props {
-    league :string
-} 
-export const TeamRanking: React.FC<Props> = ({league}) => {
+export const TeamRanking = () => {
+    const router = useRouter();
+    const { paramLeague } = router.query;
+    const league = paramLeague as string;
+    console.log('league', league)
+
     const [pickedStat, setPickedStat] = useState<string>("PTS");
     const [ascending, setAscending] = useState<boolean>(false);
 
@@ -48,7 +52,6 @@ export const TeamRanking: React.FC<Props> = ({league}) => {
     
     useEffect(() => {
         const func = async () => {
-            const league = 'nba';
             const newTeams = await fetchTeams(league);
             setTeams(newTeams);
     
@@ -93,16 +96,21 @@ export const TeamRanking: React.FC<Props> = ({league}) => {
             setShownRankings(otherStatsAligned)
         }
 
-        func();
+        if(league) func();
     }, [pickedPosition, ascending, pickedStat])
 
     const entryWidth = isMobile ? "60px" : "100px";
     const entryHeight = isMobile ? "30px" : "40px";
     const upDownIconSize = isMobile ? "12" : "15";
 
-    const teamWidth = isMobile ? '100px' : "150px";
+    const teamWidth = isMobile ? '125px' : "200px";
     const borderEdgeColor = "#2B2B2B";
     // A2A2A2 2B2B2B
+
+    if(teams.length === 0) return null;
+
+    if(!league) return null;
+
     return (
         <div style={{ height: '100%', width: isMobile ? "100%" : "80%" }}>
             <div style={{margin: isMobile ? '50px 0px 15px 20px' : '40px 0px 20px 20px'}}>
@@ -172,18 +180,27 @@ export const TeamRanking: React.FC<Props> = ({league}) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {shownRankings[0]?.ranking.map((_, rowIndex) => (
+                            {shownRankings[0]?.ranking.map((ranking, rowIndex) => (
                                 <tr key={rowIndex}>
                                     <td style={{
-                                        textAlign: 'center', 
+                                        display: 'flex', alignItems:'center', 
                                         height: entryHeight, color:'#A2A2A2',
                                         fontWeight: 'bold', position: 'sticky', 
                                         borderRight: `1px solid ${borderEdgeColor}`, borderBottom: `1px solid ${borderEdgeColor}`,
                                         left: 0, zIndex: 1, 
-                                        fontSize: isMobile ? '10px' : '14px', 
+                                        fontSize: isMobile ? '10px' : '12px', 
                                         background: "#151515",
                                     }}>
-                                        {shownRankings[0]?.ranking[rowIndex]?.teamName ?? '-'}
+                                        <div style={{width: '15%', display:'flex', justifyContent:'flex-end'}}>
+                                            <TeamCircle team={teams.find(team => team.name === ranking.teamName)}/>
+                                        </div>
+
+                                        <div style={{
+                                            width:'85%', display:'flex', justifyContent:'center',
+                                            fontSize: isMobile ? '10px' : '12px', textAlign:'center'
+                                        }}>
+                                            {shownRankings[0]?.ranking[rowIndex]?.teamName ?? '-'}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

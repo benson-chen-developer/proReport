@@ -4,16 +4,15 @@ import { PGame, PPlayer, Team } from './Types/PlayerTypes';
 import { PopularProp, Projection } from './Types/ProjectionTypes';
 import { getAllData, saveData } from './functions/cookies';
 import { MatchUp } from './Types/Match';
-import { fetchCachedNBAPlayers } from './functions/cookies/fetchNBAPlayers';
-import { cacheMatchups, getCurrentMatchups } from './functions/cookies/matchUps';
 import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
-import { Filter, Filters } from '../components/Outlier/Matches';
 import { fetchTeams } from './functions/fetch/team/fetchTeams';
+import { Filter, Filters } from '../components/Outlier/Matches';
 
 const defaultFilter: Filter = {
   isHome: false,
   isAway: false,
-  stat: "PTS", 
+  // stat: "", 
+  pickedProjection: null,
   lastGame: "L10", 
   period: "All",
   withOutPlayers: [],
@@ -43,13 +42,13 @@ interface ContextProps {
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
   
-  fetchMatchUps: (league: string, props?: Projection[]) => Promise<MatchUp[]>
-  
   // Player Page Props
   pickedProjection: Projection | null,
   setPickedProjection: Dispatch<SetStateAction<Projection | null>>
   filter: Filter
   setFilter: Dispatch<SetStateAction<Filter>>
+  setValidatedFilter: (val: Filter) => void;
+  
   filters: Filters
   setFilters: Dispatch<SetStateAction<Filters>>
   player: PPlayer
@@ -64,13 +63,13 @@ const GlobalContext = createContext<ContextProps>({
   setProjections: (): Projection[] => [],
   fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
 
-  fetchMatchUps: async (league: string, props?: Projection[]): Promise<MatchUp[]> => [],
-
   // Player Page Props
   pickedProjection: null,
   setPickedProjection: (): Projection | null => null,
   filter: defaultFilter,
   setFilter: (): Filter => defaultFilter,
+  setValidatedFilter: () => {},
+
   filters: defaultFilters,
   setFilters: (): Filters => defaultFilters,
   player: defaultPlayer,
@@ -90,9 +89,28 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     team: "", sport: "", position: ''
   });
 
-  const [matchUps, setMatchUps] = useState<Record<string, MatchUp[]>>({ 
-    'nba': []
-  });
+  /* Only call this to set Filters to ensure it is always correct */
+  const setValidatedFilter = (newFilter: Filter) => {
+    const pickedProjection = newFilter.pickedProjection;
+
+    if (pickedProjection) {
+      const sameStatProjections = projections.filter(
+          projection =>
+              projection.name === pickedProjection.name &&
+              projection.odds === pickedProjection.odds
+      );
+      const periods = Array.from(new Set(sameStatProjections.map(proj => proj.period)));
+
+      /* Set the values of period via pickedProjection */
+      newFilter.period = pickedProjection.period;
+      
+      if (periods.length > 0 && !periods.includes(newFilter.period)) {
+          newFilter.period = periods[0];
+      }
+    }
+
+    setFilter(newFilter);
+  };
 
   /* When the screen size changes (Make Font .7 size of reg) */
   const [isMobile, setIsMobile] = useState(false);
@@ -109,32 +127,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-  const fetchMatchUps = async (league: string, props?: Projection[]): Promise<MatchUp[]> => {
-    const cachedMatchUps = localStorage.getItem('matchUps');
-    let matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
-
-    if(matchUps.length > 0){
-      // console.log('matchup is cached')
-    } else {
-      try {
-        // console.log('matchUps is not cached')
-
-        const teams = await fetchTeams(league);
-        matchUps = await cacheMatchups(teams);
-        localStorage.setItem('matchUps', JSON.stringify(matchUps));
-      } catch (error) {
-        console.error('Error fetching matchUps', error);
-        return [];
-      }
-    }
-
-    const currentMatchups = getCurrentMatchups(matchUps, props);
-
-    if (process.env.NODE_ENV === "development") {
-      // console.log('currentMatchups', currentMatchups)
-    }
-    return currentMatchups;
-  }
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];
 
@@ -168,11 +160,9 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       projections, setProjections, fetchProjections,
       isMobile, setIsMobile,
       
-      fetchMatchUps,
-
       // Player Page Props
       pickedProjection, setPickedProjection,
-      filter, setFilter,
+      filter, setFilter, setValidatedFilter,
       filters, setFilters,
       player, setPlayer
     }}>

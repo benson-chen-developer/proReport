@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { useGlobalContext } from '../../../Context/store'
-import { Filter } from '../Matches'
-import { NBATeamCircle } from '../Hero/TeamsMatchUp'
 import { MatchUp } from '../../../Context/Types/Match'
 import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams'
+import { TeamCircle } from '../Hero/TeamsMatchUp'
 
 interface Props {
     matchUp: MatchUp
@@ -40,7 +39,7 @@ export const Rankings: React.FC<Props> = ({matchUp}) => {
                 fontWeight:'bold', fontSize:'16px', color:'#fff', margin:'0px 0px 5px 0px',
                 display: 'flex'
             }}>
-                <NBATeamCircle team={oppTeam}/>
+                <TeamCircle team={oppTeam}/>
 
                 <span style={{marginLeft:'5px'}}>{oppTeam.name}</span>
             </h1>

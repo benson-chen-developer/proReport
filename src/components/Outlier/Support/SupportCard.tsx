@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PGame, PlayerType, PPlayer } from '../../../Context/Types/PlayerTypes';
 import { Bars } from '../Bars';
-import { BarData, Filter, Filters } from '../Matches';
+import { BarData, Filter, Filters } from '../MatchesOg';
 import { StatsHeader } from '../Stats/StatsHeader';
 import Checkbox from '@mui/material/Checkbox';
 import { parseBarData, parseSupportBarData } from '../../../Context/functions/barchartFuncs';

@@ -2,7 +2,7 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import { ReferenceLine } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import { PPlayer } from '../../Context/Types/PlayerTypes';
-import { BarData } from './Matches';
+import { BarData } from './MatchesOg';
 import CustomTooltip from './CustomTooltip';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { useGlobalContext } from '../../Context/store';

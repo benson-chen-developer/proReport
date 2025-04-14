@@ -8,10 +8,10 @@ export const fetchPopularProjections = async (): Promise<Projection[]> => {
     return data;
 }
 
-export const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
+export const fetchProjections = async (league:string, playerName: string): Promise<Projection[]> => {
     /* Return them */
     if(playerName) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/${playerName}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/${league}/${playerName}`);
         if (!response.ok) throw new Error('Failed to fetch Projections');
         const data = await response.json();
 

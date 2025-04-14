@@ -4,9 +4,12 @@ import { convertStatName } from '../../../Context/functions/convertStatName'
 import { useGlobalContext } from '../../../Context/store'
 import { PGame } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
-import { ProjectionSquare } from '../Hero/Projection'
-import { BarData, Filter, Filters } from '../Matches'
+import { ProjectionSquare } from '../Hero/ProjectionSquare/Projection'
 import { DropDownStatsHeader } from '../Stats/DropDownStatsHeader'
+import { useRouter } from 'next/router'
+import { BarData, Filter, Filters } from '../Matches'
+import { GoblinLogo } from '../Hero/ProjectionSquare/GoblinLogo'
+import { OverUnder } from '../Hero/ProjectionSquare/OverUnder'
 
 interface Props {
     avg: number,
@@ -20,6 +23,10 @@ export const BarInfo: React.FC<Props> = ({
     avg, seasonAvg, mainBarData, projections, setProjections,
     showAllStats
 }) => {
+    const router = useRouter();
+    const { paramLeague } = router.query;
+    const league = paramLeague as string;
+
     const {isMobile, filter, setFilter, pickedProjection, setPickedProjection} = useGlobalContext()
 
     const hits = mainBarData.reduce((count, item) => {
@@ -41,9 +48,8 @@ export const BarInfo: React.FC<Props> = ({
     // console.log("barinfo", pickedProjection)
     // debugger;
     const maxLength = 12;
-    const statText = `${convertStatName(filter.stat)}`;
+    const statText = `${convertStatName(league, filter.stat)}`;
     const truncatedStatText = statText.length > maxLength ? statText.slice(0, maxLength - 3) + "..." : statText;
-
     const periodText = `${filter.period !== "All" ? `(${filter.period})` : ''}`;
     const projectionText = pickedProjection ? `${filter.over ? 'O' : 'U'} ${pickedProjection.values[pickedProjection.values.length-1]}` : '';
 
@@ -89,55 +95,24 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projections */}
-                {(
+                {/* {(
                     pickedProjection && 
                     pickedProjection.name === filter.stat && 
                     pickedProjection.period === filter.period  && 
                     projections.length > 0
                 ) ?
-                    <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
-                        {pickedProjection?.overUnder === 3 ?
-                            <div style={{
-                                width: isMobile ? '25px' : '30px', height: isMobile ? '25px' : '30px', 
-                                border: isMobile ? '2px solid #5B5B5B' : 'solid 3px #5B5B5B',
-                                borderRadius:'8px', display:'flex', alignItems:'center',
-                                justifyContent:'center', marginRight:'8px', cursor:'pointer',
-                                transition: 'transform 0.3s ease',
-                                transform: filter.over ? 'rotate(0deg)' : 'rotate(180deg)'
-                            }} onClick={() => {
-                                setFilter(p => ({...p, over: !p.over}))
-                            }}>
-                                <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    style={{ marginBottom: '2px', transition: 'transform 0.3s ease' }} 
-                                    width={isMobile ? '12' : "16"}
-                                    height={isMobile ? '12' : "16"}
-                                    viewBox="0 0 16 16"
-                                >
-                                    <path fill="#fff" d="M8 .5L.5 8H5v8h6V8h4.5z"/>
-                                </svg>
-                            </div> : null
-                        }
-                        
-                        <div style={{display:'flex', alignItems:'center'}}>
-                            {pickedProjection && pickedProjection.odds !== 100 ?
-                                <Image 
-                                    src={pickedProjection.odds > 100 ? "/PrizePicksDemon.png" : "/PrizePicksGoblin.png"}
-                                    height={20} width={20} 
-                                    alt="Projection icon" 
-                                    style={{margin:'0px 10px 0px 0px'}}
-                                /> : null
-                            }
-                        </div>
-                        <ProjectionSquare 
-                            pickedProjection={pickedProjection}
-                            setPickedProjection={setPickedProjection}
-                            projections={projections}
-                        />
-                    </div> 
-                        :
-                    null
-                }
+                } */}
+
+                {/* Projection */}
+                <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
+                    <OverUnder />
+                    <GoblinLogo pickedProjection={pickedProjection}/>
+                    <ProjectionSquare 
+                        pickedProjection={pickedProjection}
+                        setPickedProjection={setPickedProjection}
+                        projections={projections}
+                    />
+                </div>
             </div>
 
             <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>

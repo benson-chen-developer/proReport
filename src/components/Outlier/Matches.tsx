@@ -3,17 +3,12 @@ import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import {  PGame, PPlayer } from '../../Context/Types/PlayerTypes';
 import { PSport } from '../Player/SportClass/Psport';
-import { SupportCard } from './Support/SupportCard';
 import { useGlobalContext } from '../../Context/store';
-import { parseBarData, updateFilters } from '../../Context/functions/barchartFuncs';
-import { Rankings } from './Ranking/Ranking';
 import { Hero } from './Hero/Hero';
 import { Projection } from '../../Context/Types/ProjectionTypes';
 import { ExtraSideSelection } from './Stats/ExtraSideSelection';
 import { Notfound } from './NotFound/Notfound';
 import { Loading } from './Loading/Loading';
-import { BarInfo } from './MainBarChart/BarInfo';
-import { Bars } from './Bars';
 import { MatchUp } from '../../Context/Types/Match';
 import { fetchProjections } from '../../Context/functions/fetch/fetchProjections';
 import { MobileFilter } from './Filter/MobileFilter';
@@ -24,12 +19,18 @@ import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 import { fetchMatches } from '../../Context/functions/fetch/matches/fetchMatches';
-import { getNewStatsForFilters } from './Matches/functions';
+import { getInitialProjection } from './Matches/functions/initialProjection';
+import { getNewStatsForFilters } from './Matches/functions/functions';
+import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
+import { BarInfo } from './Matches/components/BarInfo';
+import { parseBarData } from './Matches/functions/barData';
+import { Bars } from './Matches/components/Bars';
+import { Rankings } from './Matches/components/Rankings';
 
 export type Filter = {
     isHome: boolean,
     isAway: boolean,
-    stat: string, //Points, Asts,
+    pickedProjection: Projection | null,
     lastGame: string, //L10, H2H,
     period: string, //Q1, H1,
     supportingStat: string, //Minutes, fouls,
@@ -88,12 +89,9 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const [showAllStats, setShowAllStats] = useState<boolean>(false);
     const [extraInfo, setExtraInfo] = useState<string>('Stats Filter');
 
-    const [projections, setProjections] = useState<Projection[]>([]); /* The projections for this player */
-
     const {
-        fetchMatchUps, isMobile,
-        filter, setFilter, player, setPlayer, filters, setFilters,
-        pickedProjection, setPickedProjection
+        isMobile, filter, setFilter, player, setPlayer, 
+        projections, setProjections
     } = useGlobalContext();
 
     /* Initial */
@@ -120,63 +118,30 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 });
 
                 /* Intial Projections and Intial Stats Filters set up */
-                const projections = await fetchProjections(player.name);
-                let newFilters: Filters;
-                if(projections.length === 0) {
-                    newFilters = getNewStatsForFilters(true, [], filter, filters, league);
-                    setShowAllStats(true)
-                } else {
-                    newFilters = getNewStatsForFilters(false, projections, filter, filters, league);
-                }
+                const projections = await fetchProjections(player.sport, player.name);
+                const initialPickedProjection = getInitialProjection(
+                    projections, 
+                    (paramFilter as string), 
+                    (paramPropValue as string)
+                );
                 setProjections(projections);
-
-                /* Get the team they are playing against */
-                const matchUps = await fetchMatchUps(league);
-                const matchUp = matchUps.find(match => match.teams.some(t => t.name === player!.city));
-                setMatchUp(matchUp);
-                if(matchUp && !filters.lastGames.includes('H2H')){
-                    newFilters.lastGames = [...newFilters.lastGames, "H2H"];
-                }
-
-                /* Set up filters */
-                setFilters(newFilters);
 
                 const newFilter = {
                     ...filter, 
-                    period: newFilters.periods[0],
+                    pickedProjection: initialPickedProjection,
                 }
                 setFilter(newFilter);
 
+                /* Get the team they are playing against */
+                const matchUps = await fetchMatchUps(league);
+                let matchUp = matchUps.find(match => 
+                    match.teams.some(t => t.name === player!.team)
+                );
+                setMatchUp(matchUp);
+
                 /* Inital Bar Setting */
-                const newData = parseBarData(allGames, filter, player!, pickedProjection, matchUp);
+                const newData = parseBarData(allGames, newFilter, player!, matchUp);
                 setMainBarData(newData);
-
-                let initalPickedProjection = null;
-                if(paramFilter) {
-                    try {
-                        const filterFromParam: Filter = JSON.parse(paramFilter as string);
-                        if(paramPropValue){
-                            const foundProp = projections.find(p => 
-                                p.values[p.values.length-1] === Number(paramPropValue) &&
-                                p.period === filterFromParam.period &&
-                                p.name === filterFromParam.stat
-                            );
-                            if(foundProp) initalPickedProjection = foundProp;
-                        }
-                        setFilter(p => ({...filterFromParam}))
-                    } catch (error) {
-                        /* Someone messed up the url just don;t parse it */
-                        console.error("Error parsing filter:", error);
-                    }
-                }
-
-                if(!initalPickedProjection){
-                    initalPickedProjection = projections.find(p => 
-                        p.name === newFilters.stats[0] && filter.period === p.period
-                    );
-                }
-
-                setPickedProjection(initalPickedProjection ? initalPickedProjection : null);
             }
 
             setLoading(false);
@@ -186,94 +151,14 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     }, [playerName]);
 
     useEffect(() => {
-        // console.log('filter', filter)
-    }, [filter])
-
-    /* Always make sure that the picked stat is in the options given */
-    const validateStat = (changedFilter: Filter): Filter => {
-        let foundMainStat = filters.stats.find(option => option === filter.stat);
-        let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
-        let foundPeriod = filters.periods.find(p => p === filter.period);
-        let newFilter = {...filter};
-        
-        if(!foundMainStat) newFilter.stat = filters.stats[0];
-        if(!foundSupportStat) newFilter.supportingStat = filters.supportingStats[0];
-        if(!foundPeriod) newFilter.period = filters.periods[0];
-
-        return newFilter;
-    }
-
-    /* Make sure the filter is valid when changing it */
-    const validateFilter = (changedFilter: Filter, currentFilters: Filters): Filter => {
-        let foundMainStat = filters.stats.find(option => option === filter.stat);
-        let foundSupportStat = filters.supportingStats.find(option => option === filter.supportingStat);
-        let foundPeriod = filters.periods.find(p => p === filter.period);
-        let validatedFilter = {...filter};
-        
-        if(!foundMainStat) validatedFilter.stat = filters.stats[0];
-        if(!foundSupportStat) validatedFilter.supportingStat = filters.supportingStats[0];
-        if(!foundPeriod) validatedFilter.period = filters.periods[0];
-
-        return validatedFilter;
-    }
-
-    /* MainBarData */
-    const { isAway, isHome, lastGame, period, stat, withOutPlayers, daysRested, minutes, over, minutesChecked } = filter;
-
-    useEffect(() => {
-        if(!loading){
-            const newFilterAndPickedProjection = getValidFiltersAndPickedProjection();
-            const {pickedProjection, filter} = newFilterAndPickedProjection;
+        const { pickedProjection } = filter;
     
-            let newFilter = validateStat(filter);
-            let newFilters = getNewStatsForFilters(showAllStats, projections, filter, filters, league);
-            
-            // //When u switch periods the h1 has a null pickedpgroject
-            // //i think its the filter.period isnt change yet
-            // console.log("stat",stat)
-            // console.log("pickedProjection",pickedProjection)
-            
-            const newData = parseBarData(pGames, newFilter, player, pickedProjection, matchUp);
+        if (pickedProjection) {
+            const newData = parseBarData(pGames, filter, player!, matchUp);
             setMainBarData(newData);
-            
-            setFilters(newFilters);
-            setFilter(newFilter);
-    
-            setPickedProjection(pickedProjection);
         }
-    }, [isAway, isHome, lastGame, withOutPlayers, daysRested, minutes, over, period, stat, pickedProjection, minutesChecked]);
-    
-    /* 
-        CHANGE (PICKED PROJECTIONS)
-        When projected we have to make sure that the peridos match the projection 
-    */
-    const getValidFiltersAndPickedProjection = (): {
-        pickedProjection : Projection | null,
-        filter: Filter
-    } => {
-        const newFilterAndPickedProjection = {
-            pickedProjection: pickedProjection,
-            filters: filters,
-            filter:filter,
-        }
-        // console.log("filter", filter)
+    }, [filter]);
 
-        /* Look for a projection that matches this stat and period */
-        const foundProjection = projections.find(proj => proj.name === filter.stat && proj.period === filter.period);
-
-        if (foundProjection) {
-            /* Only look for a new one if the current doesn't work */
-            if (pickedProjection?.name !== filter.stat || pickedProjection?.period !== filter.period) {
-                newFilterAndPickedProjection.pickedProjection = foundProjection;
-            }
-            
-            if (foundProjection.overUnder === 1) setFilter(p => ({ ...p, over: true }));
-        } else {
-            newFilterAndPickedProjection.pickedProjection = null;
-        }
-
-        return newFilterAndPickedProjection;
-    }
 
     if(loading) return (
         <Loading />
@@ -293,16 +178,10 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 <div style={{width: isMobile ? '100%' : '65%'}}>
                     {/* Main BarChart */}
                     <div style={{width:'100%'}}>
-                        <BarInfo 
-                            showAllStats={showAllStats}
-                            projections={projections}
-                            setProjections={setProjections}
-                            avg={0} 
-                            seasonAvg={0}
+                        <BarInfo
                             mainBarData={mainBarData}
                         />
                         <Bars
-                            lineValue={pickedProjection ? pickedProjection.values[pickedProjection.values.length-1] : null}
                             refLineOn={true}
                             seasonAvg={0}
                             barData={mainBarData}
@@ -311,15 +190,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                         />
                     </div>
                     
-                    <SupportCard 
-                        matchUp={matchUp}
-                        filters={filters}
-                        pGames={pGames}
-                        player={player}
-                        mainBarData={mainBarData}
-                        pickedProjection={pickedProjection}
-                    />
-
                     <div key={'bottom'}>
                         <Drawer
                             anchor={'bottom'}
@@ -336,16 +206,15 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                                 }
                             }}
                         >
-                            <MobileFilter 
+                            {/* <MobileFilter 
                                 extraInfo={extraInfo} setExtraInfo={setExtraInfo}
                                 projections={projections}
                                 showAllStats={showAllStats} setShowAllStats={setShowAllStats}
                                 matchUp={matchUp}
-                            />
+                            /> */}
                         </Drawer>
                     </div>
                 </div>
-
 
                 {/* Filters */}
                 {!isMobile ?
@@ -354,7 +223,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             // marginLeft:'5%', 
                         height:'auto', display:'flex', flexDirection:'column'}}>
                             <ExtraSideSelection 
-                                hasProjections={projections.length > 0}
                                 showAllStats={showAllStats}
                                 setShowAllStats={setShowAllStats}
                                 extraInfo={extraInfo} 
@@ -368,12 +236,12 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             }
 
                             {extraInfo === "MatchUp Given" && matchUp ?
-                                <Rankings 
+                                <Rankings
                                     matchUp={matchUp}
                                 /> : null
                             }
 
-                            {extraInfo === "Prop History" && pickedProjection ?
+                            {extraInfo === "Prop History" && filter.pickedProjection ?
                                 <PropHistory /> : null
                             }
 

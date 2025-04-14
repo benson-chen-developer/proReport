@@ -1,5 +1,5 @@
 import { getAllData } from "../../../Context/functions/cookies";
-import { PGame } from "../../../Context/Types/PlayerTypes";
+import { PGame, PPlayer } from "../../../Context/Types/PlayerTypes";
 
 export class PSport {
     static getAllPickedBtns = (league?: string): string[] => {
@@ -31,6 +31,9 @@ export class PSport {
         if(league === 'nba'){
             return ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4']
         }
+        else if(league === 'mlb'){
+            return ['All']
+        }
 
         return [];
     }
@@ -60,7 +63,10 @@ export class PSport {
             return [];
         }
     }
-    static getAllPickedStats = (league: string): string[] => {
+    static getAllPickedStats = (player: PPlayer): string[] => {
+        const position = player.position.toLowerCase();
+        const league = player.sport.toLowerCase();
+
         if(league === "nba"){
             return [
                 "PTS" ,
@@ -77,26 +83,32 @@ export class PSport {
                  "ORB", "DRB",
             ]
         }
-        else {
-            return [];
+        else if(league === "mlb"){
+            if(position === 'pitcher') return [
+                "K", "BBA", "ER", "RA", "HA"
+            ]
+            // if(position === 'hitter') 
+            return [
+                "H", "TB", "AB", "R", "RBI",
+                "BB", "SO", "SB", "2B", "3B", "HR",
+            ]
         }
-    }
-    static sortStats = (league: string, unsortedStats: string[]): string[] => {
-        if (league === "nba") {
-            const model = PSport.getAllPickedStats(league);
         
-            const sortedStats: string[] = [];
-
-            model.forEach((stat, index) => {
-                if(unsortedStats.includes(stat)) sortedStats.push(stat);
-            });
-        
-            return sortedStats;
-        }
-        else {
-            return [];
-        }
+        return [];
     }
+    
+    static sortStats = (player: PPlayer, unsortedStats: string[]): string[] => {
+        const model = PSport.getAllPickedStats(player);
+    
+        // 1. Stats that are in the model, sorted by model order
+        const sortedStats = model.filter(stat => unsortedStats.includes(stat));
+    
+        // 2. Stats that were not in the model, to be appended at the end
+        const remainingStats = unsortedStats.filter(stat => !model.includes(stat));
+    
+        return [...sortedStats, ...remainingStats];
+    };
+    
 
     static getPicUrl = (id: string, league: string): string => {
         if(league === "nba"){

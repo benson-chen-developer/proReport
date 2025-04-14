@@ -1,0 +1,1 @@
+{"c":["pages/player/[paramLeague]/[paramPlayer]","pages/home","webpack"],"r":[],"m":["./src/Context/functions/fetch/schedule/mlbScheduleJson.ts","./src/Context/functions/fetch/schedule/nbaSchedule.ts"]}

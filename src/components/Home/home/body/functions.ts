@@ -1,5 +1,5 @@
 import { PopularProp, Projection } from "../../../../Context/Types/ProjectionTypes";
-import { Filter } from "../../../Outlier/Matches";
+import { Filter } from "../../../Outlier/MatchesOg";
 
 /*
     We return a new array of popularprops via looping all the popularprops

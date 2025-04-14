@@ -1,5 +1,5 @@
 import { ClipLoader } from 'react-spinners';
-import { BarData, Filter } from '../../../Outlier/Matches';
+import { BarData, Filter } from '../../../Outlier/MatchesOg';
 import { useGlobalContext } from '../../../../Context/store';
 import { MatchUp } from '../../../../Context/Types/Match';
 import { PGame, PPlayer, Team } from '../../../../Context/Types/PlayerTypes';

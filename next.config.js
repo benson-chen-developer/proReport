@@ -7,6 +7,6 @@ module.exports = {
         ignoreDuringBuilds: true
     },
     images: {
-        domains: ['cdn.nba.com'],
+        domains: ['cdn.nba.com', 'img.mlbstatic.com', 'a.espncdn.com'],
     },
 };

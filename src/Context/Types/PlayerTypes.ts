@@ -34,7 +34,8 @@ export type Team = {
     name: string,
     id: string,
     given: Record<string, number[]>,
-    gp: number
+    gp: number,
+    league: string
 }
 export type EGame = Game & {
     maps: {

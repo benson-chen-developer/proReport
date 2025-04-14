@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { useGlobalContext } from '../../../Context/store';
-import { Filter, Filters } from '../Matches';
+import { Filter, Filters } from '../MatchesOg';
 
 interface CustomLabelProps {
     filters: Filters;

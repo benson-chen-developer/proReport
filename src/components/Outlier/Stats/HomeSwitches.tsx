@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
-import { Filter } from '../Matches';
+import { Filter } from '../MatchesOg';
 import { useGlobalContext } from '../../../Context/store';
 
 export const IOSSwitch = styled((props: SwitchProps) => (

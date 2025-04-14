@@ -4,6 +4,7 @@ import { useGlobalContext } from '../../../../Context/store';
 import { isSameMatchup, MatchUp } from '../../../../Context/Types/Match';
 import { PopularProp } from '../../../../Context/Types/ProjectionTypes';
 import { Search } from './Search';
+import { fetchMatchUps } from '../../../../Context/functions/fetch/fetchMatchUps';
 
 interface Props {
     popularProps: PopularProp[],
@@ -15,11 +16,11 @@ interface Props {
 
 export const Header: React.FC<Props> = ({pickedMatchUps, setPickedMatchUps, popularProps, search, setSearch}) => {
     const [matchUps, setMatchUps] = useState<MatchUp[]>([]);
-    const {fetchMatchUps, isMobile} = useGlobalContext();
+    const {isMobile} = useGlobalContext();
 
     useEffect(() => {
         const func = async () => {
-            let matchUps = await fetchMatchUps('', popularProps.flatMap(prop => prop.prop));
+            let matchUps = await fetchMatchUps('nba', popularProps.flatMap(prop => prop.prop));
 
             /* Only keep matches that have props in the header */
             matchUps = matchUps.filter((matchUp) => {

@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
-import { Filter } from '../Matches';
+import { Filter } from '../MatchesOg';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { height } from '@mui/system';
 import { useGlobalContext } from '../../../Context/store';
@@ -70,7 +70,7 @@ export const DaysOfRest: React.FC<Props> = ({ ourPlayer}) => {
               {selectedText !== 'Days Rested' ? 
                   <div onClick={() => {
                     setSelectedText('Days Rested')
-                    setFilter(p => ({...p, daysRested: -1}))
+                    setFilter((p: Filter) => ({...p, daysRested: -1}))
                     setIsPopUp(false)
                   }} style={{height:'100%', display:'flex', alignItems:'center', marginRight:'5px'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#fff" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m4.207 12.793l-1.414 1.414L12 13.414l-2.793 2.793l-1.414-1.414L10.586 12L7.793 9.207l1.414-1.414L12 10.586l2.793-2.793l1.414 1.414L13.414 12z"/></svg>

@@ -1,30 +1,56 @@
 
 /* Will turn AST into Asist */
-export const convertStatName = (shortName:string):string => {
-    let stats = shortName.split('+');
-
-    let longStats = stats.map((s) => {
-        if(s === 'PTS') return 'Points';
-        else if(s === "FAN") return "Fantasy Score";
-        else if(s === 'REB') return 'Rebounds';
-        else if(s === 'ORB') return 'Offensive Rebounds';
-        else if(s === 'DRB') return 'Defensive Rebounds';
-        else if(s === 'AST') return 'Asissts';
-        else if(s === 'BLK') return 'Blocks';
-        else if(s === 'STL') return 'Steals';
-        else if(s === 'PF') return 'Fouls';
-        else if(s === 'TOV') return 'Turnovers';
-        else if(s === 'FGM') return 'Field Goals Made';
-        else if(s === '3PM') return '3 Pointers Made';
-        else if(s === 'FTM') return 'Free Throws Made';
-        else if(s === 'FGA') return 'Field Goals Attempted';
-        else if(s === '3PA') return '3 Pointers Attempted';
-        else if(s === 'FTA') return 'Free Throws Attempted';
-    })
-
+export const convertStatName = (league: string, shortName?: string): string => {
+    if(!shortName) return '';
     
-    return longStats.join('+');
-}
+    const stats = shortName.split('+');
+  
+    const statMap: Record<string, Record<string, string>> = {
+      nba: {
+        PTS: 'Points',
+        FAN: 'Fantasy Score',
+        REB: 'Rebounds',
+        ORB: 'Offensive Rebounds',
+        DRB: 'Defensive Rebounds',
+        AST: 'Assists',
+        BLK: 'Blocks',
+        STL: 'Steals',
+        PF: 'Fouls',
+        TOV: 'Turnovers',
+        FGM: 'Field Goals Made',
+        '3PM': '3 Pointers Made',
+        FTM: 'Free Throws Made',
+        FGA: 'Field Goals Attempted',
+        '3PA': '3 Pointers Attempted',
+        FTA: 'Free Throws Attempted',
+      },
+      mlb: {
+        HR: 'Home Runs',
+        H: 'Hits',
+        TB: 'Total Bases',
+        AB: 'At Bats',
+        R: 'Runs',
+        RBI: 'Runs Batted In',
+        BB: 'Walk',
+        SO: 'Strikeouts',
+        SB: 'Stolen Bases',
+        '1B': 'Single',
+        '2B': 'Double',
+        '3B': 'Triple',
+        K: 'Strikeouts',
+        RA: 'Runs Allowed',
+        ER: 'Earned Runs',
+        HA: 'Hits Allowed',
+      },
+    };
+  
+    const map = statMap[league.toLowerCase()] || {};
+  
+    const longStats = stats.map((s) => map[s] || s); // fallback to original if not found
+  
+    return longStats.join(' + ');
+  };
+  
 
 /* 
     Converting the long name stat to short 
@@ -36,7 +62,7 @@ export const convertSupportName = (stat: string, full?: boolean): string => {
     if(stat === 'Minutes') return 'MIN'
     else if(stat === 'Fouls') return 'PF'
     else if(stat === 'Field Goals Att.') return 'FGA'
-    else if('OFF/DEF Rebounds') return 'REB';
+    else if(stat === 'OFF/DEF Rebounds') return 'REB';
 
     // if(full){
     //     else return '';

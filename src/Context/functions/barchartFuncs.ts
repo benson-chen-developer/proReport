@@ -56,7 +56,7 @@ export const parseBarData = (
     /* Here we get the stats from the game via criteria */
     const data = displayedGames.map((game, index) => { 
         const unFormattedDate: Date = new Date(game.date);
-        const date = `${unFormattedDate.getUTCMonth() + 1}/${unFormattedDate.getUTCDate()}`;
+        const dateInEst = unFormattedDate.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'numeric', day: 'numeric' });
         
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         const playerTeam: string = foundPlayer!.team;
@@ -137,14 +137,14 @@ export const parseBarData = (
             stat1Text: pickedStatSplit[0] ? `${pickedStatSplit[0]}` : '',
             stat2Text: pickedStatSplit[1] ? `${pickedStatSplit[1]}` : '',
             stat3Text: pickedStatSplit[2] ? `${pickedStatSplit[2]}` : '',
-            date: date, 
+            date: dateInEst, 
             score: game.score,
             isHome: isHome,
             playerTeam: playerTeam,
             opp: opp,
             tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
-            underText: `${date}\n ${convertNBATeamName(opp, 0)}`
+            underText: `${dateInEst}\n ${convertNBATeamName(opp, 0)}`
         };
     }).reverse();
 
@@ -162,7 +162,11 @@ export const parseSupportBarData = (
             const formattedDate = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
             const bothTeams = [game.team1, game.team2];
 
-            return formattedDate === barData.date && bothTeams.includes(barData.opp);
+            const utcMonth = date.getUTCMonth() + 1;
+            const utcDay = date.getUTCDate();
+            const utcFormatted = `${utcMonth}/${utcDay}`;
+
+            return formattedDate === utcFormatted && bothTeams.includes(barData.opp);
         });
 
         /* Getting inner stats (REB => ORB + DRB) */

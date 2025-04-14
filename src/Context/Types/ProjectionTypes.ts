@@ -1,4 +1,4 @@
-import { Filter } from "../../components/Outlier/Matches"
+import { Filter } from "../../components/Outlier/MatchesOg"
 import { MatchUp } from "./Match"
 import { PPlayer } from "./PlayerTypes"
 

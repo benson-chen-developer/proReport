@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { Filter } from '../../../Outlier/Matches'
 import { getRank, getRankColor, Ranking } from '../../../Outlier/Ranking/Ranking'
 import { convertNBATeamName, convertTime } from '../../../../Context/functions/convertNbaName'
 import { Team } from '../../../../Context/Types/PlayerTypes'
 import { PopularProp, Projection } from '../../../../Context/Types/ProjectionTypes'
-import { NBATeamCircle } from '../../../Outlier/Hero/TeamsMatchUp'
+import { TeamCircle } from '../../../Outlier/Hero/TeamsMatchUp'
+import { Filter } from '../../../Outlier/Matches'
 
 interface Props {
     popularProp: PopularProp,
@@ -77,7 +77,7 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
 
                             {/* Team Logo */}
                             <div style={{position: 'absolute', bottom: '12px', left: '-4px',}}>
-                                <NBATeamCircle team={team} />
+                                <TeamCircle team={team} />
                             </div>
                         </div>
                         <p style={{color:'#fff', fontWeight:'bold', margin:'-5px 0px 0px 0px', fontSize:'14px'}}>
