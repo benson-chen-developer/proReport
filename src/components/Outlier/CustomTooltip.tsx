@@ -30,6 +30,7 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
         const team2Score = payload[0].payload.score.split('-')[1];
         const oppTeam = payload[0].payload.opp;
         const playerTeam = payload[0].payload.playerTeam;
+
         const stats: number[] = [];
         if (payload[0].payload.stat1Text) stats.push(payload[0].payload.stat1);
         if (payload[0].payload.stat2Text) stats.push(payload[0].payload.stat2);

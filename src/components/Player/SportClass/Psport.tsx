@@ -27,6 +27,7 @@ export class PSport {
 
         return periods;
     }
+    
     static getAllPeriods = (league: string): string[] => {
         if(league === 'nba'){
             return ['All', 'H1', 'H2', 'Q1', 'Q2', 'Q3', 'Q4']
@@ -63,10 +64,7 @@ export class PSport {
             return [];
         }
     }
-    static getAllPickedStats = (player: PPlayer): string[] => {
-        const position = player.position.toLowerCase();
-        const league = player.sport.toLowerCase();
-
+    static getAllPickedStats = (league: string, position?: string): string[] => {
         if(league === "nba"){
             return [
                 "PTS" ,
@@ -98,7 +96,7 @@ export class PSport {
     }
     
     static sortStats = (player: PPlayer, unsortedStats: string[]): string[] => {
-        const model = PSport.getAllPickedStats(player);
+        const model = PSport.getAllPickedStats(player.sport.toLowerCase(), player.position.toLowerCase());
     
         // 1. Stats that are in the model, sorted by model order
         const sortedStats = model.filter(stat => unsortedStats.includes(stat));

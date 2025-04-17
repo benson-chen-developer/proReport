@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
-import {  PGame, PPlayer } from '../../Context/Types/PlayerTypes';
+import {  PGame, PPlayer, Team } from '../../Context/Types/PlayerTypes';
 import { PSport } from '../Player/SportClass/Psport';
 import { useGlobalContext } from '../../Context/store';
 import { Hero } from './Hero/Hero';
@@ -26,6 +26,8 @@ import { BarInfo } from './Matches/components/BarInfo';
 import { parseBarData } from './Matches/functions/barData';
 import { Bars } from './Matches/components/Bars';
 import { Rankings } from './Matches/components/Rankings';
+import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
+import { getStaticProjections } from './Matches/functions/getStaticProjections';
 
 export type Filter = {
     isHome: boolean,
@@ -79,6 +81,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
+    const [teams, setTeams] = useState<Team[]>([]);
 
     /* Player Page States */
     const [pGames, setPGames] = useState<PGame[]>([]);
@@ -86,12 +89,11 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     /* For Mobile Filter */
     const [filterShow, setFilterShow] = useState(false);
 
-    const [showAllStats, setShowAllStats] = useState<boolean>(false);
     const [extraInfo, setExtraInfo] = useState<string>('Stats Filter');
 
     const {
         isMobile, filter, setFilter, player, setPlayer, 
-        projections, setProjections
+        projections, setProjections, setActiveProp
     } = useGlobalContext();
 
     /* Initial */
@@ -118,14 +120,23 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 });
 
                 /* Intial Projections and Intial Stats Filters set up */
-                const projections = await fetchProjections(player.sport, player.name);
+                let activeProp = true;
+                let projections = await fetchProjections(player.sport, player.name);
+                if(projections.length === 0){
+                    activeProp = false;
+                    projections = getStaticProjections(league, player);
+                }
+                console.log('projections', projections)
+
                 const initialPickedProjection = getInitialProjection(
                     projections, 
                     (paramFilter as string), 
                     (paramPropValue as string)
                 );
+                console.log('initialPickedProjection', initialPickedProjection)
                 setProjections(projections);
 
+                /* Set Filter */
                 const newFilter = {
                     ...filter, 
                     pickedProjection: initialPickedProjection,
@@ -133,15 +144,26 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 setFilter(newFilter);
 
                 /* Get the team they are playing against */
-                const matchUps = await fetchMatchUps(league);
-                let matchUp = matchUps.find(match => 
-                    match.teams.some(t => t.name === player!.team)
-                );
-                setMatchUp(matchUp);
+                let matchUp;
+                if(activeProp){
+                    const matchUps = await fetchMatchUps(league);
+                    matchUp = matchUps.find(match => 
+                        match.teams.some(t => t.name === player!.team)
+                    );
+                    setMatchUp(matchUp!);
+                }
 
+                /* Teams */
+                const teams = await fetchTeams(league);
+                setTeams(teams);
+                
                 /* Inital Bar Setting */
-                const newData = parseBarData(allGames, newFilter, player!, matchUp);
+                const newData = parseBarData(allGames, newFilter, player!, teams, matchUp);
                 setMainBarData(newData);
+
+                /* Whether or not there are projections for this player */
+                console.log('activeProp', activeProp)
+                setActiveProp(activeProp);
             }
 
             setLoading(false);
@@ -153,10 +175,11 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     useEffect(() => {
         const { pickedProjection } = filter;
     
-        if (pickedProjection) {
-            const newData = parseBarData(pGames, filter, player!, matchUp);
+        if (pickedProjection && teams.length > 0) {
+            const newData = parseBarData(pGames, filter, player!, teams, matchUp);
             setMainBarData(newData);
         }
+
     }, [filter]);
 
 
@@ -170,7 +193,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
     if(!loading) return (
         <div style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
-            <Hero matchUp={matchUp}/>
+            <Hero matchUp={matchUp} teams={teams}/>
             
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
@@ -223,8 +246,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             // marginLeft:'5%', 
                         height:'auto', display:'flex', flexDirection:'column'}}>
                             <ExtraSideSelection 
-                                showAllStats={showAllStats}
-                                setShowAllStats={setShowAllStats}
                                 extraInfo={extraInfo} 
                                 setExtraInfo={setExtraInfo}
                             />

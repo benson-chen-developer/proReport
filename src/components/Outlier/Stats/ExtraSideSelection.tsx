@@ -3,22 +3,19 @@ import Checkbox from '@mui/material/Checkbox';
 import { useGlobalContext } from '../../../Context/store';
 
 interface Props {
-    showAllStats?: boolean,
-    setShowAllStats?: Dispatch<SetStateAction<boolean>>
     extraInfo: string
     setExtraInfo: Dispatch<SetStateAction<string>>
 }
-export const ExtraSideSelection: React.FC<Props> = ({showAllStats, setShowAllStats,extraInfo, setExtraInfo}) => {
-    const {isMobile, projections} = useGlobalContext();
+export const ExtraSideSelection: React.FC<Props> = ({extraInfo, setExtraInfo}) => {
+    const {isMobile, activeProp} = useGlobalContext();
 
-    const hasProjections = projections.length > 0;
-    const options = hasProjections ? ["Stats Filter", "MatchUp Given", "Prop History"] : ["Stats Filter"];
+    const options = activeProp ? ["Stats Filter", "MatchUp Given", "Prop History"] : ["Stats Filter"];
 
     return (
         <div style={{
             width:'100%', height: isMobile ? '30px' : '40px', display:'flex',
             justifyContent:'center', alignItems:'center', 
-            margin: isMobile ? '15px 0px 15px 0px' : '15px 0px 30px 0px'
+            margin: isMobile ? '15px 0px 10px 0px' : '15px 0px 20px 0px'
         }}>
             <div style={{
                 display: 'flex', width: '95%', fontSize: '14px', alignItems: 'center',

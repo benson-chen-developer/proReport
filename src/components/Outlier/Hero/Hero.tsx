@@ -6,24 +6,24 @@ import Image from 'next/image'
 import { useGlobalContext } from '../../../Context/store'
 import { MatchUp } from '../../../Context/Types/Match'
 import { TeamsMatchUp } from './TeamsMatchUp'
-import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams'
 import { useRouter } from 'next/router'
 import { getHeadshotUrl, getTeamUrl } from '../../../Context/functions/urls/getUrls'
 
 interface Props {
     matchUp: MatchUp | undefined
+    teams: Team[]
 }
-export const Hero: React.FC<Props> = ({matchUp}) => {
+export const Hero: React.FC<Props> = ({matchUp, teams}) => {
     const router = useRouter();
     const { paramLeague } = router.query;
     const {isMobile, player} = useGlobalContext();
 
-    const team = matchUp!.teams.find(team => team.name === player.team)
+    const team = teams.find(team => team.name === player.team)
     const date = matchUp ? new Date(matchUp!.time) : new Date();
     let formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     formattedTime = formattedTime.replace(/^0/, ''); /* Gets rid of leading zero. EX) 07:00 to 7:00 */
     
-    if(!player || !team) return null;
+    if((!player)) return null;
 
     return (
         <div
@@ -38,7 +38,7 @@ export const Hero: React.FC<Props> = ({matchUp}) => {
             <div style={{ left: isMobile ? -15 : -40, top: isMobile ? -5 : -40, position:'absolute'}}>
                 <Image
                     alt={'Team Logo'}
-                    src={getTeamUrl(team)}
+                    src={getTeamUrl(team!)}
                     width={isMobile ? 100 : 175}
                     height={isMobile ? 100 : 175}
                     style={{ opacity: 0.3 }}

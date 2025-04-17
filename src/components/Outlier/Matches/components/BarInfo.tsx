@@ -21,7 +21,7 @@ export const BarInfo: React.FC<Props> = ({
     const { paramLeague } = router.query;
     const league = paramLeague as string;
 
-    const {isMobile, filter, projections} = useGlobalContext();
+    const {isMobile, filter, projections, activeProp} = useGlobalContext();
     const statName = filter.pickedProjection?.name;
 
     const hits = mainBarData.reduce((count, item) => {
@@ -52,8 +52,8 @@ export const BarInfo: React.FC<Props> = ({
                 width:'100%', display:'flex', justifyContent:'space-between', 
                 alignItems:'center', fontSize: isMobile ? '12px' : '14px'
             }}>
-                {/* The 90% 9 of 10 */}
                 <div style={{marginLeft:'20px'}}>
+                    {/* Stat Name and O/U (Amount) */} 
                     <div style={{display:'flex', alignItems:'center', marginLeft:'-4px'}}>
                         <div style={{color:'#fff', fontWeight:'bold', margin:'10px 0px', display:'flex', alignItems:'flex-end'}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={isMobile ? "18px" : "24px"} height={isMobile ? "18px" : "24px"} viewBox="0 0 24 24">
@@ -63,12 +63,17 @@ export const BarInfo: React.FC<Props> = ({
                         <span style={{color:'#fff', fontSize: isMobile ? '13px' : '15px', fontWeight:'bold', marginLeft:'5px'}}>
                             {isMobile ? truncatedStatText : statText} {periodText}
                         </span>
-                        <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
-                            {projectionText}
-                        </span>
+                        
+                        {/* O/U (Amount) */}
+                        {activeProp ?
+                            <span style={{color:"#B1B1B1", fontWeight: 'bold', fontSize: isMobile ? '13px' : '15px', marginLeft:'5px'}}>
+                                {projectionText}
+                            </span> : null
+                        }
                     </div> 
 
-                    {projections.find(p => p.name === statName && p.period === filter.period) ?
+                    {/* The 90% 9 of 10 or No Projection  */}
+                    {projections.find(p => p.name === statName && p.period === filter.period) && activeProp ?
                         <div style={{color: isNaN(percentHit) ? '#fff' : getColor(percentHit), fontWeight:'bold'}}>
                             {isNaN(percentHit) ?
                                 'No Games' : `${percentHit.toFixed(0)}%`
@@ -84,26 +89,19 @@ export const BarInfo: React.FC<Props> = ({
                         <div style={{color:'#fff', fontWeight:'bold'}}>
                             No Projection
                         </div>
-                    }
+                    }      
                 </div>
-
-                {/* Projections */}
-                {/* {(
-                    pickedProjection && 
-                    pickedProjection.name === filter.stat && 
-                    pickedProjection.period === filter.period  && 
-                    projections.length > 0
-                ) ?
-                } */}
 
                 {/* Projection */}
-                <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
-                    <OverUnder />
-                    <GoblinLogo pickedProjection={pickedProjection}/>
-                    <ProjectionSquare
-                        projections={projections}
-                    />
-                </div>
+                {activeProp ?
+                    <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
+                        <OverUnder />
+                        <GoblinLogo pickedProjection={pickedProjection}/>
+                        <ProjectionSquare
+                            projections={projections}
+                        />
+                    </div> : null
+                }
             </div>
 
             <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>

@@ -38,6 +38,10 @@ interface ContextProps {
   isMobile: boolean,
   setIsMobile: Dispatch<SetStateAction<boolean>>;
 
+  /* This determines whether we should compare player stats to props */
+  activeProp: boolean,
+  setActiveProp: Dispatch<SetStateAction<boolean>>;
+
   projections: Projection[];
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
@@ -58,6 +62,9 @@ interface ContextProps {
 const GlobalContext = createContext<ContextProps>({
   isMobile: false,
   setIsMobile: (): boolean => false,
+
+  activeProp: false,
+  setActiveProp: (): boolean => false,
 
   projections: [],
   setProjections: (): Projection[] => [],
@@ -84,6 +91,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
   const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [activeProp, setActiveProp] = useState<boolean>(false);
   const [player, setPlayer] = useState<PPlayer>({
     name: "", playerId: "", city: "",
     team: "", sport: "", position: ''
@@ -159,6 +167,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     <GlobalContext.Provider value={{ 
       projections, setProjections, fetchProjections,
       isMobile, setIsMobile,
+      activeProp, setActiveProp,
       
       // Player Page Props
       pickedProjection, setPickedProjection,

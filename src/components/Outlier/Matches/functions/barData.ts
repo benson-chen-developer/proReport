@@ -1,7 +1,7 @@
 import { convertNBATeamName } from "../../../../Context/functions/convertNbaName";
 import { convertSupportName } from "../../../../Context/functions/convertStatName";
 import { MatchUp } from "../../../../Context/Types/Match";
-import { PGame, PPlayer } from "../../../../Context/Types/PlayerTypes";
+import { PGame, PPlayer, Team } from "../../../../Context/Types/PlayerTypes";
 import { Projection } from "../../../../Context/Types/ProjectionTypes";
 import { BarData, Filter } from "../../Matches";
 
@@ -47,7 +47,7 @@ const getFantasyMap = (league: string): Record<string, number> => {
 }
 
 export const parseBarData = (
-    games: PGame[], filter: Filter, player: PPlayer, matchUp?: MatchUp,
+    games: PGame[], filter: Filter, player: PPlayer, allTeams: Team[], matchUp?: MatchUp,
 ): BarData[] => {
     const {pickedProjection} = filter;
     const statName = pickedProjection!.name;
@@ -61,8 +61,9 @@ export const parseBarData = (
         const dateInEst = unFormattedDate.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'numeric', day: 'numeric' });
         
         const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
-        const playerTeam: string = foundPlayer!.team;
-        const opp: string = game.team1.toLowerCase() === playerTeam.toLowerCase() ? game.team2 : game.team1;
+        const playerTeam: string = player!.team;
+        const opp: string =  playerTeam.toLowerCase().includes(game.team1.toLowerCase()) ? game.team2 : game.team1;
+        const oppFullName = allTeams.find(team => team.name.includes(opp))!.name;
         const isHome: boolean = game.team1 === player.team;
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
@@ -143,10 +144,10 @@ export const parseBarData = (
             score: game.score,
             isHome: isHome,
             playerTeam: playerTeam,
-            opp: opp,
+            opp: oppFullName,
             tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
-            underText: `${dateInEst}\n ${convertNBATeamName(opp, 0)}`
+            underText: `${dateInEst}\n ${convertNBATeamName(oppFullName, 0)}`
         };
     }).reverse();
 

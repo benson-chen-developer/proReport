@@ -139,14 +139,14 @@ export const TeamCircle: React.FC<Props2> = ({team}) => {
     
     return(
         <div style={{
-            width: isMobile ? '18px' : '22px', height:isMobile ? '18px' : '22px', borderRadius:'100px', 
+            width: isMobile ? '22px' : '22px', height:isMobile ? '20px' : '22px', borderRadius:'100px', 
             display:'flex', justifyContent:'center', alignItems:'center',
             background: teamColors(team.league, team.name)
         }}>
             <Image 
                 src={getTeamUrl(team)}
                 alt="Team Logo"
-                width={isMobile ? 16 : 18} height={isMobile ? 16 : 18}
+                width={isMobile ? 14 : 18} height={isMobile ? 14 : 18}
             />
         </div>
     )

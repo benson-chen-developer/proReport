@@ -88,6 +88,8 @@ export const getRank = (
     teams: Team[], stat: string, oppTeam: string, position:string
 ): Ranking[] => {
     const positions = position === "All" ? [...position.split('-')] : ["All", ...position.split('-')];
+    
+    // console.log('positons',positions )
     const rankings = positions.map((pos) => {
         const orderedTeams = orderTeamsByStatAmount(stat, teams, pos);
         const teamIndex = orderedTeams.findIndex(team => team.name === oppTeam);
@@ -108,7 +110,15 @@ const orderTeamsByStatAmount = (stat: string, teams: Team[], position: string): 
     const stats = stat.split('+');
     let teamsOrderedByTotalStat: Team[] = [];
 
-    const mapping = {"G": 0, "F": 1, "C": 2, "All": 3};
+    let mapping = {};
+    const league = teams[0].league;
+    if(league === "nba"){
+        mapping = {"G": 0, "F": 1, "C": 2, "All": 3};
+    }
+    else if(league === "mlb"){
+        mapping = {"All": 0};
+    }
+
     let positionIndex = mapping[position as keyof typeof mapping];
 
     if(stats[0] === "FAN"){

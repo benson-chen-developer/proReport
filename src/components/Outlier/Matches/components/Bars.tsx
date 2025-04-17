@@ -17,8 +17,9 @@ interface Props {
 export const Bars: React.FC<Props> = ({ 
     player, barData, chartType, seasonAvg, refLineOn
 }) => {
-    const {isMobile, filter} = useGlobalContext();
+    const {isMobile, filter, activeProp} = useGlobalContext();
     const barHeight = isMobile ? '275px' : '350px';
+    const hitColor = activeProp ? "#79F4F4" : "#fff";
 
     const [loading, setLoading] = useState<boolean>(true);
     const [yAxisMax, setYAxisMax] = useState<number>(0);
@@ -63,7 +64,6 @@ export const Bars: React.FC<Props> = ({
 
         setLoading(false);
     }, [barData])
-
 
     const CustomXAxisTick = (props: any) => { 
         const { x, y, payload } = props;
@@ -168,13 +168,10 @@ export const Bars: React.FC<Props> = ({
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={(lineValue && chartType === 'main') 
-                                    ? entry.statTotal === lineValue 
-                                        ? "#FFFFFF" 
-                                        : entry.hit 
-                                            ? "#79F4F4" 
-                                            : '#A2A2A2' 
-                                    : '#EEEEEE'}
+                                fill={entry.statTotal === lineValue ? 
+                                    "#FFFFFF" : 
+                                    entry.hit ? hitColor : '#A2A2A2' 
+                                }
                             />
                     ))}
                         {!(filter.lastGame === "L20" && statName === "FAN" && isMobile) && (

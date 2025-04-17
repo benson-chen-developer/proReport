@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../../Context/store';
 import { Team } from '../../../Context/Types/PlayerTypes';
-import { NbaStats } from '../../../Context/Types/Stats';
+import { MlbStats, NbaStats } from '../../../Context/Types/Stats';
 import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
 import { TeamCircle } from '../../Outlier/Hero/TeamsMatchUp';
 import { useRouter } from 'next/router';
@@ -33,27 +33,57 @@ export const TeamRanking = () => {
     const router = useRouter();
     const { paramLeague } = router.query;
     const league = paramLeague as string;
-    console.log('league', league)
 
-    const [pickedStat, setPickedStat] = useState<string>("PTS");
+    const [pickedStat, setPickedStat] = useState<string>("");
     const [ascending, setAscending] = useState<boolean>(false);
 
     const [pickedPosition, setPickedPosition] = useState<string>("All");
     const [teams, setTeams] = useState<Team[]>([]);
     const [shownRankings, setShownRankings] = useState<{name: string, ranking: Ranking[]}[]>([]);
 
-    const statKeys = Object.keys({
-        PTS: 0, REB: 0, AST: 0, BLK: 0, STL: 0, PF: 0, TOV: 0,
-        FGA: 0, FGM: 0, "3PA": 0, "3PM": 0, 
-        FTA: 0, FTM: 0, DRB: 0, ORB: 0, 
-    }) as (keyof NbaStats)[];
-
     const {isMobile} = useGlobalContext();
+
+    const getPositons = (): string[] => {
+        if(league){
+            if(league.toLocaleLowerCase() === "nba") return ["All", "G", "F", "C"];
+            else if(league.toLocaleLowerCase() === "mlb") return ["All"]
+        } 
+
+        return [];
+    }
+
+    const getStatKeys = () => {
+        const lowerCaseLeage = league.toLowerCase();
+
+        if(lowerCaseLeage === 'nba'){
+            return Object.keys({
+                PTS: 0, REB: 0, AST: 0, BLK: 0, STL: 0, PF: 0, TOV: 0,
+                FGA: 0, FGM: 0, "3PA": 0, "3PM": 0, 
+                FTA: 0, FTM: 0, DRB: 0, ORB: 0, 
+            }) as (keyof NbaStats)[];
+        } else if (lowerCaseLeage === 'mlb'){
+            return Object.keys({
+                HR: 0, H:0, TB: 0, AB: 0, R:0, RBI: 0, BB: 0, SO: 0, SB:0,
+                '1B': 0, '2B': 0, '3B': 0, K:0, RA:0, ER:0, HA:0
+            }) as (keyof MlbStats)[];
+        } else {
+            return [];
+        }
+    }
     
     useEffect(() => {
         const func = async () => {
+            /* Get all the stats for this league: Ex nba is [PTS, REB, etc] */
+            const statKeys = getStatKeys();
             const newTeams = await fetchTeams(league);
             setTeams(newTeams);
+
+            /* Set Initial Picked Stat */
+            let currentPickedStat = pickedStat;
+            if(pickedStat === "") {
+                currentPickedStat = statKeys[0];
+                setPickedStat(currentPickedStat);
+            }
     
             const newAllRankings: { name: string, ranking: Ranking[] }[] = [];
             statKeys.forEach(stat => {
@@ -68,7 +98,7 @@ export const TeamRanking = () => {
             });
 
             /* Sort the stat column in order */
-            let rankingsByStat = newAllRankings.find(r => r.name === pickedStat);
+            let rankingsByStat = newAllRankings.find(r => r.name === currentPickedStat);
             const sortedRankingsByStat = rankingsByStat!.ranking.sort((a, b) => 
                 ascending ? b.rank - a.rank : a.rank - b.rank
             );
@@ -83,7 +113,7 @@ export const TeamRanking = () => {
 
             /* Align all other stat columns to match the sorted team order */
             const otherStatsAligned = newAllRankings.map((ranking) => {
-                if (ranking.name === pickedStat) return ranking; // Keep the sorted stat as is
+                if (ranking.name === currentPickedStat) return ranking; // Keep the sorted stat as is
                 
                 return {
                     ...ranking,
@@ -97,7 +127,7 @@ export const TeamRanking = () => {
         }
 
         if(league) func();
-    }, [pickedPosition, ascending, pickedStat])
+    }, [pickedPosition, ascending, pickedStat, league])
 
     const entryWidth = isMobile ? "60px" : "100px";
     const entryHeight = isMobile ? "30px" : "40px";
@@ -140,7 +170,7 @@ export const TeamRanking = () => {
                     </p>
 
                     <div style={{display:'flex',}}>
-                        {["All", "G", "F", "C"].map((position) => <div 
+                        {getPositons().map((position) => <div 
                                 key={position}
                                 style={{
                                     fontWeight:'bold', 

@@ -72,7 +72,10 @@ router.get("/matches/:league/:playerName?", async (req, res) => {
     const {league, playerName} = req.params;
 
     try {
-        const query = playerName ? { "players.name": playerName } : {};
+        /* Look for name not case sensitive */
+        const query = playerName ? 
+            { "players.name": { $regex: new RegExp(`^${playerName}$`, "i") } }
+        : {};
 
         /* Map the Model */
         const modelMap = {
@@ -86,8 +89,28 @@ router.get("/matches/:league/:playerName?", async (req, res) => {
 
         /* Call the Mongo API */
         const matches = await Model.aggregate([
-            { $match: query },  // Find matches where the player exists
-            { 
+            ...(playerName
+                ? [
+                    {
+                        $match: {
+                            $expr: {
+                                $in: [
+                                    playerName.toLowerCase(),
+                                    {
+                                        $map: {
+                                            input: "$players",
+                                            as: "p",
+                                            in: { $toLower: "$$p.name" }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+                : []
+            ),
+            {
                 $addFields: {
                     players: {
                         $map: {
@@ -98,11 +121,16 @@ router.get("/matches/:league/:playerName?", async (req, res) => {
                                 team: "$$player.team",
                                 playerId: "$$player.playerId",
                                 position: "$$player.position",
-                                periods: { 
-                                    $cond: { 
-                                        if: { $eq: ["$$player.name", playerName] }, 
-                                        then: "$$player.periods", 
-                                        else: {} 
+                                periods: {
+                                    $cond: {
+                                        if: {
+                                            $eq: [
+                                                { $toLower: "$$player.name" },
+                                                playerName?.toLowerCase()
+                                            ]
+                                        },
+                                        then: "$$player.periods",
+                                        else: {}
                                     }
                                 }
                             }
@@ -110,9 +138,9 @@ router.get("/matches/:league/:playerName?", async (req, res) => {
                     }
                 }
             },
-            { $project: { _id: 0 } } // Exclude _id field
+            { $project: { _id: 0 } }
         ]);
-
+        
         res.status(200).json(matches);
     } catch (err) {
         console.error("Error fetching matches", err);

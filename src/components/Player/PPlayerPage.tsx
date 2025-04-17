@@ -3,6 +3,7 @@ import { Matches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
+import { NoProjectionMatches } from '../Outlier/Matches/components/NoProjection/NoMatchesProjection';
 
 interface Props {
     league: string,
@@ -11,7 +12,7 @@ interface Props {
 export const bgColor = "#1E1E1E"; //tron #0B1C1F
 
 export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
-    const {isMobile} = useGlobalContext();
+    const {isMobile, filter} = useGlobalContext();
     const [loading, setLoading] = useState<boolean>(true);
 
     /* For Mobile Filter */
@@ -23,7 +24,7 @@ export const PPlayerPage: React.FC<Props> = ({league, playerName}) => {
 
             <Matches 
                 loading={loading} setLoading={setLoading}
-            />
+            /> 
 
             {/* {isMobile && !sidebarVisible && !loading ? 
                 <FilterBtn 

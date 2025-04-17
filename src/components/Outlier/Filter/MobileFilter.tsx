@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { MatchUp } from '../../../Context/Types/Match'
 import { PPlayer } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
-import { Filter, Filters } from '../MatchesOg'
+import { Filter, Filters } from '../Matches'
 import { Rankings } from '../Ranking/Ranking'
 import { DaysOfRest } from '../Stats/DaysOfRest'
 import { HomeSwitches, IOSSwitch } from '../Stats/HomeSwitches'
@@ -18,14 +18,12 @@ interface Props {
     extraInfo: string,
     setExtraInfo: Dispatch<SetStateAction<string>>
     projections: Projection[],
-    showAllStats: boolean, setShowAllStats: Dispatch<SetStateAction<boolean>>
     matchUp?: MatchUp
 }
 
 export const MobileFilter: React.FC<Props> = ({ 
     extraInfo, setExtraInfo,
-    projections, showAllStats, setShowAllStats,
-    matchUp
+    projections, matchUp
 }) => {
     const {player} = useGlobalContext();
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
@@ -39,7 +37,6 @@ export const MobileFilter: React.FC<Props> = ({
             {/* Header */}
             <div style={{width:'100%', justifyContent:'space-between', alignItems:'center'}}>
                 <ExtraSideSelection 
-                    hasProjections={projections.length > 0}
                     extraInfo={extraInfo}
                     setExtraInfo={setExtraInfo}
                 />
