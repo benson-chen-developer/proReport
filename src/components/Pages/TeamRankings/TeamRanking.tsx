@@ -43,6 +43,12 @@ export const TeamRanking = () => {
 
     const {isMobile} = useGlobalContext();
 
+    const handleClick = (newLeague: string) => {
+        if (newLeague.toLowerCase() !== league?.toString().toLowerCase()) {
+          router.push(`/team-rank/${newLeague.toLowerCase()}`);
+        }
+    };
+
     const getPositons = (): string[] => {
         if(league){
             if(league.toLocaleLowerCase() === "nba") return ["All", "G", "F", "C"];
@@ -73,24 +79,29 @@ export const TeamRanking = () => {
     
     useEffect(() => {
         const func = async () => {
+            let position = pickedPosition;
+
             /* Get all the stats for this league: Ex nba is [PTS, REB, etc] */
             const statKeys = getStatKeys();
             const newTeams = await fetchTeams(league);
             setTeams(newTeams);
 
-            /* Set Initial Picked Stat */
+            /* Initial Set Up if needed */
             let currentPickedStat = pickedStat;
-            if(pickedStat === "") {
+            if (!pickedStat || !statKeys.map(String).includes(pickedStat)){
+                setPickedPosition("All");
+                position = "All";
+
                 currentPickedStat = statKeys[0];
                 setPickedStat(currentPickedStat);
             }
-    
+
             const newAllRankings: { name: string, ranking: Ranking[] }[] = [];
             statKeys.forEach(stat => {
                 const allRankingsForStat = newTeams.map(team => {
-                    const newRankings = getRank(newTeams, stat, team.name, pickedPosition);
+                    const newRankings = getRank(newTeams, stat, team.name, position);
                     
-                    if(pickedPosition === "All") return newRankings[0];
+                    if(position === "All") return newRankings[0];
                     else return newRankings[1];
                 });
                 
@@ -151,6 +162,13 @@ export const TeamRanking = () => {
                 <h4 style={{color:'#B1B1B1', fontSize: isMobile ? '10px' : '12px', margin: 0}}>
                     A lower number means the team gives up more points compared to others
                 </h4>
+                <h4 style={{color:'#B1B1B1', fontSize: isMobile ? '10px' : '12px', margin: '5px 0px 0px 10px'}}>
+                    - This team allows other teams to score more points.
+                </h4>
+                <h4 style={{color:'#B1B1B1', fontSize: isMobile ? '10px' : '12px', margin: '5px 0px 0px 10px'}}>
+                    - Example: 1st means this team lets other teams score the MOST points
+                </h4>
+
                 <h4 style={{fontSize: isMobile ? '10px' : '12px', margin: '10px 0px 0px 0px' }}>
                     <span style={{color:'#FF3556', marginRight:'5px'}}>Worse Matchup</span>
                     <span style={{color:'#ede515', marginRight:'5px'}}>Average Matchup</span>
@@ -158,8 +176,43 @@ export const TeamRanking = () => {
                 </h4>
             </div>
 
-            {/* Position Selectors */}
+            {/* Selectors */}
             <div style={{width:'100%', borderTop:'1px solid #808080', background:'#151515'}}>
+                {/* League */}
+                <div style={{padding: isMobile ? '10px 0px 0px 20px' : '20px 0px 0px 20px'}}>
+                    <p style={{
+                        margin: '0px 0px 10px 0px', fontWeight:'bold', 
+                        fontSize: isMobile ? '10px' : '14px', 
+                        color:'#B1B1B1'
+                    }}>
+                        League
+                    </p>
+
+                    <div style={{display:'flex',}}>
+                        {["NBA", "MLB"].map((currLeague) => {
+                            const matchedLeague = league.toLowerCase() === currLeague.toLowerCase();
+                            
+                            return <div 
+                                key={currLeague}
+                                style={{
+                                    fontWeight:'bold', 
+                                    width: isMobile ? '40px' : '50px', 
+                                    height: isMobile ? '25px' : '30px',
+                                    display:'flex', justifyContent:'center', alignItems:'center',
+                                    borderRadius:'25px', fontSize: isMobile ? '10px' : '13px', 
+                                    marginRight:'10px',
+                                    background: matchedLeague ? '#fff' : '#000',
+                                    color: matchedLeague ? '' : '#fff', cursor:'pointer'
+                                }}
+                                onClick={() => handleClick(currLeague)}
+                            >
+                                {currLeague}
+                            </div>
+                        })}
+                    </div>
+                </div>
+
+                {/* Positions */}
                 <div style={{padding: isMobile ? '10px 0px 10px 20px' : '20px 0px 20px 20px'}}>
                     <p style={{
                         margin: '0px 0px 10px 0px', fontWeight:'bold', 

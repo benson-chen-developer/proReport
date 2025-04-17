@@ -126,14 +126,12 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                     activeProp = false;
                     projections = getStaticProjections(league, player);
                 }
-                console.log('projections', projections)
 
                 const initialPickedProjection = getInitialProjection(
                     projections, 
                     (paramFilter as string), 
                     (paramPropValue as string)
                 );
-                console.log('initialPickedProjection', initialPickedProjection)
                 setProjections(projections);
 
                 /* Set Filter */
@@ -162,7 +160,6 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 setMainBarData(newData);
 
                 /* Whether or not there are projections for this player */
-                console.log('activeProp', activeProp)
                 setActiveProp(activeProp);
             }
 
@@ -229,12 +226,11 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                                 }
                             }}
                         >
-                            {/* <MobileFilter 
+                            <MobileFilter 
                                 extraInfo={extraInfo} setExtraInfo={setExtraInfo}
                                 projections={projections}
-                                showAllStats={showAllStats} setShowAllStats={setShowAllStats}
                                 matchUp={matchUp}
-                            /> */}
+                            />
                         </Drawer>
                     </div>
                 </div>
