@@ -1,5 +1,6 @@
 import { getAllData } from "../../../Context/functions/cookies";
 import { PGame, PPlayer } from "../../../Context/Types/PlayerTypes";
+import { Projection } from "../../../Context/Types/ProjectionTypes";
 
 export class PSport {
     static getAllPickedBtns = (league?: string): string[] => {
@@ -95,18 +96,36 @@ export class PSport {
         return [];
     }
     
-    static sortStats = (player: PPlayer, unsortedStats: string[]): string[] => {
-        const model = PSport.getAllPickedStats(player.sport.toLowerCase(), player.position.toLowerCase());
+    static sortStats = (player: PPlayer, unsortedStats: Projection[]): Projection[] => {
+        const statsOrder = PSport.getAllPickedStats(player.sport.toLowerCase(), player.position.toLowerCase());
+        const periodsOrder = PSport.getAllPeriods(player.sport.toLowerCase());
     
-        // 1. Stats that are in the model, sorted by model order
-        const sortedStats = model.filter(stat => unsortedStats.includes(stat));
+        const getStatPriority = (stat: Projection) => {
+            const statIndex = statsOrder.indexOf(stat.name);
+            const periodIndex = periodsOrder.indexOf(stat.period);
+            return {
+                stat: statIndex === -1 ? Infinity : statIndex,
+                period: periodIndex === -1 ? Infinity : periodIndex
+            };
+        };
     
-        // 2. Stats that were not in the model, to be appended at the end
-        const remainingStats = unsortedStats.filter(stat => !model.includes(stat));
+        const sorted = [...unsortedStats].sort((a, b) => {
+            const aPriority = getStatPriority(a);
+            const bPriority = getStatPriority(b);
     
-        return [...sortedStats, ...remainingStats];
+            if (aPriority.stat !== bPriority.stat) {
+                return aPriority.stat - bPriority.stat;
+            }
+    
+            if (a.name !== b.name) {
+                return a.name.localeCompare(b.name);
+            }
+    
+            return aPriority.period - bPriority.period;
+        });
+    
+        return sorted;
     };
-    
 
     static getPicUrl = (id: string, league: string): string => {
         if(league === "nba"){

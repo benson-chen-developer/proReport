@@ -3,7 +3,6 @@ import { Matches } from '../Outlier/Matches';
 import { SideBar } from '../Outlier/Sidebar/SideBar';
 import { useGlobalContext } from '../../Context/store';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
-import { NoProjectionMatches } from '../Outlier/Matches/components/NoProjection/NoMatchesProjection';
 
 interface Props {
     league: string,

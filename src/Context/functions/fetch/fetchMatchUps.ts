@@ -35,7 +35,8 @@ export const fetchMatchUps = async (league: string, props?: Projection[]): Promi
     }
 
     /* Populate the teams field */
-    const populatedMatchUps: MatchUp[] = unPopulatedMatchUps.map((unPopMatch) => {
+    const populatedMatchUps: MatchUp[] = [];
+    unPopulatedMatchUps.forEach((unPopMatch) => {
         const homeTeam = teams.find(team => 
             team.name === unPopMatch.teams[0] && 
             team.league.toLowerCase() === unPopMatch.league.toLowerCase()
@@ -45,9 +46,11 @@ export const fetchMatchUps = async (league: string, props?: Projection[]): Promi
             team.league.toLowerCase() === unPopMatch.league.toLowerCase()
         );
         
-        return {
-            ...unPopMatch,
-            teams: [homeTeam!, awayTeam!]
+        if(homeTeam && awayTeam){
+            populatedMatchUps.push({
+                ...unPopMatch,
+                teams: [homeTeam, awayTeam]
+            })
         }
     })
 

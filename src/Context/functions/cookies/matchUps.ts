@@ -83,34 +83,6 @@ const removeOldMatchups = (matchups: MatchUp[]): MatchUp[] => {
     return newMatchups;
 }
 
-/*
-    Add games to matchups
-        - Check to see if all games this week are here and add them
-        - Check to see if all games next week are here and add them
-*/
-// const addMatchups = (matchups: MatchUp[]): MatchUp[] => {
-//     if()
-
-//     else {
-//         const newMatchUps = await getMatchUps('nba', teams);
-//     }
-// }
-
-/*
-    Looks at the projections and grabs each unique match
-        - Look into cached matchUps and any game not there is added
-*/
-
-// export const fetchMatchUps = (props: Projection[]) => {
-//     const cachedMatchUps = localStorage.getItem('matchUps');
-//     const matchUps: MatchUp[] = cachedMatchUps ? JSON.parse(cachedMatchUps) : [];
-
-//     const now = new Date();
-//     matchUps.forEach((matchUp) => {
-        
-//     })
-// }
-
 const getUTCDayStr = (timeStr: string): string => {
     const time = new Date(timeStr);
     time.setHours(time.getHours() - 5);
@@ -119,104 +91,54 @@ const getUTCDayStr = (timeStr: string): string => {
     return formattedTime;
 }
 
+const sameMatchUp = (m1: MatchUp, m2: MatchUp):boolean => {
+    const sameLeague = m1.league === m2.league;
+    const sameTeams = (m1.teams[0].name === m2.teams[0].name) && 
+        (m1.teams[1].name === m2.teams[1].name)
+    const sameTime = m1.time === m2.time;
+
+    return (sameLeague && sameTeams && sameTime);
+}
+
 /*
     Returns all the games today
         - Also if you pass in props then it will return any matches that match that prop's game
             (This is for if 2 days of props are available at once)
 */
 export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): MatchUp[] => {
-    let searchDate = new Date();
-    searchDate.setHours(0, 0, 0, 0);
+    let todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
     
     let filteredGames: MatchUp[] = [];
 
-    while (filteredGames.length === 0) {
-        filteredGames = matchUps.filter((matchUp) => {
-            const gameDate = new Date(matchUp.time);
-            gameDate.setHours(0, 0, 0, 0);
-            return gameDate.getTime() === searchDate.getTime();
-        });
-
-        if (filteredGames.length === 0) {
-            searchDate.setDate(searchDate.getDate() + 1); 
-        }
-    }
-
-    let moreMatches: MatchUp[] = [];
+    /* If there are props get all the games in it */
     if(props){
-        moreMatches = matchUps.filter((matchUp) => {
-            return props.find((prop) => {
-                const team = prop.player.city;
+        props.forEach(prop => {
+            const foundMatchUp = matchUps.find(matchUp => {
+                const gameDate = new Date(matchUp.time);
+                gameDate.setHours(0, 0, 0, 0);
 
-                return (getUTCDayStr(prop.start_time) === getUTCDayStr(matchUp.time) &&
-                    (team === matchUp.teams[0].name || team === matchUp.teams[1].name)
-                )
+                return gameDate.getTime() === todayDate.getTime();
             })
+
+            if(foundMatchUp) filteredGames.push(foundMatchUp);
         })
     }
 
-    /* Get rid of dupes */
-    const matchIdentifier = (matchUp: MatchUp) => 
-        `${getUTCDayStr(matchUp.time)}-${matchUp.teams[0].name}-${matchUp.teams[1].name}`;
-    const uniqueMatches = new Set<string>();
+    /* Return Today's Games */
+    matchUps.forEach((matchUp) => {
+        const gameDate = new Date(matchUp.time);
+        gameDate.setHours(0, 0, 0, 0);
+        
+        const gameIsToday = gameDate.getTime() === todayDate.getTime();
+        const gameIsNotInArr = !filteredGames.find(game => {
+            return sameMatchUp(game, matchUp);
+        })
 
-    const totalMatchesSet = [...filteredGames, ...moreMatches].filter((matchUp) => {
-        const id = matchIdentifier(matchUp);
-
-        if (!uniqueMatches.has(id)) {
-            uniqueMatches.add(id);
-            return true;
+        if(gameIsToday && gameIsNotInArr){
+            filteredGames.push(matchUp);
         }
-        return false;
-    });
+    })
 
-    return totalMatchesSet;
+    return filteredGames;
 };
-
-/*
-    Returns all the games today
-        - Also if you pass in props then it will return any matches that match that prop's game
-            (This is for if 2 days of props are available at once)
-*/
-//DOESNT WORK I THINK ITS GETTING TOO MANY GAMES DUE TO NOT ENDING WHEN GOING PAST CURRENT DAY
-// export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): MatchUp[] => {
-//     let searchDate = new Date();
-//     searchDate.setHours(0, 0, 0, 0);
-//     console.log("props for get curuent mathcup", props)
-    
-//     let propsTeams = props ? props.map(prop => prop.player.city) : [];
-
-//     let filteredGames: MatchUp[] = [];
-
-//     let counter = 0; /* After 14 days of iteration stop as a fail safe */
-//     while (filteredGames.length === 0 && propsTeams.length > 0){
-//         /* Add games on this date */
-//         filteredGames.push(...matchUps.filter((matchUp) => {
-//             const gameDate = new Date(matchUp.time);
-//             gameDate.setHours(0, 0, 0, 0);
-
-//             /* (If matches today's date) */
-//             if(gameDate.getTime() === searchDate.getTime()) return true;
-
-//             /* (If is a game in our props) */
-//             let foundPropMatch = matchUp.teams.find(team => propsTeams.includes(team.name));
-//             if(foundPropMatch && gameDate.getTime() >= searchDate.getTime()) {
-//                 propsTeams = propsTeams.filter(team => team !== foundPropMatch!.name);
-//                 return true;
-//             }
-//         }));
-
-//         if (filteredGames.length === 0) {
-//             searchDate.setDate(searchDate.getDate() + 1); 
-//         }
-
-//         counter++;
-
-//         if(counter === 14){
-//             console.log("Something went wrong in looping through the matchups schedule")
-//             break;
-//         }
-//     }
-
-//     return filteredGames;
-// };

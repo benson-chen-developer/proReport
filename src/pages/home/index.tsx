@@ -33,6 +33,7 @@ export const Index = () => {
 
         const func = async () => {
             setLoading(true);
+
             /* Cached */
             const teams = await fetchTeams(league);
             const players = await fetchPlayers(league);
@@ -47,6 +48,7 @@ export const Index = () => {
                 .filter(prop => prop.popularHits.length > 0);
             
             const matchUps = await fetchMatchUps('nba', popularPropWithoutMatchUp);
+            console.log('matchups', matchUps)
 
             const popularProps: PopularProp[] = popularPropWithoutMatchUp
                 .map(prop => {
@@ -119,12 +121,12 @@ export const Index = () => {
                     </div>
                         :
                     <>
-                        <Header 
+                        {/* <Header 
                             popularProps={popularProps}
                             pickedMatchUps={pickedMatchUps}
                             setPickedMatchUps={setPickedMatchUps}
                             search={search} setSearch={setSearch}
-                        />
+                        /> */}
 
                         <Body 
                             teams={teams}

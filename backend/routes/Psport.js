@@ -69,14 +69,11 @@ router.get("/matchUps/:league", async (req, res) => {
     We only populate the stats field for searched player
 */
 router.get("/matches/:league/:playerName?", async (req, res) => { 
-    const {league, playerName} = req.params;
+    let {league, playerName} = req.params;
+    playerName = playerName.replace('_', ' '); 
 
     try {
-        /* Look for name not case sensitive */
-        const query = playerName ? 
-            { "players.name": { $regex: new RegExp(`^${playerName}$`, "i") } }
-        : {};
-
+        
         /* Map the Model */
         const modelMap = {
             nba: NBAMatch,
@@ -86,8 +83,8 @@ router.get("/matches/:league/:playerName?", async (req, res) => {
         if (!Model) {
             return res.status(400).json({ message: "Invalid league provided" });
         }
-
-        /* Call the Mongo API */
+        
+        /* Call the Mongo API (Not Case Sensitive)*/
         const matches = await Model.aggregate([
             ...(playerName
                 ? [

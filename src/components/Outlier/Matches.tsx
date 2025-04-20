@@ -105,7 +105,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
             setPGames(allGames);
             const players = await fetchPlayers(league);
             const player = players.find((p) => p.name.toLowerCase() === playerName.toLowerCase());
-
+            
             if(!player) { 
                 /* This is for if the url is not right */
             } else {
@@ -126,6 +126,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                     activeProp = false;
                     projections = getStaticProjections(league, player);
                 }
+                projections = PSport.sortStats(player, projections);
 
                 const initialPickedProjection = getInitialProjection(
                     projections, 
@@ -141,14 +142,19 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 }
                 setFilter(newFilter);
 
-                /* Get the team they are playing against */
+                /* MatchUp */
                 let matchUp;
                 if(activeProp){
                     const matchUps = await fetchMatchUps(league);
                     matchUp = matchUps.find(match => 
                         match.teams.some(t => t.name === player!.team)
                     );
-                    setMatchUp(matchUp!);
+
+                    if(matchUp){
+                        setMatchUp(matchUp);
+                    } else {
+                        activeProp = false;
+                    }
                 }
 
                 /* Teams */
@@ -180,13 +186,9 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     }, [filter]);
 
 
-    if(loading) return (
-        <Loading />
-    )
+    if(loading) return <Loading />;
 
-    if(!loading && !player.name) return(
-        <Notfound />
-    )
+    if(!loading && !player.name) return <Notfound />;
 
     if(!loading) return (
         <div style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>

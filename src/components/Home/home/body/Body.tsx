@@ -1,8 +1,6 @@
 import { ClipLoader } from 'react-spinners';
-import { BarData, Filter } from '../../../Outlier/MatchesOg';
 import { useGlobalContext } from '../../../../Context/store';
-import { MatchUp } from '../../../../Context/Types/Match';
-import { PGame, PPlayer, Team } from '../../../../Context/Types/PlayerTypes';
+import { Team } from '../../../../Context/Types/PlayerTypes';
 import { Card } from './Card';
 import { PopularProp } from '../../../../Context/Types/ProjectionTypes';
 
@@ -14,6 +12,7 @@ interface Props {
 
 export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
     const {isMobile} = useGlobalContext();
+    console.log('props', popularProps)
 
     if(loading) return  <div style={{width:'100%', minHeight:'80vh', background:'#1E1E1E'}}>
         <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop: '25px'}}>
