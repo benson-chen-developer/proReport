@@ -20,7 +20,6 @@ import { PropHistory } from './PropHistory/PropHistory';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 import { fetchMatches } from '../../Context/functions/fetch/matches/fetchMatches';
 import { getInitialProjection } from './Matches/functions/initialProjection';
-import { getNewStatsForFilters } from './Matches/functions/functions';
 import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
 import { BarInfo } from './Matches/components/BarInfo';
 import { parseBarData } from './Matches/functions/barData';
@@ -113,6 +112,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 setPlayer({
                     name: player!.name,
                     playerId: player!.playerId,
+                    picId: player!.picId,
                     team: player!.team,
                     sport: league,
                     position: player!.position,

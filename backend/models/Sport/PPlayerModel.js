@@ -16,7 +16,8 @@ const PPlayerSchema = new mongoose.Schema({
 
 const NBAPlayer = mongoose.model("nbaplayers", PPlayerSchema);
 const MLBPlayer = mongoose.model("mlbplayers", PPlayerSchema)
+const Player = mongoose.model('players', PlayerSchema);
 
 module.exports = {
-    NBAPlayer, MLBPlayer
+    NBAPlayer, MLBPlayer, Player
 };

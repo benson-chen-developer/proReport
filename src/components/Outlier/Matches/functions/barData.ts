@@ -1,4 +1,4 @@
-import { convertNBATeamName } from "../../../../Context/functions/convertNbaName";
+import { convertTeamName } from "../../../../Context/functions/convertTeamName";
 import { convertSupportName } from "../../../../Context/functions/convertStatName";
 import { MatchUp } from "../../../../Context/Types/Match";
 import { PGame, PPlayer, Team } from "../../../../Context/Types/PlayerTypes";
@@ -147,7 +147,7 @@ export const parseBarData = (
             opp: oppFullName,
             tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
-            underText: `${dateInEst}\n ${convertNBATeamName(oppFullName, 0)}`
+            underText: `${dateInEst}\n ${convertTeamName(oppFullName, 0, player?.sport)}`
         };
     }).reverse();
 

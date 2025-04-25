@@ -3,8 +3,9 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../../Context/store';
 import Image from 'next/image';
-import { convertNBATeamName } from '../../../../Context/functions/convertNbaName';
 import { getLeagueIcon } from '../../../Home/home/header/LeagueBtn';
+import { convertTeamName } from '../../../../Context/functions/convertTeamName';
+import { getHeadshotUrl } from '../../../../Context/functions/urls/getUrls';
 
 interface Props {
     player: PPlayer
@@ -27,7 +28,7 @@ export const SuggestedPlayer: React.FC<Props> = ({player, setIsPopUp, setSidebar
             }}
         >
             <Link
-                href={`/player/nba/${playerDash}`}
+                href={`/player/${player.sport}/${playerDash}`}
                 passHref
                 target="_blank"  
                 rel="noopener noreferrer"
@@ -57,7 +58,7 @@ export const SuggestedPlayer: React.FC<Props> = ({player, setIsPopUp, setSidebar
                     }}>
                         {player.playerId ? (
                             <Image
-                                src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
+                                src={getHeadshotUrl(player)}
                                 alt="Profile"
                                 width={isMobile ? 55 : 75} 
                                 height={isMobile ? 30 : 40} 
@@ -74,7 +75,7 @@ export const SuggestedPlayer: React.FC<Props> = ({player, setIsPopUp, setSidebar
                             {player.name}
                         </span>
                         <span style={{ fontSize: isMobile ? "12px" : '14px', color: '#A2A2A2' }}>
-                            {player.sport.toUpperCase()} - {convertNBATeamName(player.team, 0)}
+                            {player.sport.toUpperCase()} - {convertTeamName(player.team, 0, player.sport)}
                         </span>
                     </div>
 

@@ -1,7 +1,6 @@
 import React, { Dispatch, forwardRef, SetStateAction } from 'react'
 import Link from 'next/link';
 import { PPlayer } from '../../../../Context/Types/PlayerTypes';
-import { convertNBATeamName } from '../../../../Context/functions/convertNbaName';
 import { useGlobalContext } from '../../../../Context/store';
 import Image from 'next/image';
 import { SuggestedPlayer } from './SuggestedPlayer';

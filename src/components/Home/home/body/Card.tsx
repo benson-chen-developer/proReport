@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { getRank, getRankColor, Ranking } from '../../../Outlier/Ranking/Ranking'
-import { convertNBATeamName, convertTime } from '../../../../Context/functions/convertNbaName'
+import { convertTeamName, convertTime } from '../../../../Context/functions/convertTeamName'
 import { Team } from '../../../../Context/Types/PlayerTypes'
 import { PopularProp, Projection } from '../../../../Context/Types/ProjectionTypes'
 import { TeamCircle } from '../../../Outlier/Hero/TeamsMatchUp'
@@ -23,9 +23,9 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
         return strArr;
     }
     const matchUpText = `
-        ${convertNBATeamName(popularProp.matchUp.teams[0].name, 0)} 
+        ${convertTeamName(popularProp.matchUp.teams[0].name, 0, popularProp.matchUp.league)} 
             vs 
-        ${convertNBATeamName(popularProp.matchUp.teams[1].name, 0)} - 
+        ${convertTeamName(popularProp.matchUp.teams[1].name, 0, popularProp.matchUp.league)} - 
         ${convertTime(popularProp.matchUp.time, 'Day')} 
         ${convertTime(popularProp.matchUp.time, 'Time')}
     `
@@ -91,7 +91,7 @@ export const Card: React.FC<Props>  = ({popularProp, teams}) => {
                     <div style={{color:'#fff', width:'55%', marginTop:'10px', fontWeight:'bold'}}>
                         <div style={{alignItems:'center', marginTop:'10px'}}>
                             <p style={{color:'#A2A2A2',fontSize:'12px', margin:'auto 0px 0px 0px'}}>
-                                <span style={{color:'#fff'}}>{convertNBATeamName(oppTeam?.name!, 0)} </span>
+                                <span style={{color:'#fff'}}>{convertTeamName(oppTeam?.name!, 0, popularProp.matchUp.league)} </span>
                                 {popularProp.prop.popularGameFilter.stat} Allowed
                             </p>
 

@@ -11,6 +11,7 @@
 export type PlayerType = {
     name: string, //Either the gamername or full name
     playerId: string,
+    picId: string,
     team: string,
     sport: string
 }

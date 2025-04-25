@@ -6,6 +6,8 @@ import { MlbStats, NbaStats } from '../../../Context/Types/Stats';
 import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
 import { TeamCircle } from '../../Outlier/Hero/TeamsMatchUp';
 import { useRouter } from 'next/router';
+import { LeagueBtn } from '../../Shared/Buttons/LeagueBtn';
+import { SelectBtn } from '../../Shared/Buttons/SelectBtn';
 
 /*
     allRankings => {
@@ -192,22 +194,12 @@ export const TeamRanking = () => {
                         {["NBA", "MLB"].map((currLeague) => {
                             const matchedLeague = league.toLowerCase() === currLeague.toLowerCase();
                             
-                            return <div 
+                            return <LeagueBtn 
                                 key={currLeague}
-                                style={{
-                                    fontWeight:'bold', 
-                                    width: isMobile ? '40px' : '50px', 
-                                    height: isMobile ? '25px' : '30px',
-                                    display:'flex', justifyContent:'center', alignItems:'center',
-                                    borderRadius:'25px', fontSize: isMobile ? '10px' : '13px', 
-                                    marginRight:'10px',
-                                    background: matchedLeague ? '#fff' : '#000',
-                                    color: matchedLeague ? '' : '#fff', cursor:'pointer'
-                                }}
-                                onClick={() => handleClick(currLeague)}
-                            >
-                                {currLeague}
-                            </div>
+                                currLeague={currLeague} 
+                                selectedLeague={league}
+                                func={() => handleClick(currLeague)}
+                            />
                         })}
                     </div>
                 </div>
@@ -223,22 +215,12 @@ export const TeamRanking = () => {
                     </p>
 
                     <div style={{display:'flex',}}>
-                        {getPositons().map((position) => <div 
+                        {getPositons().map((position) => <SelectBtn 
                                 key={position}
-                                style={{
-                                    fontWeight:'bold', 
-                                    width: isMobile ? '40px' : '50px', 
-                                    height: isMobile ? '25px' : '30px',
-                                    display:'flex', justifyContent:'center', alignItems:'center',
-                                    borderRadius:'25px', fontSize: isMobile ? '10px' : '13px', 
-                                    marginRight:'10px',
-                                    background: position === pickedPosition ? '#fff' : '#000',
-                                    color: position === pickedPosition ? '' : '#fff', cursor:'pointer'
-                                }}
-                                onClick={() => setPickedPosition(position)}
-                            >
-                                {position}
-                            </div>
+                                currValue={position}
+                                selectedValue={pickedPosition}
+                                func={() => setPickedPosition(position)}
+                            />
                         )}
                     </div>
                 </div>

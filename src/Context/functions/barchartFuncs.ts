@@ -2,7 +2,7 @@ import { BarData, Filter, Filters } from "../../components/Outlier/Matches";
 import { MatchUp } from "../Types/Match";
 import { PGame, PPlayer } from "../Types/PlayerTypes";
 import { Projection } from "../Types/ProjectionTypes";
-import { convertNBATeamName } from "./convertNbaName";
+import { convertNBATeamName } from "./convertTeamName";
 import { convertSupportName } from "./convertStatName";
 
 /*

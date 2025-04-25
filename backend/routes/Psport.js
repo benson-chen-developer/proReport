@@ -7,19 +7,8 @@ const router = express.Router();
 router.get("/players/:league", async (req, res) => {
     const { league } = req.params;
 
-    const modelMap = {
-        nba: NBAPlayer,
-        mlb: MLBPlayer,
-    };
-
-    const Model = modelMap[league.toLowerCase()];
-
-    if (!Model) {
-        return res.status(400).json({ message: "Invalid league provided" });
-    }
-
     try {
-        const players = await Model.find({});
+        const players = await Player.find({sport: league});
         res.status(200).json(players);
     } catch (err) {
         console.error(`Error fetching ${league} players`, err);

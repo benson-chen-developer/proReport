@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
-import { convertNBATeamName } from '../../Context/functions/convertNbaName';
+import { convertTeamName } from '../../Context/functions/convertTeamName';
 import { convertSupportName } from '../../Context/functions/convertStatName';
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../Context/store';
@@ -51,7 +51,7 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                         <TeamCircle 
                             team={teams.find(t => t.name === oppTeam)}
                         />
-                        <b style={{ color: '#fff', marginLeft:'5px' }}>{convertNBATeamName(oppTeam, 0)}</b>
+                        <b style={{ color: '#fff', marginLeft:'5px' }}>{convertTeamName(oppTeam, 0, player.sport)}</b>
                     </div>
 
                     <div style={{ color: '#A2A2A2', fontWeight:'bold'}}>
@@ -59,7 +59,7 @@ const CustomTooltip = ({ active, payload, label, player, chartType }: CustomTool
                     </div>
 
                     <div style={{ color: '#fff', fontWeight:'bold', display:'flex', alignItems:'center'}}>
-                        <b style={{ color: '#fff', marginRight:'5px' }}>{convertNBATeamName(playerTeam, 0)}</b>
+                        <b style={{ color: '#fff', marginRight:'5px' }}>{convertTeamName(playerTeam, 0,player.sport)}</b>
                         <TeamCircle 
                             team={teams.find(t => t.name === playerTeam)}
                         />

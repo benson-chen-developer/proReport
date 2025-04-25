@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { convertNBATeamName } from '../../../../../../Context/functions/convertNbaName'
+import { convertTeamName } from '../../../../../../Context/functions/convertTeamName'
 import Checkbox from '@mui/material/Checkbox';
 import { useGlobalContext } from '../../../../../../Context/store';
 

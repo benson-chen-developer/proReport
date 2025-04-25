@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { isSameMatchup, MatchUp } from '../../../../../../Context/Types/Match'
 import { TeamCircle } from '../../../../../Outlier/Hero/TeamsMatchUp'
-import { convertNBATeamName } from '../../../../../../Context/functions/convertNbaName'
+import { convertTeamName } from '../../../../../../Context/functions/convertTeamName'
 import Checkbox from '@mui/material/Checkbox';
 import { useGlobalContext } from '../../../../../../Context/store';
 
@@ -46,11 +46,11 @@ export const DropDownItem: React.FC<Props> = ({matchUp}) => {
                     color:'#fff', fontWeight:'bold',fontSize:'12px',
                     margin:'0px 3px'
                 }}>
-                    {convertNBATeamName(team1.name, 0)}
+                    {convertTeamName(team1.name, 0, team1.league)}
                     <span style={{fontWeight:'normal', color:'#b1b1b1', margin:'0px 2px'}}>
                         vs
                     </span>
-                    {convertNBATeamName(team2.name, 0)}
+                    {convertTeamName(team2.name, 0, team2.league)}
                 </span>
 
                 <TeamCircle team={team2}/>

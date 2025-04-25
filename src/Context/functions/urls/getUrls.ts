@@ -1,11 +1,16 @@
 import { PPlayer, Team } from "../../Types/PlayerTypes";
 
 export const getHeadshotUrl = (player: PPlayer): string => {
-    if(player.sport === 'nba'){
+    let league = player.sport.toLowerCase();
+
+    if(league === 'nba'){
         return `https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`;
-    } else if(player.sport === 'mlb'){
-        return 'https://a.espncdn.com/combiner/i?img=/i/headshots/mlb/players/full/42409.png&w=350&h=254'
-        // return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:67:current.png/w_213,q_auto:best/v1/people/${player.playerId}/headshot/67/current`;
+    } else if(league === 'mlb'){
+        console.log('in here', player)
+        if(player.picId.includes("https://a.espncdn.com")){
+            return player.picId;
+        }
+        // return `https://a.espncdn.com/combiner/i?img=/i/headshots/mlb/players/full/${player.picId}.png`
     }
 
     return '';

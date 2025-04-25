@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { teamColors } from '../../../Context/functions/colors/colors';
-import { convertNBATeamName } from '../../../Context/functions/convertNbaName';
+import { convertTeamName } from '../../../Context/functions/convertTeamName';
 import { useGlobalContext } from '../../../Context/store';
 import { MatchUp } from '../../../Context/Types/Match';
 import { Team } from '../../../Context/Types/PlayerTypes';
@@ -70,9 +70,9 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                     <TeamCircle team={team1} />
                     <span style={{margin:'0px 5px'}}>
                         {`
-                            ${convertNBATeamName(team1.name, 0)} 
+                            ${convertTeamName(team1.name, 0, matchUp.league)} 
                                 vs
-                            ${convertNBATeamName(team2.name, 0)}
+                            ${convertTeamName(team2.name, 0, matchUp.league)}
                         `} 
                     </span>
                     <TeamCircle team={team2} />
@@ -112,9 +112,9 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                     <TeamCircle team={team1} />
                     <span style={{margin:'0px 5px'}}>
                         {`
-                            ${convertNBATeamName(team1.name, 0)} 
+                            ${convertTeamName(team1.name, 0, matchUp.league)} 
                                 vs
-                            ${convertNBATeamName(team2.name, 0)}
+                            ${convertTeamName(team2.name, 0, matchUp.league)}
                         `} 
                     </span>
                     <TeamCircle team={team2} />
