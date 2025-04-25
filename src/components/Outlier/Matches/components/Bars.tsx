@@ -146,13 +146,16 @@ export const Bars: React.FC<Props> = ({
                     {/* The lines in the backgrond */}
                     <CartesianGrid strokeDasharray="0 0" vertical={false} stroke={chartType === "support" ? "#535353" : "#245d66"}/>
                     
-                    <XAxis 
-                        dataKey="underText" 
-                        tickLine={false} axisLine={false}
-                        tick={<CustomXAxisTick />} 
-                        interval={0}
-                        hide={isMobile && barData.length > 10}
-                    />
+                    {filter.lastGame === "L20" || (isMobile && barData.length > 10) ?
+                        <div style={{height:'15px', background:'red'}} /> :
+                        <XAxis 
+                            dataKey="underText" 
+                            tickLine={false} axisLine={false}
+                            tick={<CustomXAxisTick />} 
+                            interval={0}
+                        />
+                    }
+
                     <YAxis 
                         {...(!defaultYAxis && chartType === "main" && { domain: [0, yAxisMax] })}
                         tick={{ fill: 'grey', fontWeight:'bold', fontSize:isMobile ? "12px" :'14px' }} 

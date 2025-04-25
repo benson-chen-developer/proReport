@@ -23,3 +23,29 @@ export const fetchPlayers = async (league: string): Promise<PPlayer[]> => {
         }
     }
 }
+
+export const fetchAllPlayers = async (leagues: string[]): Promise<PPlayer[]> => {
+    let allPlayers: PPlayer[] = [];
+
+    for (const league of leagues) {
+        const storedPlayers = localStorage.getItem(`${league}players`);
+        const players: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
+
+        if (players.length > 0) {
+            allPlayers = allPlayers.concat(players);
+        } else {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/players/${league}`);
+                if (!response.ok) throw new Error(`Failed to fetch ${league} players`);
+                const data = await response.json();
+
+                localStorage.setItem(`${league}players`, JSON.stringify(data));
+                allPlayers = allPlayers.concat(data);
+            } catch (error) {
+                console.error(`Error fetching ${league} players:`, error);
+            }
+        }
+    }
+
+    return allPlayers;
+}

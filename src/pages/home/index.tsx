@@ -15,6 +15,12 @@ import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
 
+export type HomeFilter = {
+    matches: MatchUp[]
+    projections: string[],
+    players: PPlayer[]
+}
+
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -27,10 +33,11 @@ export const Index = () => {
     const [search, setSearch] = useState<string>("");
     const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
-    const {fetchProjections, isMobile} = useGlobalContext();
-    useEffect(() => {
-        const league = 'nba';
+    const [league, setLeague] = useState<string>('nba');
 
+    const {fetchProjections, isMobile} = useGlobalContext();
+
+    useEffect(() => {
         const func = async () => {
             setLoading(true);
 
@@ -48,7 +55,6 @@ export const Index = () => {
                 .filter(prop => prop.popularHits.length > 0);
             
             const matchUps = await fetchMatchUps('nba', popularPropWithoutMatchUp);
-            console.log('matchups', matchUps)
 
             const popularProps: PopularProp[] = popularPropWithoutMatchUp
                 .map(prop => {
@@ -121,12 +127,13 @@ export const Index = () => {
                     </div>
                         :
                     <>
-                        {/* <Header 
+                        <Header 
+                            league={league} setLeague={setLeague}
                             popularProps={popularProps}
                             pickedMatchUps={pickedMatchUps}
                             setPickedMatchUps={setPickedMatchUps}
                             search={search} setSearch={setSearch}
-                        /> */}
+                        />
 
                         <Body 
                             teams={teams}

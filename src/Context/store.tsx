@@ -7,6 +7,7 @@ import { MatchUp } from './Types/Match';
 import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
 import { fetchTeams } from './functions/fetch/team/fetchTeams';
 import { Filter, Filters } from '../components/Outlier/Matches';
+import { HomeFilter } from '../pages/home';
 
 const defaultFilter: Filter = {
   isHome: false,
@@ -34,6 +35,12 @@ const defaultPlayer: PPlayer = {
   team: "", sport: "", position: ''
 };
 
+const defaultHomeFilter: HomeFilter = {
+  matches: [],
+  projections: [],
+  players: []
+}
+
 interface ContextProps {
   isMobile: boolean,
   setIsMobile: Dispatch<SetStateAction<boolean>>;
@@ -57,6 +64,9 @@ interface ContextProps {
   setFilters: Dispatch<SetStateAction<Filters>>
   player: PPlayer
   setPlayer: Dispatch<SetStateAction<PPlayer>>
+
+  homeFilter: HomeFilter
+  setHomeFilter: Dispatch<SetStateAction<HomeFilter>>
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -80,7 +90,10 @@ const GlobalContext = createContext<ContextProps>({
   filters: defaultFilters,
   setFilters: (): Filters => defaultFilters,
   player: defaultPlayer,
-  setPlayer: (): PPlayer => defaultPlayer
+  setPlayer: (): PPlayer => defaultPlayer,
+
+  homeFilter: defaultHomeFilter,
+  setHomeFilter: (): HomeFilter => defaultHomeFilter,
 });
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
@@ -91,6 +104,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
   const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [homeFilter, setHomeFilter] = useState<HomeFilter>(defaultHomeFilter);
   const [activeProp, setActiveProp] = useState<boolean>(false);
   const [player, setPlayer] = useState<PPlayer>({
     name: "", playerId: "", city: "",
@@ -173,7 +187,9 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       pickedProjection, setPickedProjection,
       filter, setFilter, setValidatedFilter,
       filters, setFilters,
-      player, setPlayer
+      player, setPlayer,
+
+      homeFilter, setHomeFilter,
     }}>
       {children}
     </GlobalContext.Provider>

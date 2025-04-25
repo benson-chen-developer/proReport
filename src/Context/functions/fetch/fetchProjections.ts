@@ -1,3 +1,4 @@
+import { PPlayer } from "../../Types/PlayerTypes";
 import { Projection } from "../../Types/ProjectionTypes";
 
 export const fetchPopularProjections = async (): Promise<Projection[]> => {
@@ -8,7 +9,7 @@ export const fetchPopularProjections = async (): Promise<Projection[]> => {
     return data;
 }
 
-export const fetchProjections = async (league:string, playerName: string): Promise<Projection[]> => {
+export const fetchProjections = async (league?:string, playerName?: string): Promise<Projection[]> => {
     /* Return them */
     if(playerName) {
         const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/${league}/${playerName}`);
@@ -23,4 +24,13 @@ export const fetchProjections = async (league:string, playerName: string): Promi
 
         return data;
     }
-  }
+}
+
+export const fetchPlayersInProjections = async (): Promise<PPlayer[]> => {
+    /* Return them */
+    const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/players`);
+    if (!response.ok) throw new Error('Failed to fetch Projections');
+    const data = await response.json();
+
+    return data;
+}

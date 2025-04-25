@@ -1,7 +1,6 @@
 import { Footer } from '../components/Footer/Footer';
 import '../styles/TrendingBox.css';
 import '../styles/globals.css';
-import '../styles/SportDropDown.css';
 import '../styles/PlayerPage.css';
 import '../styles/Nav.css';
 import '../styles/Combo.css';

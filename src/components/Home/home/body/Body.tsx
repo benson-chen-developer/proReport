@@ -12,7 +12,6 @@ interface Props {
 
 export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
     const {isMobile} = useGlobalContext();
-    console.log('props', popularProps)
 
     if(loading) return  <div style={{width:'100%', minHeight:'80vh', background:'#1E1E1E'}}>
         <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop: '25px'}}>

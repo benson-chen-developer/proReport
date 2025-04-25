@@ -1,5 +1,5 @@
 const express = require("express");
-const { NBAPlayer, MLBPlayer } = require("../models/Sport/PPlayerModel");
+const { NBAPlayer, MLBPlayer, Player } = require("../models/Sport/PPlayerModel");
 const { NBATeam, MLBTeam } = require("../models/Sport/Team");
 const { MLBMatch, NBAMatch } = require("../models/Sport/Match");
 const router = express.Router();

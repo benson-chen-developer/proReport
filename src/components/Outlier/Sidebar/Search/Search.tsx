@@ -3,7 +3,8 @@ import { PPlayer } from '../../../../Context/Types/PlayerTypes';
 import { useGlobalContext } from '../../../../Context/store';
 import { SearchingBar } from './SearchingBar';
 import { SuggestedPlayers } from './SuggestedPlayers';
-import { fetchPlayers } from '../../../../Context/functions/fetch/players/fetchPlayers';
+import { fetchAllPlayers, fetchPlayers } from '../../../../Context/functions/fetch/players/fetchPlayers';
+import { fetchProjections } from '../../../../Context/functions/fetch/fetchProjections';
 
 interface Props {
     length: string, 
@@ -12,10 +13,36 @@ interface Props {
 export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [similarPlayers, setSimilarPlayers] = useState<PPlayer[]>([]);
+    const [playersToSearch, setPlayersToSearch] = useState<PPlayer[]>([]);
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
     const popupRef = useRef<HTMLDivElement>(null);
     const searchRef = useRef<HTMLDivElement>(null);
+
+    /* Initial Players to Search Startup */
+    useEffect(() => {
+        const func = async () => {
+            const projections = await fetchProjections();
+            const uniqueLeagues = Array.from(
+                new Set(projections.map(p => p.player?.sport).filter(Boolean))
+            );
+            const players = await fetchAllPlayers(uniqueLeagues);
+            console.log(players.find(p => p.sport.toLowerCase() === 'mlb'))
+
+            const playersWithProps = players.filter(player =>
+                projections.find(prop => {
+                    return (prop.player.name === player.name && 
+                    prop.league.toLowerCase() === player.sport.toLowerCase())
+                })
+            )
+
+            setPlayersToSearch(playersWithProps);
+        }
+
+        func();
+    }, [])
+
+    /* Clicking outside the box closes it */
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
           if(
@@ -34,11 +61,10 @@ export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
 
     useEffect(() => {
         const searchForPlayer = async () => {
-            const players = await fetchPlayers('nba');
             let query = searchQuery.trim().toLowerCase();
             
-            // const similarPlayers = findSimilarNamesNew(players, searchQuery)
-            const similarPlayers = players
+            // const similarPlayers = players
+            const similarPlayers = playersToSearch
                 .filter(p => {
                     let [firstName, lastName] = p.name.split(' ');
 

@@ -1,4 +1,4 @@
-import { Filter } from "../../components/Outlier/MatchesOg"
+import { Filter } from "../../components/Outlier/Matches"
 import { MatchUp } from "./Match"
 import { PPlayer } from "./PlayerTypes"
 
@@ -8,6 +8,7 @@ export type Projection = {
     period: string,
     player: PPlayer,
     values: number[],
+    league: string,
     discount?: number, 
     updated_ats: string[],
     start_time: string,
