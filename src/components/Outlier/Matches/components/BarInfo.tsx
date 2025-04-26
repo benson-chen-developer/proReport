@@ -13,9 +13,10 @@ import { ProjectionSquare } from './ProjectionSquare'
 
 interface Props {
     mainBarData: BarData[],
+    screenShotMode?: boolean
 }
 export const BarInfo: React.FC<Props> = ({
-    mainBarData
+    mainBarData, screenShotMode
 }) => {
     const router = useRouter();
     const { paramLeague } = router.query;
@@ -93,7 +94,7 @@ export const BarInfo: React.FC<Props> = ({
                 </div>
 
                 {/* Projection */}
-                {activeProp ?
+                {activeProp && !screenShotMode ?
                     <div style={{ display:'flex', marginRight: isMobile ? '10px' : '20px'}}>
                         <OverUnder />
                         <GoblinLogo pickedProjection={pickedProjection}/>
@@ -103,12 +104,14 @@ export const BarInfo: React.FC<Props> = ({
                     </div> : null
                 }
             </div>
-
-            <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>
-                <StatsSelector 
-                    projections={projections}
-                />
-            </div>
+            
+            {!screenShotMode ?
+                <div style={{width:'100%', marginTop:'10px', overflowX:'auto'}}>
+                    <StatsSelector 
+                        projections={projections}
+                    />
+                </div> : null
+            }
         </div>
     )
 }

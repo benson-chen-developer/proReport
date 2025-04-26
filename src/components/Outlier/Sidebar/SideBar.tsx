@@ -12,6 +12,7 @@ export const SideBar: React.FC<Props> = () => {
     const router = useRouter();
 
     const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const {isMobile} = useGlobalContext();
     const { paramLeague, paramPlayer } = router.query; 
@@ -124,10 +125,12 @@ export const SideBar: React.FC<Props> = () => {
                         href={link.link} 
                         style={{
                             width:'90%', height:"50px", marginTop:'10px',
-                            background: isActive ? "#1E1E1E" : "#000",
+                            background: isActive || hoveredIndex === i ? "#1E1E1E" : "#000",
                             fontWeight:'bold', borderRadius:'10px', fontSize:'14px',
                             display:'flex', alignItems:'center', textDecoration:'none'
                         }}
+                        onMouseEnter={() => setHoveredIndex(i)}
+                        onMouseLeave={() => setHoveredIndex(null)}
                     >
                         {getIcon(link.text, isActive)}
                         <p style={{color: isActive ? '#fff' : '#A2A2A2'}}>{link.text}</p>

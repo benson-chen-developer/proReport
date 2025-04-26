@@ -27,6 +27,8 @@ import { Bars } from './Matches/components/Bars';
 import { Rankings } from './Matches/components/Rankings';
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { getStaticProjections } from './Matches/functions/getStaticProjections';
+import html2canvas from 'html2canvas';
+import { ScreenShotHandler } from './Matches/components/ScreenShot/ScreenShotContainer';
 
 export type Filter = {
     isHome: boolean,
@@ -74,6 +76,7 @@ interface Props {
 }
 export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const router = useRouter();
+    const chartRef = useRef<HTMLDivElement>(null);
     const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
@@ -136,9 +139,15 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 setProjections(projections);
 
                 /* Set Filter */
-                const newFilter = {
-                    ...filter, 
-                    pickedProjection: initialPickedProjection,
+                let newFilter: Filter;
+                if(paramFilter){ /* We have a shared link */
+                    console.log('in here')
+                    newFilter = JSON.parse(paramFilter as string);
+                } else {
+                    newFilter = {
+                        ...filter, 
+                        pickedProjection: initialPickedProjection,
+                    }
                 }
                 setFilter(newFilter);
 
@@ -185,19 +194,45 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
     }, [filter]);
 
+    const copyChartImage = async () => {
+        if (!chartRef.current) return;
+    
+        const canvas = await html2canvas(chartRef.current, {
+            backgroundColor: bgColor, // transparent bg
+            scale: 2, // higher quality
+        });
+    
+        canvas.toBlob(async (blob) => {
+            if (blob) {
+                const clipboardItem = new ClipboardItem({ 'image/png': blob });
+                await navigator.clipboard.write([clipboardItem]);
+                alert('Chart image copied to clipboard!');
+            }
+        });
+    };
+
 
     if(loading) return <Loading />;
 
     if(!loading && !player.name) return <Notfound />;
 
     if(!loading) return (
-        <div style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
+        <div ref={chartRef} style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
             <Hero matchUp={matchUp} teams={teams}/>
             
+            <button onClick={() => copyChartImage()}>htmml</button>
+            {/* <ScreenShotHandler 
+                matchUp={matchUp}
+                teams={teams}
+                mainBarData={mainBarData}
+            /> */}
+
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
                 {/* Bar Charts */}
-                <div style={{width: isMobile ? '100%' : '65%'}}>
+                <div 
+                    style={{width: isMobile ? '100%' : '65%'}} 
+                >
                     {/* Main BarChart */}
                     <div style={{width:'100%'}}>
                         <BarInfo

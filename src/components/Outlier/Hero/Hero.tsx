@@ -8,12 +8,15 @@ import { MatchUp } from '../../../Context/Types/Match'
 import { TeamsMatchUp } from './TeamsMatchUp'
 import { useRouter } from 'next/router'
 import { getHeadshotUrl, getTeamUrl } from '../../../Context/functions/urls/getUrls'
+import { ShareImgBtn } from './Share/ShareImgBtn'
+import { ShareLinkBtn } from './Share/ShareLinkBtn'
 
 interface Props {
     matchUp: MatchUp | undefined
-    teams: Team[]
+    teams: Team[],
+    screenShotMode?: boolean
 }
-export const Hero: React.FC<Props> = ({matchUp, teams}) => {
+export const Hero: React.FC<Props> = ({matchUp, teams, screenShotMode}) => {
     const router = useRouter();
     const { paramLeague } = router.query;
     const {isMobile, player} = useGlobalContext();
@@ -71,6 +74,13 @@ export const Hero: React.FC<Props> = ({matchUp, teams}) => {
                 </p>
             </div>
 
+            {!screenShotMode ?
+                <>
+                    <ShareLinkBtn />
+                    <ShareImgBtn />
+                </> : null
+            }
+
             {matchUp ?
                 <div style={{
                     display:'flex', height:'100%', alignItems:'flex-end', justifyContent:'flex-end',
@@ -113,6 +123,5 @@ export const Hero: React.FC<Props> = ({matchUp, teams}) => {
                 </div> : null
             }
         </div>
-
     )
 }
