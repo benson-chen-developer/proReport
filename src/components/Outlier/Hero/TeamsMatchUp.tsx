@@ -21,69 +21,78 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
     const date = matchUp ? new Date(matchUp!.time) : new Date();
     let formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     formattedTime = formattedTime.replace(/^0/, ''); /* Gets rid of leading zero. EX) 07:00 to 7:00 */
+    
+    const today = new Date();
+    const dayString = (
+        date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate()
+    ) ? '' : date.toLocaleDateString(undefined, { weekday: 'short' });
 
     const team1: Team = matchUp.teams[0];
     const team2: Team = matchUp.teams[1];
 
-    if(setPickedMatchUps) return (
-        <div style={{
-            display:'flex', alignItems:'flex-end', justifyContent:'flex-end',
-            color:'#fff', fontWeight:'bold', 
-            flexDirection:'column',
-            marginRight: isMobile ? '5px' : '10px', 
-            marginLeft: index === 0 ? '5px' : '0px',
-            fontSize: isMobile ? '10px' : '12px'
-        }}>
-            <div 
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() => {
-                    setPickedMatchUps(p => {
-                        const prev = [...p];
-                        const foundIndex = p.findIndex(pickedMatch => 
-                            pickedMatch.teams.some(m => 
-                                matchUp.teams.some(n => n.name === m.name)
-                            ) && pickedMatch.time === matchUp.time
-                        );
+    // if(setPickedMatchUps) return (
+    //     <div style={{
+    //         display:'flex', alignItems:'flex-end', justifyContent:'flex-end',
+    //         color:'#fff', fontWeight:'bold', 
+    //         flexDirection:'column',
+    //         marginRight: isMobile ? '5px' : '10px', 
+    //         marginLeft: index === 0 ? '5px' : '0px',
+    //         fontSize: isMobile ? '10px' : '12px'
+    //     }}>
+    //         <div 
+    //             onMouseEnter={() => setIsHovered(true)}
+    //             onMouseLeave={() => setIsHovered(false)}
+    //             onClick={() => {
+    //                 setPickedMatchUps(p => {
+    //                     const prev = [...p];
+    //                     const foundIndex = p.findIndex(pickedMatch => 
+    //                         pickedMatch.teams.some(m => 
+    //                             matchUp.teams.some(n => n.name === m.name)
+    //                         ) && pickedMatch.time === matchUp.time
+    //                     );
                         
-                        if (foundIndex !== -1) {
-                            prev.splice(foundIndex, 1);
-                        } else {
-                            prev.push(matchUp);
-                        }
+    //                     if (foundIndex !== -1) {
+    //                         prev.splice(foundIndex, 1);
+    //                     } else {
+    //                         prev.push(matchUp);
+    //                     }
 
-                        return prev;
-                    });
-                }}
+    //                     return prev;
+    //                 });
+    //             }}
                 
-                style={{
-                    borderRadius:'20px', background:'#1E1E1E',
-                    border: picked || (isHovered && !isMobile) ? '1px solid #fff' : '1px solid #2B2B2B', 
-                    padding:'0px 10px',
-                    display:'flex', alignItems:'center',cursor:'pointer',
-                    justifyContent:'space-between',
-                    width:'auto', 
-                    height: isMobile ? '30px' : '40px', 
-                }}
-            >
-                <div style={{display:'flex', alignItems:'center'}}>
-                    <TeamCircle team={team1} />
-                    <span style={{margin:'0px 5px'}}>
-                        {`
-                            ${convertTeamName(team1.name, 0, matchUp.league)} 
-                                vs
-                            ${convertTeamName(team2.name, 0, matchUp.league)}
-                        `} 
-                    </span>
-                    <TeamCircle team={team2} />
-                </div>
+    //             style={{
+    //                 borderRadius:'20px', background:'#1E1E1E',
+    //                 border: picked || (isHovered && !isMobile) ? '1px solid #fff' : '1px solid #2B2B2B', 
+    //                 padding:'0px 10px',
+    //                 display:'flex', alignItems:'center',cursor:'pointer',
+    //                 justifyContent:'space-between',
+    //                 width:'auto', 
+    //                 height: isMobile ? '30px' : '40px', 
+    //             }}
+    //         >
+    //             <div style={{display:'flex', alignItems:'center'}}>
+    //                 <TeamCircle team={team1} />
+    //                 <span style={{margin:'0px 5px'}}>
+    //                     {`
+    //                         ${convertTeamName(team1.name, 0, matchUp.league)} 
+    //                             vs
+    //                         ${convertTeamName(team2.name, 0, matchUp.league)}
+    //                     `} 
+    //                 </span>
+    //                 <TeamCircle team={team2} />
+    //             </div>
 
-                <span style={{fontWeight: 'normal', marginLeft:'10px'}}>
-                    {formattedTime}
-                </span>
-            </div>
-        </div>
-    )
+    //             <span style={{fontWeight: 'normal', marginLeft:'10px'}}>
+    //                 {formattedTime}
+
+    //                 {getDayName()}
+    //             </span>
+    //         </div>
+    //     </div>
+    // )
 
     return (
         <div style={{
@@ -119,10 +128,19 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
                     </span>
                     <TeamCircle team={team2} />
                 </div>
-
-                <span style={{fontWeight: 'normal', marginLeft: isMobile ? '3px' : '10px'}}>
-                    {formattedTime}
-                </span>
+                
+                <div style={{
+                    display:'flex', alignItems:'center',
+                    flexDirection: 'column', 
+                    marginLeft: isMobile ? '3px' : '10px'
+                }}>
+                    <span style={{fontWeight: 'normal'}}>
+                        {formattedTime} 
+                    </span>
+                    <span style={{fontWeight: 'normal'}}>
+                        {dayString} 
+                    </span>
+                </div>
             </div>
         </div>
     )

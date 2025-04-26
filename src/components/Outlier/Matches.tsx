@@ -13,7 +13,7 @@ import { MatchUp } from '../../Context/Types/Match';
 import { fetchProjections } from '../../Context/functions/fetch/fetchProjections';
 import { MobileFilter } from './Filter/MobileFilter';
 
-import { Drawer } from '@mui/material';
+import { Drawer, IconButton, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { FilterBtn } from '../Overlay/Filter/FilterBtn';
 import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
@@ -194,23 +194,33 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
     }, [filter]);
 
-    const copyChartImage = async () => {
-        if (!chartRef.current) return;
-    
-        const canvas = await html2canvas(chartRef.current, {
-            backgroundColor: bgColor, // transparent bg
-            scale: 2, // higher quality
-        });
-    
-        canvas.toBlob(async (blob) => {
-            if (blob) {
-                const clipboardItem = new ClipboardItem({ 'image/png': blob });
-                await navigator.clipboard.write([clipboardItem]);
-                alert('Chart image copied to clipboard!');
-            }
-        });
-    };
+    /* Snack Bar */
+    const [open, setOpen] = React.useState(false);
+        const snackBarOpen = () => {
+            setOpen(true);
+        };
 
+        const handleClose = (
+            event: React.SyntheticEvent | Event,
+            reason?: SnackbarCloseReason,
+        ) => {
+        if (reason === 'clickaway') {
+        return;
+        }
+
+        setOpen(false);
+    };
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={snackBarOpen}
+            >
+            </IconButton>
+        </React.Fragment>
+    );
 
     if(loading) return <Loading />;
 
@@ -218,15 +228,11 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
     if(!loading) return (
         <div ref={chartRef} style={{background: '#000', width: isMobile ? '100%' : '80%', display:'flex', flexDirection:'column'}}>
-            <Hero matchUp={matchUp} teams={teams}/>
+            <Hero 
+                matchUp={matchUp} teams={teams}
+                snackBarOpen={snackBarOpen}
+            />
             
-            <button onClick={() => copyChartImage()}>htmml</button>
-            {/* <ScreenShotHandler 
-                matchUp={matchUp}
-                teams={teams}
-                mainBarData={mainBarData}
-            /> */}
-
             {/* The stuff below the Hero */}
             <div style={{width:'100%', display:'flex', background:'#1F1F1F'}}>
                 {/* Bar Charts */}
@@ -285,7 +291,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                             {extraInfo === "Stats Filter" ?
                                 <DesktopFilter 
-                                    homeGame={matchUp?.teams[0].name === player.city}
+                                    homeGame={matchUp?.teams[0].name === player.team}
                                 /> : null
                             }
 
@@ -312,6 +318,14 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                     : 
                 null
             }
+
+            <Snackbar
+                open={open}
+                autoHideDuration={1500}
+                onClose={handleClose}
+                message="Link Copied"
+                action={action}
+            />
         </div>
     )
 

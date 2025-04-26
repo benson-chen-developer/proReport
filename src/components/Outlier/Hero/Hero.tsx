@@ -14,9 +14,10 @@ import { ShareLinkBtn } from './Share/ShareLinkBtn'
 interface Props {
     matchUp: MatchUp | undefined
     teams: Team[],
+    snackBarOpen: Dispatch<SetStateAction<boolean>>,
     screenShotMode?: boolean
 }
-export const Hero: React.FC<Props> = ({matchUp, teams, screenShotMode}) => {
+export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotMode}) => {
     const router = useRouter();
     const { paramLeague } = router.query;
     const {isMobile, player} = useGlobalContext();
@@ -74,54 +75,58 @@ export const Hero: React.FC<Props> = ({matchUp, teams, screenShotMode}) => {
                 </p>
             </div>
 
-            {!screenShotMode ?
-                <>
+            <div style={{
+                width:'60%',  display:'flex', height:'100%', marginTop:'-10px',
+                alignItems:'flex-end', justifyContent:'flex-end'
+            }}>
+                <div onClick={() => snackBarOpen(true)}>
                     <ShareLinkBtn />
-                    <ShareImgBtn />
-                </> : null
-            }
-
-            {matchUp ?
-                <div style={{
-                    display:'flex', height:'100%', alignItems:'flex-end', justifyContent:'flex-end',
-                    width:'60%', color:'#fff', fontWeight:'bold', 
-                    flexDirection:'column', 
-                    marginRight: isMobile ? '0px' : '10px', 
-                    fontSize: isMobile ? '10px' : '14px'
-                }}>
-                    <p style={{ 
-                        marginRight: isMobile ? '10px' : '15px', 
-                        marginBottom: isMobile ? '5px' : '10px', 
-                        fontSize: isMobile ? '9px' : '16px' 
+                </div>
+                {/* <ShareImgBtn /> */}
+                
+                {matchUp ?
+                    <div style={{
+                        color:'#fff', fontWeight:'bold', 
+                        flexDirection:'column', 
+                        marginRight: isMobile ? '0px' : '10px', 
+                        fontSize: isMobile ? '10px' : '14px'
                     }}>
-                        ({matchUp.teams[0].name === player.city ? "Home" : "Away"}) {" "}
-                        {(() => {
-                            const date = matchUp ? new Date(matchUp.time) : new Date();
-                            const today = new Date();
+                        {/* (Away) Today */}
+                        {/* <p style={{ 
+                            marginRight: isMobile ? '10px' : '15px', 
+                            marginBottom: isMobile ? '5px' : '10px', 
+                            fontSize: isMobile ? '9px' : '16px' 
+                        }}>
+                            ({matchUp.teams[0].name === player.city ? "Home" : "Away"}) {" "}
+                            {(() => {
+                                const date = matchUp ? new Date(matchUp.time) : new Date();
+                                const today = new Date();
 
-                            // Check if it's today
-                            if (
-                                date.getFullYear() === today.getFullYear() &&
-                                date.getMonth() === today.getMonth() &&
-                                date.getDate() === today.getDate()
-                            ) {
-                                return "Today";
-                            }
+                                // Check if it's today
+                                if (
+                                    date.getFullYear() === today.getFullYear() &&
+                                    date.getMonth() === today.getMonth() &&
+                                    date.getDate() === today.getDate()
+                                ) {
+                                    return "Today";
+                                }
 
-                            // If not today, return the day of the week
-                            return date.toLocaleDateString(undefined, { weekday: 'long' });
-                        })()}
-                    </p>
-                    
-                    <div style={{marginBottom:'10px'}}>
-                        <TeamsMatchUp 
-                            matchUp={matchUp} 
-                            index={0}
-                            picked={false}
-                        />
-                    </div>
-                </div> : null
-            }
+                                // If not today, return the day of the week
+                                return date.toLocaleDateString(undefined, { weekday: 'long' });
+                            })()}
+                        </p> */}
+                        
+                        <div>
+                            <TeamsMatchUp 
+                                matchUp={matchUp} 
+                                index={0}
+                                picked={false}
+                            />
+                        </div>
+                    </div> : null
+                }
+            </div>
+
         </div>
     )
 }
