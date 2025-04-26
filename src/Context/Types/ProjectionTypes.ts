@@ -14,8 +14,8 @@ export type Projection = {
     start_time: string,
     odds: number,
     overUnder: number,
-    popularGameFilter: Filter,
-    popularHits: string[], /* 'hit' | 'miss' | 'tie' */
+    popularGameFilter?: Filter,
+    popularHits?: string[], /* 'hit' | 'miss' | 'tie' */
 }
 
 export type PopularProp = {

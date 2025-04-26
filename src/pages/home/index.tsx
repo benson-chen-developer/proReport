@@ -52,7 +52,7 @@ export const Index = () => {
             const props = await fetchPopularProjections();
 
             const popularPropWithoutMatchUp: Projection[] = props
-                .filter(prop => prop.popularHits.length > 0);
+                .filter(prop => prop.popularHits && prop.popularHits.length > 0);
             
             const matchUps = await fetchMatchUps('nba', popularPropWithoutMatchUp);
 

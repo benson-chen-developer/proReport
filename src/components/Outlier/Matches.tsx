@@ -27,8 +27,6 @@ import { Bars } from './Matches/components/Bars';
 import { Rankings } from './Matches/components/Rankings';
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { getStaticProjections } from './Matches/functions/getStaticProjections';
-import html2canvas from 'html2canvas';
-import { ScreenShotHandler } from './Matches/components/ScreenShot/ScreenShotContainer';
 
 export type Filter = {
     isHome: boolean,
@@ -270,6 +268,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             }}
                         >
                             <MobileFilter 
+                                teams={teams}
                                 extraInfo={extraInfo} setExtraInfo={setExtraInfo}
                                 projections={projections}
                                 matchUp={matchUp}
@@ -297,6 +296,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                             {extraInfo === "MatchUp Given" && matchUp ?
                                 <Rankings
+                                    teams={teams}
                                     matchUp={matchUp}
                                 /> : null
                             }

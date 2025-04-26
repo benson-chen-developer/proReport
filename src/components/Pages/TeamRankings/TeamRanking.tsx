@@ -3,11 +3,11 @@ import { fetchTeams } from '../../../Context/functions/fetch/team/fetchTeams';
 import { useGlobalContext } from '../../../Context/store';
 import { Team } from '../../../Context/Types/PlayerTypes';
 import { MlbStats, NbaStats } from '../../../Context/Types/Stats';
-import { getRank, getRankColor, Ranking } from '../../Outlier/Ranking/Ranking';
 import { TeamCircle } from '../../Outlier/Hero/TeamsMatchUp';
 import { useRouter } from 'next/router';
 import { LeagueBtn } from '../../Shared/Buttons/LeagueBtn';
 import { SelectBtn } from '../../Shared/Buttons/SelectBtn';
+import { getRankColor, Ranking, getRank } from '../../Outlier/Matches/components/Rankings';
 
 /*
     allRankings => {

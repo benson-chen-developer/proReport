@@ -1,9 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { MatchUp } from '../../../Context/Types/Match'
-import { PPlayer } from '../../../Context/Types/PlayerTypes'
+import { PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { Filter, Filters } from '../Matches'
-import { Rankings } from '../Ranking/Ranking'
 import { DaysOfRest } from '../Stats/DaysOfRest'
 import { HomeSwitches, IOSSwitch } from '../Stats/HomeSwitches'
 import { MinutesSlider } from '../Stats/MinutesSlider'
@@ -13,17 +12,19 @@ import { ExtraSideSelection } from '../Stats/ExtraSideSelection'
 import { WithOutPlayers } from '../Stats/WithoutPlayers'
 import { PropHistory } from '../PropHistory/PropHistory'
 import { useGlobalContext } from '../../../Context/store'
+import { Rankings } from '../Matches/components/Rankings'
 
 interface Props {
     extraInfo: string,
     setExtraInfo: Dispatch<SetStateAction<string>>
     projections: Projection[],
+    teams: Team[],
     matchUp?: MatchUp
 }
 
 export const MobileFilter: React.FC<Props> = ({ 
     extraInfo, setExtraInfo,
-    projections, matchUp
+    projections, matchUp, teams
 }) => {
     const {player} = useGlobalContext();
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
@@ -90,6 +91,7 @@ export const MobileFilter: React.FC<Props> = ({
                 <div style={{marginTop:'20px'}}>
                     <Rankings
                         matchUp={matchUp} 
+                        teams={teams}
                     /> 
                 </div> : null
             }

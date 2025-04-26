@@ -7,6 +7,7 @@ export const getStaticProjections = (leagueStr: string, player: PPlayer): Projec
     const staticProjections: Projection[] = [];
     const defaultProjection = {
         sportsbook: 'ProReport',
+        league: player.sport,
         name: '',
         period: "All",
         player: player,
@@ -15,8 +16,8 @@ export const getStaticProjections = (leagueStr: string, player: PPlayer): Projec
         start_time: "",
         odds: 100,
         overUnder: 3,
-        popularGameFilter: {},
-        popularHits: [], 
+        // popularGameFilter: {},
+        // popularHits: [], 
     }
 
     // if(league === "nba"){

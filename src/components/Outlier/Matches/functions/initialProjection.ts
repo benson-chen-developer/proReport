@@ -15,7 +15,7 @@ export const getInitialProjection = (
                 const foundProp = projections.find(p => 
                     p.values[p.values.length-1] === Number(paramPropValue) &&
                     p.period === filterFromParam.period &&
-                    p.name === filterFromParam.stat
+                    p.name === filterFromParam.pickedProjection?.name
                 );
                 if(foundProp) initalPickedProjection = foundProp;
             }

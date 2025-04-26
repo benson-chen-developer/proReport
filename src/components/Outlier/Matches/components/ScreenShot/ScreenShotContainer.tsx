@@ -46,11 +46,11 @@ export const ScreenShotHandler: React.FC<Props> = ({ mainBarData, matchUp, teams
         }}
       >
         <div style={{width:'100%'}}>
-            <Hero
+            {/* <Hero
                 matchUp={matchUp}
                 teams={teams}
                 screenShotMode={true}
-            />
+            /> */}
             <BarInfo
                 mainBarData={mainBarData}
                 screenShotMode={true}

@@ -6,27 +6,24 @@ import { fetchTeams } from '../../../../Context/functions/fetch/team/fetchTeams'
 import { TeamCircle } from '../../Hero/TeamsMatchUp'
 
 interface Props {
-    matchUp: MatchUp
+    matchUp: MatchUp,
+    teams: Team[]
 }
 
 export type Ranking = {
     name: string, value: string, rank: number, teamName: string, position: string
 }
 
-export const Rankings: React.FC<Props> = ({matchUp}) => {
+export const Rankings: React.FC<Props> = ({matchUp, teams}) => {
     const {filter, player} = useGlobalContext();
     const statName = filter.pickedProjection?.name;
     const [rankings, setRankings] = useState<Ranking[]>([]);
-    const [teams, setTeams] = useState<Team[]>([]);
 
     const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
 
     useEffect(() => {
         const func = async () => {
-            const nbaTeams = await fetchTeams(matchUp.league);
-            setTeams(nbaTeams);
-
-            const rankings = getRank(nbaTeams, statName!, oppTeam!.name, player.position)
+            const rankings = getRank(teams, statName!, oppTeam!.name, player.position)
             setRankings(rankings);
         }
 

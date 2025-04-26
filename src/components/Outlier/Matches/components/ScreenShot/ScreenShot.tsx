@@ -15,11 +15,11 @@ export const ScreenShot: React.FC<Props> = ({
 }) => {
     return (
         <div style={{width:'100%'}}>
-            <Hero 
+            {/* <Hero 
                 matchUp={matchUp}
                 teams={teams}
                 screenShotMode={true}
-            />
+            /> */}
             <BarInfo
                 mainBarData={mainBarData}
                 screenShotMode={true}

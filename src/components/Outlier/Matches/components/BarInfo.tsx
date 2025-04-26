@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-// import { DropDownStatsHeader } from '../Stats/DropDownStatsHeader'
 import { useRouter } from 'next/router'
 import { OverUnder } from '../../Hero/ProjectionSquare/OverUnder'
 import { GoblinLogo } from '../../Hero/ProjectionSquare/GoblinLogo'

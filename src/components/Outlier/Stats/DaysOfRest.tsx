@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
-import { Filter } from '../MatchesOg';
+import { Filter } from '../Matches';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { height } from '@mui/system';
 import { useGlobalContext } from '../../../Context/store';

@@ -1,13 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { PGame, PlayerType, PPlayer } from '../../../Context/Types/PlayerTypes';
-import { Bars } from '../Bars';
-import { BarData, Filter, Filters } from '../MatchesOg';
+import { BarData, Filter, Filters } from '../Matches';
 import { StatsHeader } from '../Stats/StatsHeader';
 import Checkbox from '@mui/material/Checkbox';
-import { parseBarData, parseSupportBarData } from '../../../Context/functions/barchartFuncs';
 import { Projection } from '../../../Context/Types/ProjectionTypes';
 import { useGlobalContext } from '../../../Context/store';
 import { MatchUp } from '../../../Context/Types/Match';
+import { Bars } from '../Matches/components/Bars';
 
 interface Props {
     filters: Filters, 
@@ -40,10 +39,10 @@ export const SupportCard: React.FC<Props> = ({
         // )
 
         // console.log("mainbardata", mainBarData)
-        const newBarData = parseSupportBarData(mainBarData, pGames, filter, player);
-        setBarData(newBarData);
+        // const newBarData = parseSupportBarData(mainBarData, pGames, filter, player);
+        // setBarData(newBarData);
 
-        setLoading(false);
+        // setLoading(false);
     }, [filter.supportingStat, mainBarData])
 
     return (
@@ -123,7 +122,7 @@ export const SupportCard: React.FC<Props> = ({
 
             </div>
 
-            {!loading ?
+            {/* {!loading ?
                 <Bars
                     lineValue={pickedProjection ? pickedProjection.values[pickedProjection.values.length-1] : null}
                     barData={barData}
@@ -132,7 +131,7 @@ export const SupportCard: React.FC<Props> = ({
                     seasonAvg={barData.reduce((sum, item) => sum + item.stat1, 0) / barData.length}
                     chartType="support"
                 /> : null
-            }
+            } */}
         </div>
     )
 }

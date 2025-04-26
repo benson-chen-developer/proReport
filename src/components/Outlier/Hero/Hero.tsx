@@ -56,7 +56,8 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
                     src={getHeadshotUrl(player)}
                     width={isMobile ? 100 : 175}
                     height={isMobile ? 70 : 125}
-                    priority
+                    priority={false} 
+                    loading="lazy"
                 />
             </div>
 
