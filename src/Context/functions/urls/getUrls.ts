@@ -6,7 +6,6 @@ export const getHeadshotUrl = (player: PPlayer): string => {
     if(league === 'nba'){
         return `https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`;
     } else if(league === 'mlb'){
-        console.log('in here', player)
         if(player.picId.includes("https://a.espncdn.com")){
             return player.picId;
         }

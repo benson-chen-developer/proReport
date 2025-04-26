@@ -167,7 +167,7 @@ export const Bars: React.FC<Props> = ({
                     <Tooltip content={<CustomTooltip player={player} chartType={chartType}/>} />
 
                     {/* Bars */}
-                    <Bar dataKey={(entry) => Math.max(0, entry.statTotal)} radius={5} animationDuration={200}>
+                    <Bar dataKey={(entry) => Math.max((Math.max(entry.statTotal * .25, .1)), entry.statTotal)} radius={5} animationDuration={200}>
                         {barData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}

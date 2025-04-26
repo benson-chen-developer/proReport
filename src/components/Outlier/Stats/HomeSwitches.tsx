@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
-import { Filter } from '../MatchesOg';
 import { useGlobalContext } from '../../../Context/store';
 
 export const IOSSwitch = styled((props: SwitchProps) => (
@@ -69,44 +68,56 @@ interface Props {
 }
 export const HomeSwitches: React.FC<Props> = ({homeGame}) => {
   const {filter, setFilter} = useGlobalContext();
+  const divStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    cursor: 'pointer',
+    flexDirection: 'column',
+  };
 
   return (
       <div style={{display:'flex'}}>
         {homeGame ?
           <div
-            style={{display:'flex', alignItems:'center', cursor:'pointer'}}
+            style={divStyle}
             onClick={() => {
               setFilter(p => ({...p, isHome: !p.isHome})); 
             }}
           >
             <p style={{
-                color: filter.isHome ? '#fff' : 'grey',
-                fontSize:'14px', fontWeight:'bold',
+                color: filter.isHome ? '#fff' : '#B1B1B1',
+                fontSize:'14px', fontWeight:'bold', margin:0
             }}>
-                Home
+                Home Games
             </p>
-            <Switch 
-              checked={filter.isHome} 
-            />
+            
+            <div style={{marginLeft:'-10px'}}>
+              <Switch 
+                checked={filter.isHome} 
+              />
+            </div>
           </div> : null
         }
         
         {!homeGame ? 
           <div
-            style={{display:'flex', alignItems:'center', cursor:'pointer'}}
+            style={divStyle}
             onClick={() => {
               setFilter(p => ({...p, isAway: !p.isAway})); 
             }}
           >
             <p style={{
-                color: filter.isAway ? '#fff' : 'grey',
-                fontSize:'14px', fontWeight:'bold'
+                color: filter.isAway ? '#fff' : '#B1B1B1',
+                fontSize:'14px', fontWeight:'bold', margin:0
             }}>
-                Away
+                Away Games
             </p>
-            <Switch 
-              checked={filter.isAway} 
-            />
+
+            <div style={{marginLeft:'-10px'}}>
+              <Switch 
+                checked={filter.isAway} 
+              />
+            </div>
           </div>: null
         }
       </div>

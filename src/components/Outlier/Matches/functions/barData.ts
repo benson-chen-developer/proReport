@@ -320,7 +320,8 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
         displayedGames = displayedGames.reverse().slice(-length).reverse();
     }
     else if(filter.lastGame === "H2H" && matchUp){
-        const oppTeamName = matchUp.teams.find(team => team.name !== player.city)?.name;
+
+        const oppTeamName = matchUp.teams.find(team => team.name !== player.team)?.name;
         displayedGames = displayedGames.filter(game => {
             const playerTeamInThisMatch = game.players.find(p => p.name === player.name)?.team;
             const team1 = game.team1; 

@@ -145,7 +145,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 /* MatchUp */
                 let matchUp;
                 if(activeProp){
-                    const matchUps = await fetchMatchUps(league);
+                    const matchUps = await fetchMatchUps(league, projections);
                     matchUp = matchUps.find(match => 
                         match.teams.some(t => t.name === player!.team)
                     );

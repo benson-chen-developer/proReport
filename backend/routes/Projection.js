@@ -54,14 +54,14 @@ router.get('/:league/:playerName', async (req, res) => {
         // const projections = await Props.aggregate([
             {
                 $lookup: {
-                    from: `${league.toLowerCase()}players`,
-                    localField: 'player',
-                    foreignField: '_id',
-                    as: 'playerData'
+                  from: `${league.toLowerCase()}players`,
+                  localField: 'player',
+                  foreignField: '_id',
+                  as: 'player'
                 }
             },
-            { $unwind: '$playerData' }, // Convert array to object
-            { $match: { 'playerData.name': playerName } } // Filter by player's name
+            { $unwind: '$player' }, // Unwind the 'player' array into an object
+            { $match: { 'player.name': playerName } } // Filter by player's name
         ]);
 
 

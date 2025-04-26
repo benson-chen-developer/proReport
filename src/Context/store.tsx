@@ -32,7 +32,7 @@ const defaultFilters: Filters = {
 }
 const defaultPlayer: PPlayer = {
   name: "", playerId: "", city: "",
-  team: "", sport: "", position: ''
+  team: "", sport: "", position: '', picId:''
 };
 
 const defaultHomeFilter: HomeFilter = {
@@ -108,7 +108,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [activeProp, setActiveProp] = useState<boolean>(false);
   const [player, setPlayer] = useState<PPlayer>({
     name: "", playerId: "", city: "",
-    team: "", sport: "", position: ''
+    team: "", sport: "", position: '', picId: ''
   });
 
   /* Only call this to set Filters to ensure it is always correct */

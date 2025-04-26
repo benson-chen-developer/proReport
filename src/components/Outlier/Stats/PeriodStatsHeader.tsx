@@ -16,26 +16,43 @@ export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({}) => {
         new Map(sameStatProjections.map(p => [p.period, p])).values()
     );
 
+    /* If there is only an "ALL" period then no need to show it */
+    if(
+        uniquePeriodsProjections.length === 1 && 
+        uniquePeriodsProjections[0].period === 'All'
+    ) return null;
+
     return (
-        <div style={{display:'flex', width:'100%', marginBottom:'10px'}}>
-            {uniquePeriodsProjections.map((projection, index) => 
-                <div 
-                    key={index}
-                    style={{
-                        fontWeight:'bold', width:'50px', height:'30px',
-                        display:'flex', justifyContent:'center', alignItems:'center',
-                        borderRadius:'5px', fontSize:'13px',
-                        background: projection.period === pickedProjection!.period ? '#fff' : '',
-                        color: projection.period === pickedProjection!.period ? '' : '#fff', cursor:'pointer'
-                    }}
-                    onClick={() => setValidatedFilter({
-                        ...filter, 
-                        pickedProjection: projection
-                    })}
-                >
-                    {projection.period}
-                </div>
-            )}
+        <div style={{
+            display:'flex', width:'100%', marginBottom:'10px', flexDirection:'column',
+        }}>
+            <p style={{
+                fontSize:'14px', fontWeight:'bold', margin:'0px 0px 10px 0px',
+                color:'#B1B1B1'
+            }}>
+                Period
+            </p>
+
+            <div style={{display:'flex'}}>
+                {uniquePeriodsProjections.map((projection, index) => 
+                    <div 
+                        key={index}
+                        style={{
+                            fontWeight:'bold', width:'50px', height:'30px',
+                            display:'flex', justifyContent:'center', alignItems:'center',
+                            borderRadius:'5px', fontSize:'13px', marginRight:'5px',
+                            background: projection.period === pickedProjection!.period ? '#fff' : '',
+                            color: projection.period === pickedProjection!.period ? '' : '#fff', cursor:'pointer'
+                        }}
+                        onClick={() => setValidatedFilter({
+                            ...filter, 
+                            pickedProjection: projection
+                        })}
+                    >
+                        {projection.period}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

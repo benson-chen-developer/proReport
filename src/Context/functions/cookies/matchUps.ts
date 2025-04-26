@@ -114,11 +114,14 @@ export const getCurrentMatchups = (matchUps: MatchUp[], props?: Projection[]): M
     /* If there are props get all the games in it */
     if(props){
         props.forEach(prop => {
+            let propStartTime = new Date(prop.start_time);
+            propStartTime.setHours(0, 0, 0, 0);
+
             const foundMatchUp = matchUps.find(matchUp => {
                 const gameDate = new Date(matchUp.time);
                 gameDate.setHours(0, 0, 0, 0);
 
-                return gameDate.getTime() === todayDate.getTime();
+                return gameDate.getTime() === propStartTime.getTime();
             })
 
             if(foundMatchUp) filteredGames.push(foundMatchUp);

@@ -3,6 +3,7 @@ import { alpha, styled } from '@mui/material/styles';
 import { pink } from '@mui/material/colors';
 import Switch from '@mui/material/Switch';
 import { useGlobalContext } from '../../../Context/store';
+import { SelectBtn } from '../../Shared/Buttons/SelectBtn';
 
 const PinkSwitch = styled(Switch)(({ theme }) => ({
   '& .MuiSwitch-switchBase.Mui-checked': {
@@ -17,31 +18,36 @@ const PinkSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const label = { inputProps: { 'aria-label': 'Switch demo' } };
-interface CustomLabelProps {
+interface Props {
 }
-export const SecondStatsHeader: React.FC<CustomLabelProps> = ({}) => {
-    const {filter, setFilter, filters} = useGlobalContext();
-
+export const SecondStatsHeader: React.FC<Props> = ({}) => {
+    const {filter, setFilter, activeProp} = useGlobalContext();
+    
+    const filters = ["L5", "L10", "L20"];
+    if(activeProp) filters.push("H2H");
+    
     return (
         <div style={{
-            width:'100%', alignItems:'center', margin:'0px 0px 15px -3px',
-            display:'flex', justifyContent:'space-between'
+            width:'100%', 
+            // alignItems:'center', 
+            margin:'0px 0px 10px 0px',
+            display:'flex', justifyContent:'space-between', 
+            flexDirection:'column'
         }}>
+            <p style={{
+                fontSize:'14px', fontWeight:'bold', margin:'0px 0px 10px 0px',
+                color:'#B1B1B1'
+            }}>
+                Last Games
+            </p>
             <div style={{width:'80%', display:'flex'}}>
-                {filters.lastGames.map((lastGame, index) => 
-                    <div 
+                {filters.map((lastGame, index) => 
+                    <SelectBtn 
                         key={index}
-                        style={{
-                            fontWeight:'bold', width:'100px', height:'30px',
-                            display:'flex', justifyContent:'center', alignItems:'center',
-                            borderRadius:'25px', fontSize:'13px', marginRight:'10px',
-                            background: lastGame === filter.lastGame ? '#fff' : '#000',
-                            color: lastGame === filter.lastGame ? '' : '#fff', cursor:'pointer'
-                        }}
-                        onClick={() => setFilter(p => ({...p, lastGame: lastGame}))}
-                    >
-                        {lastGame}
-                    </div>
+                        currValue={lastGame}
+                        selectedValue={filter.lastGame}
+                        func={() => setFilter(p => ({...p, lastGame: lastGame}))}
+                    />
                 )}
             </div>
         </div>

@@ -31,11 +31,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/player/[paramLeague]/[paramPlayer].js"
-    ],
-    "/team-rank/[paramLeague]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/team-rank/[paramLeague].js"
     ]
   },
   "ampFirstPages": []
