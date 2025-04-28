@@ -19,10 +19,10 @@ const MLBRoute = require('./routes/MLB');
 const { Promo } = require("./models/Promos/PromoModel");
 
 const app = express();
-// app.use(cors({
-//     origin: process.env.LOCAL_ROUTE_FRONT,
-//     credentials: true
-// }));
+app.use(cors({
+    origin: process.env.LOCAL_ROUTE_FRONT,
+    credentials: true
+}));
 app.use(express.json());
 
 /* TEST : See what the incoming req look like */

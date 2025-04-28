@@ -1,9 +1,9 @@
-import { convertTeamName } from "../../../../Context/functions/convertTeamName";
-import { convertSupportName } from "../../../../Context/functions/convertStatName";
-import { MatchUp } from "../../../../Context/Types/Match";
-import { PGame, PPlayer, Team } from "../../../../Context/Types/PlayerTypes";
-import { Projection } from "../../../../Context/Types/ProjectionTypes";
-import { BarData, Filter } from "../../Matches";
+import { BarData, Filter, Filters } from "../../components/Outlier/Matches";
+import { MatchUp } from "../Types/Match";
+import { PGame, PPlayer } from "../Types/PlayerTypes";
+import { Projection } from "../Types/ProjectionTypes";
+import { convertNBATeamName } from "./convertTeamName";
+import { convertSupportName } from "./convertStatName";
 
 /*
     Takes 5.55 (5:55) + 6.21 (6:21) and spits out 12.17(12:17)
@@ -47,11 +47,9 @@ const getFantasyMap = (league: string): Record<string, number> => {
 }
 
 export const parseBarData = (
-    games: PGame[], filter: Filter, player: PPlayer, allTeams: Team[], matchUp?: MatchUp,
+    games: PGame[], filter: Filter, player: PPlayer, 
+    pickedProjection?: Projection | null, matchUp?: MatchUp,
 ): BarData[] => {
-    const {pickedProjection} = filter;
-    const statName = pickedProjection!.name;
-
     /* Here we filter the games from the game criteria */
     const displayedGames = getDisplayGames(games, filter, player, matchUp);
     
@@ -60,10 +58,9 @@ export const parseBarData = (
         const unFormattedDate: Date = new Date(game.date);
         const dateInEst = unFormattedDate.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'numeric', day: 'numeric' });
         
-        const foundPlayer = game.players.find(p => p.playerId.toLowerCase() === player.playerId.toLowerCase());
-        const playerTeam: string = player!.team;
-        const opp: string =  playerTeam.toLowerCase().includes(game.team1.toLowerCase()) ? game.team2 : game.team1;
-        const oppFullName = allTeams.find(team => team.name.includes(opp))!.name;
+        const foundPlayer = game.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
+        const playerTeam: string = foundPlayer!.team;
+        const opp: string = game.team1.toLowerCase() === playerTeam.toLowerCase() ? game.team2 : game.team1;
         const isHome: boolean = game.team1 === player.team;
         
         /* If we have multiple stats to display in one bar (PTS+REB are an example) */
@@ -79,9 +76,9 @@ export const parseBarData = (
         else if(filter.period === "Q4") periods = periods.slice(3);
 
         for (let period of periods){
-            let pickedStats = statName.split('+');
+            let pickedStats = filter.stat.split('+');
 
-            if(statName !== "FAN"){
+            if(filter.stat !== "FAN"){
                 pickedStats.forEach((pickedStatSegment, index) => {
                     let currPeriod = foundPlayer?.periods[period];
                     let val = currPeriod ? currPeriod[pickedStatSegment] : null;
@@ -111,7 +108,7 @@ export const parseBarData = (
             Convert the values to minutes if needed 
                 - else just round the numbers
         */
-        if(statName === "MIN"){
+        if(filter.stat === "MIN"){
             statTotal = convertSecondsToMinutes(statTotal);
             stats = stats.map(stat => convertSecondsToMinutes(stat));
         } else {
@@ -119,7 +116,7 @@ export const parseBarData = (
             stats = stats.map(stat => Number(stat.toFixed(1)));
         }
 
-        let pickedStatSplit = statName.split('+');
+        let pickedStatSplit = filter.stat.split('+');
         let hit = false;
         let lineValue = -1;
         if(pickedProjection){
@@ -132,7 +129,7 @@ export const parseBarData = (
             }
         }
         return {
-            name: statName, 
+            name: filter.stat, 
             statTotal: statTotal,
             stat1: stats[0], 
             stat2: stats[1],
@@ -144,10 +141,10 @@ export const parseBarData = (
             score: game.score,
             isHome: isHome,
             playerTeam: playerTeam,
-            opp: oppFullName,
+            opp: opp,
             tie: lineValue !== -1 ? statTotal === lineValue : false,
             hit: hit,
-            underText: `${dateInEst}\n ${convertTeamName(oppFullName, 0, player?.sport)}`
+            underText: `${dateInEst}\n ${convertNBATeamName(opp, 0)}`
         };
     }).reverse();
 
@@ -191,7 +188,7 @@ export const parseSupportBarData = (
         let stats: number[] = [0, 0, 0];
 
         /* Get which periods to parse */
-        const foundPlayer = foundGame!.players.find(p => p.playerId.toLowerCase() === player.playerId.toLowerCase());
+        const foundPlayer = foundGame!.players.find(p => p.name.toLowerCase() === player.name.toLowerCase());
         let periods = Array.from({ length: foundGame!.periodsPlayed }, (_, index) => index);
         if(filter.period === "H1") periods = [0, 1];
         else if(filter.period === "H2") periods = periods.slice(2);
@@ -292,7 +289,7 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
         /* Skip the minutes parsing if no time is selected */
     } else {
         displayedGames = displayedGames.filter((game, index) => {
-            const foundPlayer = game.players.find(p => p.playerId === player.playerId);
+            const foundPlayer = game.players.find(p => p.name === player.name);
     
             if(foundPlayer){
                 let totalMinutes = 0;
@@ -311,19 +308,18 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
     }
     
     /* Get home or away games */
-    if(filter.isHome) displayedGames = displayedGames.filter(game => game.team1 === player.team);
-    else if(filter.isAway) displayedGames = displayedGames.filter(game => game.team2 === player.team);
+    if(filter.isHome) displayedGames = displayedGames.filter(game => game.team1 === player.city);
+    else if(filter.isAway) displayedGames = displayedGames.filter(game => game.team2 === player.city);
 
     /* Get L(*) or H2H */
     if(filter.lastGame[0] === "L"){
         let length = Number(filter.lastGame.slice(1, filter.lastGame.length));
         displayedGames = displayedGames.reverse().slice(-length).reverse();
     }
-    else if(filter.lastGame === "H2H" && matchUp){
-
-        const oppTeamName = matchUp.teams.find(team => team.name !== player.team)?.name;
+    else if(filter.lastGame === "H2H"){
+        const oppTeamName = matchUp?.teams.find(team => team.name !== player.city)?.name;
         displayedGames = displayedGames.filter(game => {
-            const playerTeamInThisMatch = game.players.find(p => p.playerId === player.playerId)?.team;
+            const playerTeamInThisMatch = game.players.find(p => p.name === player.name)?.team;
             const team1 = game.team1; 
             const team2 = game.team2;
 
@@ -337,4 +333,22 @@ export const getDisplayGames = (allGames: PGame[], filter: Filter, player: PPlay
         });
     }
     return displayedGames;
+}
+
+export const updateFilters = (filters: Filters, filter: Filter): Filters => {
+    let updatedFilters = {
+        ...filters, 
+        supportingStats: ["Minutes", "Fouls"],
+    };
+    if(filter.stat.includes("PTS")){
+        updatedFilters.supportingStats.push(...["Field Goals Att."])
+    }
+    else if(filter.stat.includes("REB")){
+        updatedFilters.supportingStats.push(...[/*"Potential Rebound", */"OFF/DEF Rebounds"])
+    }
+    else if(filter.stat.includes("AST")){
+        // updatedFilters.supportingStats.push(...["Potential Assists"])
+    }
+
+    return updatedFilters;
 }

@@ -78,7 +78,8 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
 
             <div style={{
                 width:'60%',  display:'flex', height:'100%', marginTop:'-10px',
-                alignItems:'flex-end', justifyContent:'flex-end'
+                alignItems:'flex-end', justifyContent:'flex-end', 
+                marginRight: isMobile ? '0px' : '10px', 
             }}>
                 <div onClick={() => snackBarOpen(true)}>
                     <ShareLinkBtn />
@@ -89,7 +90,6 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
                     <div style={{
                         color:'#fff', fontWeight:'bold', 
                         flexDirection:'column', 
-                        marginRight: isMobile ? '0px' : '10px', 
                         fontSize: isMobile ? '10px' : '14px'
                     }}>
                         {/* (Away) Today */}

@@ -2,6 +2,7 @@ const express = require("express");
 const { NBAPlayer, MLBPlayer, Player } = require("../models/Sport/PPlayerModel");
 const { NBATeam, MLBTeam } = require("../models/Sport/Team");
 const { MLBMatch, NBAMatch } = require("../models/Sport/Match");
+const { MatchUp } = require("../models/Sport/MatchUp");
 const router = express.Router();
 
 router.get("/players/:league", async (req, res) => {
@@ -41,13 +42,14 @@ router.get("/matchUps/:league", async (req, res) => {
     const league = req.params.league;
 
     try {
-        const response = await fetch('https://cdn.nba.com/static/json/staticData/scheduleLeagueV2_1.json')
-        const data = await response.json();
-        const schedule = data.leagueSchedule.gameDates
-            .flatMap(gameDate => gameDate.games)
-            .filter(game => game.gameLabel !== 'Preseason')
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const allMatchesButTheTeamsAreJustTheNames = await MatchUp.find({
+            league: league,
+            time: { $gte: today }
+        });
 
-        res.status(200).json(schedule);
+        res.status(200).json(allMatchesButTheTeamsAreJustTheNames);
     } catch (err) {
         console.error("Error fetching players", err);
         res.status(500).json({ message: "Error fetching players" });

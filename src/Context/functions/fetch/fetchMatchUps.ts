@@ -72,7 +72,7 @@ const getCurrentAndFutureMatchUpsOnly = (matchUps: UnPopulatedMatch[]): UnPopula
 
 const fetchSchedule = async (league: string): Promise<UnPopulatedMatch[]> => {
     try {
-        const url = `http://localhost:3003/${league}/schedule/cacheFutureMatchups`;
+        const url = `${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/psport/matchUps/${league}`;
         const response = await fetch(url);
         const data = await response.json();
 

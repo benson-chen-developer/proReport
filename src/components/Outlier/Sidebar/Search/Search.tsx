@@ -27,7 +27,7 @@ export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
                 new Set(projections.map(p => p.player?.sport).filter(Boolean))
             );
             const players = await fetchAllPlayers(uniqueLeagues);
-            console.log(players.find(p => p.sport.toLowerCase() === 'mlb'))
+            // console.log(players.find(p => p.sport.toLowerCase() === 'mlb'))
 
             const playersWithProps = players.filter(player =>
                 projections.find(prop => {

@@ -123,10 +123,12 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 /* Intial Projections and Intial Stats Filters set up */
                 let activeProp = true;
                 let projections = await fetchProjections(player.sport, player.name);
+                // console.log('props', projections)
                 if(projections.length === 0){
                     activeProp = false;
                     projections = getStaticProjections(league, player);
                 }
+                // console.log('active prop', activeProp)
                 projections = PSport.sortStats(player, projections);
 
                 const initialPickedProjection = getInitialProjection(
@@ -289,8 +291,8 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                             />
 
                             {extraInfo === "Stats Filter" ?
-                                <DesktopFilter 
-                                    homeGame={matchUp?.teams[0].name === player.team}
+                                <DesktopFilter
+                                    matchUp={matchUp} 
                                 /> : null
                             }
 

@@ -34,7 +34,7 @@ export const Header: React.FC<Props> = ({
     useEffect(() => {
         const func = async () => {
             let fetchedMatchUps = await fetchMatchUps(league, popularProps.flatMap(prop => prop.prop));
-        
+            
             // Only keep matches that have props in the header
             const filtered = fetchedMatchUps.filter((matchUp) => {
                 return popularProps.find((prop) => 

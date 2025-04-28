@@ -5,12 +5,13 @@ import { MinutesSlider } from '../Stats/MinutesSlider'
 import { PeriodStatsHeader } from '../Stats/PeriodStatsHeader'
 import { SecondStatsHeader } from '../Stats/SecondStatHeader'
 import { WithOutPlayers } from '../Stats/WithoutPlayers'
+import { MatchUp } from '../../../Context/Types/Match'
 
 interface Props {
-    homeGame: boolean,
+    matchUp: MatchUp | undefined
 }
 
-export const DesktopFilter: React.FC<Props> = ({homeGame}) => {
+export const DesktopFilter: React.FC<Props> = ({matchUp}) => {
     return (
         <div style={{height:'auto', display:'flex', flexDirection:'column', marginLeft:'5%'}}>
             <SecondStatsHeader
@@ -18,9 +19,11 @@ export const DesktopFilter: React.FC<Props> = ({homeGame}) => {
             <PeriodStatsHeader
             />
 
-            <HomeSwitches
-                homeGame={homeGame}
-            />
+            {matchUp ?
+                <HomeSwitches
+                    matchUp={matchUp}
+                /> : null
+            }
 
             <div style={{width:'95%', display:'flex', alignItems:'center'}}>
                 <WithOutPlayers />
