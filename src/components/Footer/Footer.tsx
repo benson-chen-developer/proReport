@@ -19,6 +19,10 @@ export const Footer = () => {
                         adult and 21+ to use this site.
                     </p>
                     <p style={{ color: '#a2a2a2', fontWeight: 'bold', fontSize: '10px' }}>
+                        This website is in no affiliation with the NBA, MLB, 
+                        PrizePicks, or any other leagues and bookies. 
+                    </p>
+                    <p style={{ color: '#a2a2a2', fontWeight: 'bold', fontSize: '10px' }}>
                         If you or a loved one has a problem with gambling please call
                         1-800-GAMBLER to get live support.
                     </p>
@@ -37,6 +41,10 @@ export const Footer = () => {
                         <p style={{ color: '#a2a2a2', fontWeight: 'bold', fontSize: '12px' }}>
                             This website is for data analytics only. You must be an
                             adult and 21+ to use this site.
+                        </p>
+                        <p style={{ color: '#a2a2a2', fontWeight: 'bold', fontSize: '12px' }}>
+                            This website is in no affiliation with the NBA, MLB, 
+                            PrizePicks, or any other leagues and bookies. 
                         </p>
                         <p style={{ color: '#a2a2a2', fontWeight: 'bold', fontSize: '12px' }}>
                             If you or a loved one has a problem with gambling please call
