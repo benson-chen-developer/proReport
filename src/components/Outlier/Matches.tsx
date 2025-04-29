@@ -283,8 +283,8 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 {!isMobile ?
                     <div style={{width:'35%', background:'#2B2B2B', borderLeft:'1px solid #808080'}}>
                         <div style={{
-                            // marginLeft:'5%', 
-                        height:'auto', display:'flex', flexDirection:'column'}}>
+                            height:'auto', display:'flex', flexDirection:'column'
+                        }}>
                             <ExtraSideSelection 
                                 extraInfo={extraInfo} 
                                 setExtraInfo={setExtraInfo}

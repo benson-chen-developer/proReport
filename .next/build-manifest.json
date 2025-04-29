@@ -22,15 +22,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/home": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/home.js"
-    ],
     "/player/[paramLeague]/[paramPlayer]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/player/[paramLeague]/[paramPlayer].js"
+    ],
+    "/team-rank/[paramLeague]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/team-rank/[paramLeague].js"
     ]
   },
   "ampFirstPages": []

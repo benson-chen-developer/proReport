@@ -99,21 +99,22 @@ export const WithOutPlayers: React.FC<Props> = () => {
             {/* Pop Up */}
             {isPopUp ?
                 <div style={{
-                    width:'300px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
+                    width:'275px', background:'#000', borderRadius:'5px', border:'1px solid #5B5B5B',
                     position:'absolute', marginTop:'3px', display:'flex',
+                    padding:'5px',
                     alignItems:'center', flexDirection:'column', zIndex:2, cursor:'pointer',
-                    maxHeight: isMobile ? '175px' : '300px', overflow:'auto'
+                    maxHeight: isMobile ? '175px' : '200px', overflow:'auto'
                 }} ref={popupRef}>
                     {players.map((player, i) => {
                         return <div 
-                            style={{width:'100%', display:'flex', justifyContent:'center'}}
+                            style={{width:'100%', display:'flex', justifyContent:'center', borderRadius:'5px'}}
                             className='hoverBg' key={i}
                         >
                             <div 
                                 style={{
                                     width:'100%', height:'50px', display:'flex', alignItems:'center', 
                                     background: filter.withOutPlayers.includes(player.name) ? '#2B2B2B' : '',
-                                    padding: '0px 20px'
+                                    padding: '0px 20px', borderRadius:'5px'
                                 }}
                                 onClick={() => {
                                     const foundPlayer = filter.withOutPlayers.find(n => n === player.name);

@@ -19,7 +19,7 @@ export const Rankings: React.FC<Props> = ({matchUp, teams}) => {
     const statName = filter.pickedProjection?.name;
     const [rankings, setRankings] = useState<Ranking[]>([]);
 
-    const oppTeam: Team = matchUp.teams.find(team => team.name !== player.city)!;
+    const oppTeam: Team = matchUp.teams.find(team => team.name !== player.team)!;
 
     useEffect(() => {
         const func = async () => {

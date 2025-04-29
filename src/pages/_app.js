@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import '../styles/PlayerPage.css';
 import '../styles/Nav.css';
 import '../styles/Combo.css';
+import '../styles/Filter.css';
 import '@fontsource/roboto'; // Defaults to weight 400
 import { GlobalContextProvider } from '../Context/store'
 import Head from 'next/head';

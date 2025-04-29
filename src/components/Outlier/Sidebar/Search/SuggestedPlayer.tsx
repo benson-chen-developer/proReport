@@ -22,7 +22,7 @@ export const SuggestedPlayer: React.FC<Props> = ({player, setIsPopUp, setSidebar
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             style={{
-                padding: "15px 0px", cursor: "pointer", width:'100%',
+                padding: "10px 0px", cursor: "pointer", width:'100%',
                 background: isHovered ? '#393939' : '#1e1e1e',
                 borderRadius: 10,
             }}

@@ -13,7 +13,9 @@ interface Props {
 
 export const DesktopFilter: React.FC<Props> = ({matchUp}) => {
     return (
-        <div style={{height:'auto', display:'flex', flexDirection:'column', marginLeft:'5%'}}>
+        <div style={{
+            height:'auto', display:'flex', flexDirection:'column', marginLeft:'5%',
+        }}>
             <SecondStatsHeader
             />
             <PeriodStatsHeader
@@ -25,11 +27,18 @@ export const DesktopFilter: React.FC<Props> = ({matchUp}) => {
                 /> : null
             }
 
-            <div style={{width:'95%', display:'flex', alignItems:'center'}}>
-                <WithOutPlayers />
-                
-                <DaysOfRest />
+            <div style={{width:'95%', marginTop:'10px'}}>
+                <p className='filterTitle'>
+                    Advanced Filters
+                </p>
+
+                <div style={{display:'flex', alignItems:'center'}}>
+                    <WithOutPlayers />
+                    
+                    <DaysOfRest />
+                </div>
             </div>
+
             <div style={{width:'95%'}}>
                 <MinutesSlider
                 />

@@ -99,7 +99,7 @@ export const TeamsMatchUp: React.FC<Props> = ({matchUp, index, picked, setPicked
             display:'flex', alignItems:'flex-end', justifyContent:'flex-end',
             color:'#fff', fontWeight:'bold', 
             flexDirection:'column',
-            marginRight: isMobile ? '5px' : '10px', 
+            // marginRight: isMobile ? '5px' : '10px', 
             marginLeft: index === 0 ? '5px' : '0px',
             fontSize: isMobile ? '8px' : '12px'
         }}>
@@ -157,7 +157,7 @@ export const TeamCircle: React.FC<Props2> = ({team}) => {
     
     return(
         <div style={{
-            width: isMobile ? '22px' : '22px', height:isMobile ? '20px' : '22px', borderRadius:'100px', 
+            width: isMobile ? '14px' : '22px', height:isMobile ? '14px' : '22px', borderRadius:'100px', 
             display:'flex', justifyContent:'center', alignItems:'center',
             background: teamColors(team.league, team.name)
         }}>

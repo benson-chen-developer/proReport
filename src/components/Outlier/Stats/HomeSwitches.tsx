@@ -79,7 +79,7 @@ export const HomeSwitches: React.FC<Props> = ({matchUp}) => {
   const homeGame = matchUp?.teams[0].name === player.team;
 
   return (
-      <div style={{display:'flex'}}>
+      <div style={{display:'flex', marginTop:'10px'}}>
         {homeGame ?
           <div
             style={divStyle}

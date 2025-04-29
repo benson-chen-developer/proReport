@@ -78,10 +78,10 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
 
             <div style={{
                 width:'60%',  display:'flex', height:'100%', marginTop:'-10px',
-                alignItems:'flex-end', justifyContent:'flex-end', 
-                marginRight: isMobile ? '0px' : '10px', 
+                alignItems:'flex-end', justifyContent:'flex-end', flexDirection:'column',
+                marginRight: isMobile ? '5px' : '10px', 
             }}>
-                <div onClick={() => snackBarOpen(true)}>
+                <div style={{marginBottom:'5px'}} onClick={() => snackBarOpen(true)}>
                     <ShareLinkBtn />
                 </div>
                 {/* <ShareImgBtn /> */}
@@ -92,31 +92,6 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
                         flexDirection:'column', 
                         fontSize: isMobile ? '10px' : '14px'
                     }}>
-                        {/* (Away) Today */}
-                        {/* <p style={{ 
-                            marginRight: isMobile ? '10px' : '15px', 
-                            marginBottom: isMobile ? '5px' : '10px', 
-                            fontSize: isMobile ? '9px' : '16px' 
-                        }}>
-                            ({matchUp.teams[0].name === player.city ? "Home" : "Away"}) {" "}
-                            {(() => {
-                                const date = matchUp ? new Date(matchUp.time) : new Date();
-                                const today = new Date();
-
-                                // Check if it's today
-                                if (
-                                    date.getFullYear() === today.getFullYear() &&
-                                    date.getMonth() === today.getMonth() &&
-                                    date.getDate() === today.getDate()
-                                ) {
-                                    return "Today";
-                                }
-
-                                // If not today, return the day of the week
-                                return date.toLocaleDateString(undefined, { weekday: 'long' });
-                            })()}
-                        </p> */}
-                        
                         <div>
                             <TeamsMatchUp 
                                 matchUp={matchUp} 

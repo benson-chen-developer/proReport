@@ -34,10 +34,7 @@ export const SecondStatsHeader: React.FC<Props> = ({}) => {
             display:'flex', justifyContent:'space-between', 
             flexDirection:'column'
         }}>
-            <p style={{
-                fontSize:'14px', fontWeight:'bold', margin:'0px 0px 10px 0px',
-                color:'#B1B1B1'
-            }}>
+            <p className='filterTitle'>
                 Last Games
             </p>
             <div style={{width:'80%', display:'flex'}}>

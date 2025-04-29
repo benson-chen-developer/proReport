@@ -26,10 +26,7 @@ export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({}) => {
         <div style={{
             display:'flex', width:'100%', marginBottom:'10px', flexDirection:'column',
         }}>
-            <p style={{
-                fontSize:'14px', fontWeight:'bold', margin:'0px 0px 10px 0px',
-                color:'#B1B1B1'
-            }}>
+            <p className='filterTitle'>
                 Period
             </p>
 
@@ -56,28 +53,3 @@ export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({}) => {
         </div>
     )
 }
-
-/* Og */
-// export const PeriodStatsHeader: React.FC<CustomLabelProps> = ({}) => {
-//     const {filter, setFilter, filters} = useGlobalContext();
-
-//     return (
-//         <div style={{display:'flex', width:'100%', marginBottom:'10px'}}>
-//             {filters.periods.map((stat, index) => 
-//                 <div 
-//                     key={index}
-//                     style={{
-//                         fontWeight:'bold', width:'50px', height:'30px',
-//                         display:'flex', justifyContent:'center', alignItems:'center',
-//                         borderRadius:'5px', fontSize:'13px',
-//                         background: stat === filter.period ? '#fff' : '',
-//                         color: stat === filter.period ? '' : '#fff', cursor:'pointer'
-//                     }}
-//                     onClick={() => setFilter(p => ({...p, period: stat}))}
-//                 >
-//                     {stat}
-//                 </div>
-//             )}
-//         </div>
-//     )
-// }
