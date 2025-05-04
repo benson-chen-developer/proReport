@@ -3,6 +3,7 @@ module.exports = {
     images: {
         domains: ['cdn.wnba.com'],
     },
+    productionBrowserSourceMaps: true,
     eslint: {
         ignoreDuringBuilds: true
     },

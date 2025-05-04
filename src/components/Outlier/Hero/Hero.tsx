@@ -23,7 +23,6 @@ export const Hero: React.FC<Props> = ({matchUp, teams, snackBarOpen, screenShotM
         return null;
     }
     const { paramLeague } = router.query;
-    console.log('paramLeague hero', paramLeague)
     const {isMobile, player} = useGlobalContext();
 
     const team = teams.find(team => team.name === player.team)

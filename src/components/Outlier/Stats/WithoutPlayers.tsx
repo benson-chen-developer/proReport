@@ -14,7 +14,6 @@ export const WithOutPlayers: React.FC<Props> = () => {
         return null;
     }
     const { paramLeague } = router.query;
-    console.log('paramLeague without', paramLeague)
     const league = paramLeague as string;
 
     const {isMobile, filter, setFilter, player} = useGlobalContext();
