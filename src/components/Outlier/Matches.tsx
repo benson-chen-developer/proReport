@@ -73,7 +73,12 @@ interface Props {
     loading: boolean, setLoading: Dispatch<SetStateAction<boolean>>
 }
 export const Matches: React.FC<Props> = ({loading, setLoading}) => {
+    /* The router needs time to hydrate in vercel */
     const router = useRouter();
+    if (!router.isReady) {
+        return null;
+    }
+
     const chartRef = useRef<HTMLDivElement>(null);
     const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
