@@ -83,6 +83,9 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
     const league = paramLeague as string;
+    console.log('paramPlayer', paramPlayer)
+    console.log('paramLeague', paramLeague)
+    console.log('league', league)
     
     const [mainBarData, setMainBarData] = useState<BarData[]>([]);
     const [matchUp, setMatchUp] = useState<MatchUp | undefined>();
