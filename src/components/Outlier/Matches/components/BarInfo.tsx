@@ -18,7 +18,11 @@ export const BarInfo: React.FC<Props> = ({
     mainBarData, screenShotMode
 }) => {
     const router = useRouter();
+    if (!router.isReady) {
+        return null;
+    }
     const { paramLeague } = router.query;
+    console.log('paramLeague barinfo', paramLeague)
     const league = paramLeague as string;
 
     const {isMobile, filter, projections, activeProp} = useGlobalContext();

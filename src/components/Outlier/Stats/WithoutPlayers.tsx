@@ -10,7 +10,11 @@ interface Props {
 }
 export const WithOutPlayers: React.FC<Props> = () => {
     const router = useRouter();
+    if (!router.isReady) {
+        return null;
+    }
     const { paramLeague } = router.query;
+    console.log('paramLeague without', paramLeague)
     const league = paramLeague as string;
 
     const {isMobile, filter, setFilter, player} = useGlobalContext();
