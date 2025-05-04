@@ -4,7 +4,6 @@ import { PPlayer, Team } from '../../../Context/Types/PlayerTypes'
 import { Projection } from '../../../Context/Types/ProjectionTypes'
 import { Filter, Filters } from '../Matches'
 import { DaysOfRest } from '../Stats/DaysOfRest'
-import { HomeSwitches, IOSSwitch } from '../Stats/HomeSwitches'
 import { MinutesSlider } from '../Stats/MinutesSlider'
 import { PeriodStatsHeader } from '../Stats/PeriodStatsHeader'
 import { SecondStatsHeader } from '../Stats/SecondStatHeader'
@@ -13,18 +12,19 @@ import { WithOutPlayers } from '../Stats/WithoutPlayers'
 import { PropHistory } from '../PropHistory/PropHistory'
 import { useGlobalContext } from '../../../Context/store'
 import { Rankings } from '../Matches/components/Rankings'
+import { HomeSwitches, IOSSwitch } from '../Stats/HomeSwitches'
 
 interface Props {
     extraInfo: string,
     setExtraInfo: Dispatch<SetStateAction<string>>
     projections: Projection[],
     teams: Team[],
-    matchUp?: MatchUp
+    matchUp: MatchUp | undefined
 }
 
 export const MobileFilter: React.FC<Props> = ({ 
     extraInfo, setExtraInfo,
-    projections, matchUp, teams
+    projections, teams, matchUp
 }) => {
     const {player} = useGlobalContext();
     const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
@@ -76,10 +76,10 @@ export const MobileFilter: React.FC<Props> = ({
                             <SecondStatsHeader />
 
                             <PeriodStatsHeader />
-                            
+                        
                             <div style={{width:'100%',margin: '0px 0px 10px 0px'}}>
-                                <HomeSwitches 
-                                    homeGame={matchUp?.teams[0].name === player.city}
+                                <HomeSwitches
+                                    matchUp={matchUp}
                                 />
                             </div>
                         </div>
