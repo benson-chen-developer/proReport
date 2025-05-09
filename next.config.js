@@ -3,7 +3,7 @@ module.exports = {
     images: {
         domains: ['cdn.wnba.com'],
     },
-    productionBrowserSourceMaps: true,
+    productionBrowserSourceMaps: true, //Lowkey shud remove this in prod
     eslint: {
         ignoreDuringBuilds: true
     },

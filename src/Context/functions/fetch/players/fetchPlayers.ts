@@ -2,7 +2,7 @@ import { PPlayer } from "../../../Types/PlayerTypes";
 
 /* league should be in "nba" format */
 export const fetchPlayers = async (league: string): Promise<PPlayer[]> => {
-    const storedPlayers = localStorage.getItem(`${league}players`);
+    const storedPlayers = localStorage.getItem(`${league}Players`);
     const players: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
 
     if(players.length > 0){
@@ -15,7 +15,7 @@ export const fetchPlayers = async (league: string): Promise<PPlayer[]> => {
             if (!response.ok) throw new Error(`Failed to fetch ${league} players`);
             const data = await response.json();
 
-            localStorage.setItem(`${league}players`, JSON.stringify(data));
+            localStorage.setItem(`${league}Players`, JSON.stringify(data));
             return data;
         } catch (error) {
             console.error(`Error fetching ${league} players:`, error);
@@ -28,7 +28,7 @@ export const fetchAllPlayers = async (leagues: string[]): Promise<PPlayer[]> => 
     let allPlayers: PPlayer[] = [];
 
     for (const league of leagues) {
-        const storedPlayers = localStorage.getItem(`${league}players`);
+        const storedPlayers = localStorage.getItem(`${league}Players`);
         const players: PPlayer[] = storedPlayers ? JSON.parse(storedPlayers) : [];
 
         if (players.length > 0) {
@@ -39,7 +39,7 @@ export const fetchAllPlayers = async (leagues: string[]): Promise<PPlayer[]> => 
                 if (!response.ok) throw new Error(`Failed to fetch ${league} players`);
                 const data = await response.json();
 
-                localStorage.setItem(`${league}players`, JSON.stringify(data));
+                localStorage.setItem(`${league}Players`, JSON.stringify(data));
                 allPlayers = allPlayers.concat(data);
             } catch (error) {
                 console.error(`Error fetching ${league} players:`, error);

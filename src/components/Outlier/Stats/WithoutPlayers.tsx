@@ -1,10 +1,10 @@
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useGlobalContext } from '../../../Context/store';
 import { PPlayer } from '../../../Context/Types/PlayerTypes';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { fetchPlayers } from '../../../Context/functions/fetch/players/fetchPlayers';
+import { getHeadshotUrl } from '../../../Context/functions/urls/getUrls';
 
 interface Props {
 }
@@ -17,7 +17,7 @@ export const WithOutPlayers: React.FC<Props> = () => {
     const league = paramLeague as string;
 
     const {isMobile, filter, setFilter, player} = useGlobalContext();
-    const [players, setPlayers] = useState<PPlayer[]>([]);
+    const [teamMates, setTeamMates] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
     const [isPopUp, setIsPopUp] = useState<boolean>(false);
@@ -28,10 +28,10 @@ export const WithOutPlayers: React.FC<Props> = () => {
             
             const teamMates = players
                 .filter(otherPlayer => 
-                    otherPlayer.city === player.city && 
+                    otherPlayer.team === player.team && 
                     player.name !== otherPlayer.name
                 );
-            setPlayers(teamMates);
+            setTeamMates(teamMates);
         }
 
         func();
@@ -108,7 +108,7 @@ export const WithOutPlayers: React.FC<Props> = () => {
                     alignItems:'center', flexDirection:'column', zIndex:2, cursor:'pointer',
                     maxHeight: isMobile ? '175px' : '200px', overflow:'auto'
                 }} ref={popupRef}>
-                    {players.map((player, i) => {
+                    {teamMates.map((player, i) => {
                         return <div 
                             style={{width:'100%', display:'flex', justifyContent:'center', borderRadius:'5px'}}
                             className='hoverBg' key={i}
@@ -132,9 +132,10 @@ export const WithOutPlayers: React.FC<Props> = () => {
                                 <Image
                                     alt="Player Headshot"
                                     width={25} height={25}
-                                    src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
+                                    src={getHeadshotUrl(player) || '/placeholder/placeholderHeadshot.svg'}
                                     style={{ objectFit: 'cover', marginLeft:'-5px', marginRight:'5px' }}
                                 />
+
                                 <p style={{fontWeight:'bold', color:'#fff', fontSize:'13px', marginLeft:'10px'}}>
                                     {player.name}
                                 </p>
