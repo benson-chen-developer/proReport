@@ -1,7 +1,7 @@
 import { PPlayer } from "../../Types/PlayerTypes";
-import { Projection } from "../../Types/ProjectionTypes";
+import { PopularProp, Projection } from "../../Types/ProjectionTypes";
 
-export const fetchPopularProjections = async (): Promise<Projection[]> => {
+export const fetchPopularProjections = async (): Promise<PopularProp[]> => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_ROUTE}/projections/popular`);
     if (!response.ok) throw new Error('Failed to fetch Projections');
     const data = await response.json();

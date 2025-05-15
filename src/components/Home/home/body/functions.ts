@@ -6,23 +6,24 @@ import { Filter } from "../../../Outlier/Matches";
         1) Show the popular players up top
         2) Only have 2 player cards of same player show up max
 */
-export const prettierPopularProps = (props: PopularProp[]): PopularProp[] => {
+export const prettierPopularProps = (popularProps: PopularProp[]): PopularProp[] => {
     let ret: PopularProp[] = [];
     
     /* 1) Show the popular players up top */
     const popularPlayerProps: PopularProp[] = [];
     const notPopularPlayerProps: PopularProp[] = [];
 
-    props.forEach((prop) => {
-        if(popularPlayers.includes(prop.prop.player.name)) popularPlayerProps.push(prop);
-        else notPopularPlayerProps.push(prop);
+    popularProps.forEach((popularProp) => {
+        console.log('prop in body', popularProp)
+        if(popularPlayers.includes(popularProp.propRef.player.name)) popularPlayerProps.push(popularProp);
+        else notPopularPlayerProps.push(popularProp);
     })
 
     /* 2) Only have 2 player cards of same player show up max */
     const popularPlayersMap: Record<string, PopularProp[]> = {};  
 
     popularPlayerProps.forEach(prop => {
-        const playerName = prop.prop.player.name;
+        const playerName = prop.propRef.player.name;
 
         if (popularPlayersMap[playerName]) {
             popularPlayersMap[playerName].push(prop);

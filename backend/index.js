@@ -12,6 +12,7 @@ const TrendingRoute = require('./routes/Trending');
 const EsportRoute = require('./routes/Esport');
 const PsportRoute = require('./routes/Psport');
 const ProjectionRoute = require('./routes/Projection');
+const AuthRoute = require('./routes/Auth');
 
 const NBARoute = require('./routes/NBA');
 const MLBRoute = require('./routes/MLB');
@@ -38,6 +39,7 @@ app.use('/rainbow', RainbowRoute);
 app.use('/esport', EsportRoute);
 app.use('/psport', PsportRoute);
 app.use('/projections', ProjectionRoute);
+app.use('/auth', AuthRoute);
 
 app.use('/nba', NBARoute);
 app.use('/mlb', MLBRoute);

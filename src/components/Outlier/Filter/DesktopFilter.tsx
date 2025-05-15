@@ -32,9 +32,10 @@ export const DesktopFilter: React.FC<Props> = ({matchUp}) => {
                     Advanced Filters
                 </p>
 
-                <div style={{display:'flex', alignItems:'center'}}>
+                <div style={{display:'flex', flexDirection:'column'}}>
                     <WithOutPlayers />
                     
+                    <div style={{height:'10px'}}/>
                     <DaysOfRest />
                 </div>
             </div>

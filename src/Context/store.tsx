@@ -52,6 +52,11 @@ interface ContextProps {
   projections: Projection[];
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
+
+  popularProps: PopularProp[];
+  setPopularProps: Dispatch<SetStateAction<PopularProp[]>>;
+  shownPopularProps: PopularProp[];
+  setShownPopularProps: Dispatch<SetStateAction<PopularProp[]>>;
   
   // Player Page Props
   pickedProjection: Projection | null,
@@ -79,6 +84,12 @@ const GlobalContext = createContext<ContextProps>({
   projections: [],
   setProjections: (): Projection[] => [],
   fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
+
+  //PopularProps
+  popularProps: [],
+  setPopularProps: (): PopularProp[] => [],
+  shownPopularProps: [],
+  setShownPopularProps: (): PopularProp[] => [],
 
   // Player Page Props
   pickedProjection: null,
@@ -111,6 +122,10 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
     team: "", sport: "", position: '', picId: ''
   });
 
+  /* Popular Props */
+  const [popularProps, setPopularProps] = useState<PopularProp[]>([]);
+  const [shownPopularProps, setShownPopularProps] = useState<PopularProp[]>([]);
+
   /* Only call this to set Filters to ensure it is always correct */
   const setValidatedFilter = (newFilter: Filter) => {
     const pickedProjection = newFilter.pickedProjection;
@@ -136,18 +151,19 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
 
   /* When the screen size changes (Make Font .7 size of reg) */
   const [isMobile, setIsMobile] = useState(false);
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
+  useEffect(() => {
+    const screenSizeCutOff = 1000;
+    const handleResize = () => {
+        setIsMobile(window.innerWidth <= screenSizeCutOff);
+    };
 
-        // Set the initial state after the component mounts
-        handleResize();
+    // Set the initial state after the component mounts
+    handleResize();
 
-        // Add resize event listener
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const fetchProjections = async (playerName?: string): Promise<Projection[]> => {
     let newProjections: Projection[] = [];
@@ -182,6 +198,9 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       projections, setProjections, fetchProjections,
       isMobile, setIsMobile,
       activeProp, setActiveProp,
+
+      popularProps, setPopularProps,
+      shownPopularProps, setShownPopularProps,
       
       // Player Page Props
       pickedProjection, setPickedProjection,

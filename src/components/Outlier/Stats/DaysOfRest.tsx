@@ -41,7 +41,7 @@ export const DaysOfRest: React.FC<Props> = ({ ourPlayer}) => {
     }, []);
 
     return(
-      <div style={{width:'150px', height:'35px', borderRadius:'10px', marginLeft:'10px'}}>
+      <div style={{width:'150px', height:'35px', borderRadius:'10px'}}>
           {/* Button */}
           <div 
               style={{

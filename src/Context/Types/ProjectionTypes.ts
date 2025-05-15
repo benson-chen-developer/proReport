@@ -19,6 +19,20 @@ export type Projection = {
 }
 
 export type PopularProp = {
-    prop: Projection,
     matchUp: MatchUp,
+    propRef: Projection,
+    start_time: Date,
+    popularGameFilter: {
+        stat: string,
+        over: boolean,
+        isHome: boolean,
+        isAway: boolean,
+        period: string,
+        lastGame: string, 
+        withOutPlayers: string[],
+        daysRested: number,
+        minutes: [number, number],
+        supportingStat: string
+    },
+    popularHits: string[],
 }

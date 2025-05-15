@@ -33,7 +33,7 @@ export const Index = () => {
     const [search, setSearch] = useState<string>("");
     const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
-    const [league, setLeague] = useState<string>('nba');
+    const [league, setLeague] = useState<string>('mlb');
 
     const {fetchProjections, isMobile} = useGlobalContext();
 
@@ -49,28 +49,26 @@ export const Index = () => {
 
             // /* Gotta to be new each time */
             // const props = await fetchProjections();
-            const props = await fetchPopularProjections();
-
-            const popularPropWithoutMatchUp: Projection[] = props
-                .filter(prop => prop.popularHits && prop.popularHits.length > 0);
+            const popularPropsWithoutMatchUps = await fetchPopularProjections();
+            const props = popularPropsWithoutMatchUps.map(popularProp => popularProp.propRef);
+            const matchUps = await fetchMatchUps('mlb', props);
+            const popularProps = popularPropsWithoutMatchUps
+                .map(popularProp => {
+                    const matchUp = matchUps.find(matchUp => 
+                        matchUp.teams.find(t => t.name === popularProp.propRef.player.team)
+                    );
             
-            const matchUps = await fetchMatchUps('nba', popularPropWithoutMatchUp);
-
-            const popularProps: PopularProp[] = popularPropWithoutMatchUp
-                .map(prop => {
-                    return ({
-                        prop: prop, 
-                        matchUp: matchUps.find(matchUp => 
-                            matchUp.teams.find(t => t.name === prop.player.city)
-                        )!
-                    })
+                    return matchUp ? { ...popularProp, matchUp } : null;
                 })
+                .filter((prop): prop is PopularProp & { matchUp: MatchUp } => prop !== null);
                 
+            /* Set the popularProps */
             setPopularProps(popularProps);
+            setShownPopularProps(popularProps);
             
-            const prettyProps = prettierPopularProps(popularProps);
-            setShownPopularProps(prettyProps);
-            
+            // const prettyProps = prettierPopularProps(popularProps);
+            // setShownPopularProps(prettyProps);
+
             // /* Set all the filter options */
             // const uniquePeriods = Array.from(new Set(popularProps.flatMap(prop => prop.filter.period)));
             // setPeriods(uniquePeriods);
@@ -94,9 +92,9 @@ export const Index = () => {
             
             if(search.trim().length > 0){
                 const propsFilteredBySearch = newPopularProps.filter(prop => {
-                    const name = prop.prop.player.name;
-                    const firstName = prop.prop.player.name.split(' ')[0];
-                    const lastName = prop.prop.player.name.split(' ')[1];
+                    const name = prop.propRef.player.name;
+                    const firstName = prop.propRef.player.name.split(' ')[0];
+                    const lastName = prop.propRef.player.name.split(' ')[1];
 
                     return (
                         firstName && firstName.toLowerCase().startsWith(search) ||

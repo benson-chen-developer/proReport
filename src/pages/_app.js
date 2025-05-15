@@ -10,6 +10,8 @@ import { GlobalContextProvider } from '../Context/store'
 import Head from 'next/head';
 import { Analytics } from '@vercel/analytics/next';
 import { useEffect, useState } from 'react';
+import { AuthContextProvider } from '../Context/authStore';
+import { Overlay } from '../components/Overlay/Overlay';
 
 function App({ Component, pageProps }) {
   const [isMobile, setIsMobile] = useState(false); 
@@ -26,27 +28,31 @@ function App({ Component, pageProps }) {
 
   return (
     <>
-      <GlobalContextProvider>
-        <Head>
-          <title>ProReport</title>
-          <meta name="ahrefs-site-verification" content="881627b9cdfce1e5ef0a890ec7d5477594ec45471d470d5eeaadea5976b61433" />
-          <meta name="description" content="NBA, MLB, NFL, NHL, and Esports stats tracking" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/ImgLogo.svg" />
-        </Head>
+      <AuthContextProvider>
+        <GlobalContextProvider>
+          <Head>
+            <title>ProReport</title>
+            <meta name="ahrefs-site-verification" content="881627b9cdfce1e5ef0a890ec7d5477594ec45471d470d5eeaadea5976b61433" />
+            <meta name="description" content="NBA, MLB, NFL, NHL, and Esports stats tracking" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/ImgLogo.svg" />
+          </Head>
 
-        <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          {/* Main content area, takes up remaining space */}
-          <main style={{ flex: '1 0 auto' }}>
-            <Component {...pageProps} />
+          <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            {/* Main content area, takes up remaining space */}
+            <main style={{ flex: '1 0 auto' }}>
+              <Component {...pageProps} />
+              
+              <Overlay /> 
+            </main>
+
+            {/* Footer stays at the bottom */}
+            <Footer />
           </main>
 
-          {/* Footer stays at the bottom */}
-          <Footer />
-        </main>
-
-        <Analytics />
-      </GlobalContextProvider>
+          <Analytics />
+        </GlobalContextProvider>
+      </AuthContextProvider>
     </>
   );
 }

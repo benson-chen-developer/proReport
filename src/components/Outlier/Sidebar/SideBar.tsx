@@ -65,7 +65,7 @@ export const SideBar: React.FC<Props> = () => {
             display: "flex",
             flexDirection: "column", alignItems: "center",
             background: "#000", zIndex: 6, 
-            overflowX: "hidden",
+            // overflowX: "hidden",
         }}>
 
             {/* X Btn */}
@@ -79,9 +79,9 @@ export const SideBar: React.FC<Props> = () => {
                     </div>
                 </div> : null
             }
-
             <div style={{height:'25px'}}/>
 
+            {/* Logo */}
             <div style={{
                 width: isMobile ? "100%" : '85%', 
                 display:'flex', justifyContent: isMobile ? "center" : 'flex-start'
@@ -89,10 +89,12 @@ export const SideBar: React.FC<Props> = () => {
                 <Logo />
             </div>
             <div style={{height:'10px'}} />
-
+            
+            {/* Search */}
             <Search setSidebarVisible={setSidebarVisible} length='90%'/>
             <div style={{height:'10px'}} />
 
+            {/* Player Page (Ex: Lebron James if on Lebron Page) */}
             {isPlayerPage && paramLeague && paramPlayer ?
                 <div 
                     style={{
@@ -115,9 +117,10 @@ export const SideBar: React.FC<Props> = () => {
                 </div> : null
             }
 
+            {/* Actual Options (Ex: Home, Promos, Team Rankings) */}
             {links.map((link, i) => {
                 const router = useRouter();
-                const isActive = router.pathname === link.link; 
+                const isActive = router.pathname.startsWith(link.link);
         
                 return (
                     <Link 

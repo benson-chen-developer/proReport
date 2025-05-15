@@ -1,7 +1,7 @@
 import { ClipLoader } from 'react-spinners';
 import { useGlobalContext } from '../../../../Context/store';
 import { Team } from '../../../../Context/Types/PlayerTypes';
-import { Card } from './Card';
+import { Card } from './Card/Card';
 import { PopularProp } from '../../../../Context/Types/ProjectionTypes';
 
 interface Props {
@@ -32,12 +32,14 @@ export const Body: React.FC<Props> = ({popularProps, loading, teams}) => {
             <div style={{display: 'flex', alignItems:'center', flexDirection:'column'}}>
                 {popularProps.length > 0 ?
                     <div style={{
-                        display: 'grid', justifyContent:'space-evenly',
-                        gridTemplateColumns: !isMobile ? 'repeat(auto-fit, 375px)' : 'repeat(auto-fit, 100%)',
-                        width: isMobile ? '95%' : '100%',
+                        display: 'grid',
+                        gridGap: '.25rem',
+                        // gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+                        gridTemplateColumns: '1fr',
+                        width: '100%',
                     }}>
                         {popularProps
-                            .filter(prop => prop.matchUp && prop.prop) // Remove invalid items before mapping
+                            .filter(prop => prop.matchUp && prop.propRef) // Remove invalid items before mapping
                             .map((prop, i) => (
                                 <Card key={i} popularProp={prop} teams={teams} />
                             ))

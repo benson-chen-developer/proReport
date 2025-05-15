@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const PropsModel = new mongoose.Schema({
     sportsbook: { type: String, required: true },
     name: { type: String, required: true },
-    player: { type: mongoose.Schema.Types.ObjectId, ref: "nbaplayers", required: true },
+    player: { type: mongoose.Schema.Types.ObjectId, ref: "players", required: true },
     values: { type: [Number], required: true },
     updated_ats: {type: [String], required: true},
     start_time: {type: Date, required: true},

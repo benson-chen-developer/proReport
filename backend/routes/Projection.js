@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Props, TestProps } = require("../models/Projection/PropModel");
+const { PopularProp } = require("../models/PopularProp");
 
 router.get('/', async (req, res) => {
     try {
@@ -33,11 +34,12 @@ router.get('/', async (req, res) => {
 
 router.get('/popular', async (req, res) => {
     try {
-        const projections = await Props.find({
-            popularHits: { $exists: true, $not: { $size: 0 } } // Only fetch documents where popularHits exists and is not empty
-        })
-        .populate("player")
-        .lean(); 
+        const projections = await PopularProp.find({})
+            .populate({
+                path: "propRef",
+                populate: { path: "player" }
+            });
+            // .lean(); 
 
         res.status(200).json(projections);
     } catch (error) {

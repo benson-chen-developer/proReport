@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { fetchPlayers } from '../../../Context/functions/fetch/players/fetchPlayers';
 import { getHeadshotUrl } from '../../../Context/functions/urls/getUrls';
+import { useAuthContext } from '../../../Context/authStore';
 
 interface Props {
 }
@@ -17,6 +18,7 @@ export const WithOutPlayers: React.FC<Props> = () => {
     const league = paramLeague as string;
 
     const {isMobile, filter, setFilter, player} = useGlobalContext();
+    const {isLoggedIn} = useAuthContext();
     const [teamMates, setTeamMates] = useState<PPlayer[]>([]);
     const [personName, setPersonName] = useState<string[]>([]);
 
@@ -36,6 +38,14 @@ export const WithOutPlayers: React.FC<Props> = () => {
 
         func();
     }, [])
+
+    const onClickFunc = () => {
+        if(isLoggedIn){
+            setIsPopUp(p => !p)
+        } else {
+            console.log('not logged in')
+        }
+    }
 
     const popupRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
@@ -66,13 +76,13 @@ export const WithOutPlayers: React.FC<Props> = () => {
                 ref={buttonRef}
             >   
                 <div 
-                    onClick={() => setIsPopUp(p => !p)}
+                    onClick={() => onClickFunc()}
                     style={{height:'100%', display:'flex', alignItems:'center', marginLeft:'5px'}}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24"><path fill="#fff" d="M15.2 10.95L10.55 6.3q.35-.15.713-.225T12 6q1.475 0 2.488 1.013T15.5 9.5q0 .375-.075.738t-.225.712M5.85 17.1q1.275-.975 2.85-1.537T12 15q.45 0 .863.038t.862.112l-2.2-2.2q-1.175-.15-2.012-.987T8.525 9.95L5.675 7.1q-.8 1.025-1.237 2.263T4 12q0 1.475.488 2.775T5.85 17.1m12.45-.2q.8-1.025 1.25-2.262T20 12q0-3.325-2.337-5.663T12 4q-1.4 0-2.637.45T7.1 5.7zM12 22q-2.05 0-3.875-.788t-3.187-2.15t-2.15-3.187T2 12q0-2.075.788-3.887t2.15-3.175t3.187-2.15T12 2q2.075 0 3.888.788t3.174 2.15t2.15 3.175T22 12q0 2.05-.788 3.875t-2.15 3.188t-3.175 2.15T12 22m0-2q1.325 0 2.5-.387t2.15-1.113q-.975-.725-2.15-1.112T12 17t-2.5.388T7.35 18.5q.975.725 2.15 1.113T12 20m0-1.5"/></svg>
                 </div>
                 <div 
-                    onClick={() => setIsPopUp(p => !p)}
+                    onClick={() => onClickFunc()}
                     style={{height:'100%', width:'100%', display:'flex', alignItems:'center', justifyContent:'center'}}
                 >
                     <p style={{color:'#B1B1B1', fontSize:'12px', fontWeight:'bold'}}>{

@@ -17,6 +17,13 @@ body {
 .hoverBg:hover{
   background: #2B2B2B;
 }
+
+.hoverBgDarker{
+  background: #151515
+}
+.hoverBgDarker:hover{
+  background: #1E1E1E;
+}
 .hoverBgWhite:hover{
   background: #fff;
 }
