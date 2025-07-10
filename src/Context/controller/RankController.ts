@@ -84,8 +84,9 @@ const orderTeamsByStatAmount = (stat: string, teams: Team[], position: string): 
          */
         try{
             teamsOrderedByTotalStat = teams.slice().sort((a, b) => {
-                const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex] / a.gp), 0);
-                const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex] / b.gp), 0);
+                const avgA = stats.reduce((sum, stat) => sum + (a.given[stat][positionIndex!] / a.gp), 0);
+                const avgB = stats.reduce((sum, stat) => sum + (b.given[stat][positionIndex!] / b.gp), 0);
+
                 return avgB - avgA;
             });
         } catch {

@@ -37,7 +37,6 @@ export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
             // setPlayersToSearch(playersWithProps);
 
             const players = await fetchAllPlayers(['nba']);
-            console.log('pla', players)
             setPlayersToSearch(players)
         }
 

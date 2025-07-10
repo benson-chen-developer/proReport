@@ -1,5 +1,5 @@
     Frontend
-1) npx next build 
+1) npx next build (Run this before committing as it will find your bugs)
 2) npm run dev
 
 from my-app cd into backend to run nodemon server to start backend
