@@ -7,8 +7,8 @@ interface Props {
     name: string,
 }
 export const DropDownItem: React.FC<Props> = ({name}) => {
-    const {homeFilter, setHomeFilter} = useGlobalContext();
-    const selected = homeFilter.projections.includes(name);
+    const {popularPropsFilter, setPopularPropsFilter} = useGlobalContext();
+    const selected = popularPropsFilter.projections.includes(name);
 
     const [hovered, setHovered] = useState<boolean>(false);
 
@@ -23,14 +23,14 @@ export const DropDownItem: React.FC<Props> = ({name}) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onClick={() => {
-                let prev = homeFilter.projections;
+                let prev = popularPropsFilter.projections;
 
                 if(selected){
                     prev = prev.filter(p => p !== name);
                 } else {
                     prev = [...prev, name];
                 }
-                setHomeFilter(p => ({...p, projections: prev}));
+                setPopularPropsFilter(p => ({...p, projections: prev}));
             }}
         >
             {/* The Team Logos + Names */}

@@ -15,27 +15,29 @@ import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers
 import { fetchTeams } from '../../Context/functions/fetch/team/fetchTeams';
 import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
 
-export type HomeFilter = {
+export type PopularPropsFilter = {
     matches: MatchUp[]
     projections: string[],
-    players: PPlayer[]
+    players: PPlayer[],
+    league: string
 }
 
 export const Index = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
-    const [popularProps, setPopularProps] = useState<PopularProp[]>([]);
-    const [shownPopularProps, setShownPopularProps] = useState<PopularProp[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [players, setPlayers] = useState<PPlayer[]>([]);
 
     const [periods, setPeriods] = useState<string[]>([]);
     const [search, setSearch] = useState<string>("");
-    const [pickedMatchUps, setPickedMatchUps] = useState<MatchUp[]>([]);
 
-    const [league, setLeague] = useState<string>('mlb');
-
-    const {fetchProjections, isMobile} = useGlobalContext();
+    const {
+        fetchProjections, isMobile,
+        popularProps, setPopularProps,
+        popularPropsFilter,
+        shownPopularProps, setShownPopularProps
+    } = useGlobalContext();
+    const {league} = popularPropsFilter;
 
     useEffect(() => {
         const func = async () => {
@@ -51,7 +53,7 @@ export const Index = () => {
             // const props = await fetchProjections();
             const popularPropsWithoutMatchUps = await fetchPopularProjections();
             const props = popularPropsWithoutMatchUps.map(popularProp => popularProp.propRef);
-            const matchUps = await fetchMatchUps('mlb', props);
+            const matchUps = await fetchMatchUps(league, props);
             const popularProps = popularPropsWithoutMatchUps
                 .map(popularProp => {
                     const matchUp = matchUps.find(matchUp => 
@@ -76,43 +78,76 @@ export const Index = () => {
             setLoading(false);
         }
 
-        func();
-    }, [])
+        if(league) func();
+    }, [league])
 
     /* Filter Logic */
     useEffect(() => {
+        const {matches, players, projections} = popularPropsFilter;
+
         if(!loading){
             let newPopularProps = popularProps;
 
-            if(pickedMatchUps.length > 0){
+            if(matches.length > 0){
                 newPopularProps  = popularProps.filter(prop => {
-                    return pickedMatchUps.find(pickedMatchUp => isSameMatchup(pickedMatchUp, prop.matchUp));
+                    return matches.find(pickedMatchUp => isSameMatchup(pickedMatchUp, prop.matchUp));
                 });
             }
             
-            if(search.trim().length > 0){
-                const propsFilteredBySearch = newPopularProps.filter(prop => {
-                    const name = prop.propRef.player.name;
-                    const firstName = prop.propRef.player.name.split(' ')[0];
-                    const lastName = prop.propRef.player.name.split(' ')[1];
+            // //Filter by player serach
+            // if(search.trim().length > 0){
+            //     const propsFilteredBySearch = newPopularProps.filter(prop => {
+            //         const name = prop.propRef.player.name;
+            //         const firstName = prop.propRef.player.name.split(' ')[0];
+            //         const lastName = prop.propRef.player.name.split(' ')[1];
 
-                    return (
-                        firstName && firstName.toLowerCase().startsWith(search) ||
-                        lastName && lastName.toLowerCase().startsWith(search) ||
-                        name.toLowerCase().startsWith(search)
+            //         return (
+            //             firstName && firstName.toLowerCase().startsWith(search) ||
+            //             lastName && lastName.toLowerCase().startsWith(search) ||
+            //             name.toLowerCase().startsWith(search)
+            //         )
+            //     });
+            //     newPopularProps = propsFilteredBySearch;
+            // }
+
+            // Filter by player
+            if(players.length > 0){
+                newPopularProps = newPopularProps.filter(prop => 
+                    players.find(player =>
+                        player.playerId === prop.propRef.player.playerId
                     )
-                });
-                newPopularProps = propsFilteredBySearch;
+                )
             }
 
-            if(search.trim().length === 0 && pickedMatchUps.length === 0){
-                const prettyProps = prettierPopularProps(popularProps);
-                setShownPopularProps(prettyProps);
-            } else {
-                setShownPopularProps(newPopularProps);
+            // Filter by player
+            if(projections.length > 0){
+                newPopularProps = newPopularProps.filter(prop => 
+                    projections.includes(prop.propRef.name)
+                )
             }
+
+            // if(search.trim().length === 0 && matches.length === 0){
+            //     const prettyProps = prettierPopularProps(popularProps);
+            //     setShownPopularProps(prettyProps);
+            // } else {
+            setShownPopularProps(newPopularProps);
+            // }
         }
-    }, [pickedMatchUps, search])
+    }, [
+        popularPropsFilter.matches, 
+        popularPropsFilter.players,
+        popularPropsFilter.projections,
+        search
+    ])
+
+    /* League */
+    useEffect(() => {
+        const newPopularProps = popularProps.filter(prop => 
+            prop.propRef.league === popularPropsFilter.league
+        )
+
+        setShownPopularProps(newPopularProps)
+    }, [popularPropsFilter.league])
 
     return (
         <div style={{display: "flex", width: "100%", background: "#000" }}>
@@ -126,17 +161,12 @@ export const Index = () => {
                         :
                     <>
                         <Header 
-                            league={league} setLeague={setLeague}
-                            popularProps={popularProps}
-                            pickedMatchUps={pickedMatchUps}
-                            setPickedMatchUps={setPickedMatchUps}
                             search={search} setSearch={setSearch}
                         />
 
                         <Body 
                             teams={teams}
                             loading={loading}
-                            popularProps={shownPopularProps}
                         />
                     </>
                 }

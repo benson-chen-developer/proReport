@@ -7,11 +7,11 @@ export const FilterBtn = () => {
 
     return (
         <div style={{
-            height: isMobile ? '25px' : '35px', 
-            width: isMobile ? '25px' : '65px',
+            height: isMobile ? '2rem' : '2.5rem', 
+            width: '65px',
             borderRadius:'5px', border:'1px solid #5B5B5B',
             background: false ? '#fff' : '#151515', 
-            fontSize: isMobile ? '9px' : '12px',
+            fontSize: '12px',
             display:'flex', alignItems:'center', justifyContent:'space-evenly'
         }}>
             <div style={{margin:'3px -3px 0px 0px'}}>

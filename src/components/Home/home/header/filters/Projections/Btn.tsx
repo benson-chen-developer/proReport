@@ -7,10 +7,10 @@ interface BtnProps {
     buttonRef: React.RefObject<HTMLDivElement>
 }
 export const Btn: React.FC<BtnProps> = ({ showDropDown, setShowDropDown, buttonRef }) => {
-    const { isMobile, homeFilter } = useGlobalContext();
+    const { isMobile, popularPropsFilter } = useGlobalContext();
     const [hovered, setHovered] = useState(false);
 
-    const isOn = homeFilter.projections.length > 0;
+    const isOn = popularPropsFilter.projections.length > 0;
     const width = isMobile ? '14' : '18';
     const isPicked = hovered || isOn || showDropDown;
     const iconColor = isPicked ? "#1E1E1E" : "#fff";

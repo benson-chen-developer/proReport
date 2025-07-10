@@ -1,39 +1,28 @@
 const mongoose = require("mongoose");
 
-const PropsModel = new mongoose.Schema({
+const PropModel = new mongoose.Schema({
     sportsbook: { type: String, required: true },
     name: { type: String, required: true },
-    player: { type: mongoose.Schema.Types.ObjectId, ref: "players", required: true },
+
+    player: { type: mongoose.Schema.Types.ObjectId, required: true,  refPath: 'playerModel' },
+    playerModel: { type: String, required: true }, // "nbaplayers" or "mlbplayers", etc
+    league: { type: String, required: true },
+
     values: { type: [Number], required: true },
     updated_ats: {type: [String], required: true},
     start_time: {type: Date, required: true},
     odds: {type: Number, required: true},
     period: {type: String, required: true},
     overUnder: {type: Number, required: true}, /* 1 over 2 under 3 both */
-    // popularGameFilters: {type: [String], required: true},
-    popularGameFilter: {
-        type: {  
-            stat: String,
-            over: Boolean,
-            isHome: Boolean,
-            isAway: Boolean,
-            period: String,
-            lastGame: String, 
-            withOutPlayers: [String],
-            daysRested: Number,
-            minutes: [Number, Number],
-            supportingStat: String
-        }, required: false
-    },
-    popularHits: {type: [String], required: true},
     discount: {type: Number, required: false}, /* Tacos and Sleepr Discounts */
+    active: {type: Boolean, required: false, default: true}
 });
 
 /* Make the Prop expire at start_time */
-PropsModel.index({ start_time: 1 }, { expireAfterSeconds: 0 });
+PropModel.index({ start_time: 1 }, { expireAfterSeconds: 0 });
 
-const Props = mongoose.model("props", PropsModel);
-const TestProps = mongoose.model("testProps", PropsModel);
+const Props = mongoose.model("props", PropModel);
+const TestProps = mongoose.model("testProps", PropModel);
 
 module.exports = {
     Props, TestProps

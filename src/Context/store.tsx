@@ -7,12 +7,11 @@ import { MatchUp } from './Types/Match';
 import { dailyCheckIn } from './functions/cookies/dailyCheckIn';
 import { fetchTeams } from './functions/fetch/team/fetchTeams';
 import { Filter, Filters } from '../components/Outlier/Matches';
-import { HomeFilter } from '../pages/home';
+import { PopularPropsFilter } from '../pages/home';
 
 const defaultFilter: Filter = {
   isHome: false,
   isAway: false,
-  // stat: "", 
   pickedProjection: null,
   lastGame: "L10", 
   period: "All",
@@ -35,10 +34,11 @@ const defaultPlayer: PPlayer = {
   team: "", sport: "", position: '', picId:''
 };
 
-const defaultHomeFilter: HomeFilter = {
+const defaultPopularPropsFilter: PopularPropsFilter = {
   matches: [],
   projections: [],
-  players: []
+  players: [],
+  league: "mlb"
 }
 
 interface ContextProps {
@@ -53,11 +53,6 @@ interface ContextProps {
   setProjections: Dispatch<SetStateAction<Projection[]>>;
   fetchProjections: (playerName?: string) => Promise<Projection[]>;
 
-  popularProps: PopularProp[];
-  setPopularProps: Dispatch<SetStateAction<PopularProp[]>>;
-  shownPopularProps: PopularProp[];
-  setShownPopularProps: Dispatch<SetStateAction<PopularProp[]>>;
-  
   // Player Page Props
   pickedProjection: Projection | null,
   setPickedProjection: Dispatch<SetStateAction<Projection | null>>
@@ -70,42 +65,16 @@ interface ContextProps {
   player: PPlayer
   setPlayer: Dispatch<SetStateAction<PPlayer>>
 
-  homeFilter: HomeFilter
-  setHomeFilter: Dispatch<SetStateAction<HomeFilter>>
+  /* Popular Props */
+  popularProps: PopularProp[];
+  setPopularProps: Dispatch<SetStateAction<PopularProp[]>>;
+  shownPopularProps: PopularProp[];
+  setShownPopularProps: Dispatch<SetStateAction<PopularProp[]>>,
+  popularPropsFilter: PopularPropsFilter,
+  setPopularPropsFilter: Dispatch<SetStateAction<PopularPropsFilter>>,
 }
 
-const GlobalContext = createContext<ContextProps>({
-  isMobile: false,
-  setIsMobile: (): boolean => false,
-
-  activeProp: false,
-  setActiveProp: (): boolean => false,
-
-  projections: [],
-  setProjections: (): Projection[] => [],
-  fetchProjections: async (playerName?: string): Promise<Projection[]> => [],
-
-  //PopularProps
-  popularProps: [],
-  setPopularProps: (): PopularProp[] => [],
-  shownPopularProps: [],
-  setShownPopularProps: (): PopularProp[] => [],
-
-  // Player Page Props
-  pickedProjection: null,
-  setPickedProjection: (): Projection | null => null,
-  filter: defaultFilter,
-  setFilter: (): Filter => defaultFilter,
-  setValidatedFilter: () => {},
-
-  filters: defaultFilters,
-  setFilters: (): Filters => defaultFilters,
-  player: defaultPlayer,
-  setPlayer: (): PPlayer => defaultPlayer,
-
-  homeFilter: defaultHomeFilter,
-  setHomeFilter: (): HomeFilter => defaultHomeFilter,
-});
+const GlobalContext = createContext<ContextProps | undefined>(undefined);
 
 export const GlobalContextProvider = ({ children }: { children: ReactNode }) => {
   const [nbaTeams, setNbaTeams] = useState<Team[]>([]);
@@ -115,7 +84,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   const [pickedProjection, setPickedProjection] = useState<Projection | null>(null);
   const [filter, setFilter] = useState<Filter>(defaultFilter);
   const [filters, setFilters] = useState<Filters>(defaultFilters);
-  const [homeFilter, setHomeFilter] = useState<HomeFilter>(defaultHomeFilter);
   const [activeProp, setActiveProp] = useState<boolean>(false);
   const [player, setPlayer] = useState<PPlayer>({
     name: "", playerId: "", city: "",
@@ -123,6 +91,7 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
   });
 
   /* Popular Props */
+  const [popularPropsFilter, setPopularPropsFilter] = useState<PopularPropsFilter>(defaultPopularPropsFilter);
   const [popularProps, setPopularProps] = useState<PopularProp[]>([]);
   const [shownPopularProps, setShownPopularProps] = useState<PopularProp[]>([]);
 
@@ -198,9 +167,6 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       projections, setProjections, fetchProjections,
       isMobile, setIsMobile,
       activeProp, setActiveProp,
-
-      popularProps, setPopularProps,
-      shownPopularProps, setShownPopularProps,
       
       // Player Page Props
       pickedProjection, setPickedProjection,
@@ -208,12 +174,20 @@ export const GlobalContextProvider = ({ children }: { children: ReactNode }) => 
       filters, setFilters,
       player, setPlayer,
 
-      homeFilter, setHomeFilter,
+      // Popular Props
+      popularProps, setPopularProps,
+      shownPopularProps, setShownPopularProps,
+
+      popularPropsFilter, setPopularPropsFilter,
     }}>
       {children}
     </GlobalContext.Provider>
   );
 };
 
-export const useGlobalContext = () => useContext(GlobalContext);
+export const useGlobalContext = () => {
+    const context = useContext(GlobalContext);
+    if (!context) throw new Error('useGlobal must be used within an GlobalProvider');
+    return context;
+};
 

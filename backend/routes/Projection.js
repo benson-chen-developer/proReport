@@ -52,8 +52,7 @@ router.get('/:league/:playerName', async (req, res) => {
     try {
         const { playerName, league } = req.params;
 
-        const projections = await TestProps.aggregate([
-        // const projections = await Props.aggregate([
+        const projections = await Props.aggregate([
             {
                 $lookup: {
                   from: `${league.toLowerCase()}players`,

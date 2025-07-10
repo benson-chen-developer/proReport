@@ -14,7 +14,6 @@ export const prettierPopularProps = (popularProps: PopularProp[]): PopularProp[]
     const notPopularPlayerProps: PopularProp[] = [];
 
     popularProps.forEach((popularProp) => {
-        console.log('prop in body', popularProp)
         if(popularPlayers.includes(popularProp.propRef.player.name)) popularPlayerProps.push(popularProp);
         else notPopularPlayerProps.push(popularProp);
     })

@@ -39,22 +39,22 @@ export const Landing = () => {
 
                             <h1 style={{
                                 color:'#79F4F4', fontWeight:'bold', 
-                                fontSize: isMobile ? "23px" : '60px', 
+                                fontSize: isMobile ? "23px" : '50px', 
                                 margin:0, 
                                 // fontFamily:'roboto',
                                 wordSpacing: isMobile ? '0px' : '4px', 
                                 marginTop: isMobile ? '25px' : '50px'
                             }}>
-                                Better Prices
+                                Search For Any Player!
                             </h1>
                             <h1 style={{
                                 color:'#79F4F4', fontWeight:'bold', 
-                                fontSize: isMobile ? "23px" : '60px', 
+                                fontSize: isMobile ? "23px" : '50px', 
                                 // fontFamily:'roboto', 
                                 margin: isMobile ? '10px 0px 0px 0px' : '25px 0px 0px 0px', 
                                 wordSpacing: isMobile ? '0px' : '4px'
                             }}>
-                                Better Picks
+                                Data on all NBA Players
                             </h1>
                             <p style={{
                                 fontWeight:'bold', 
@@ -62,8 +62,8 @@ export const Landing = () => {
                                 color:'#fff', fontFamily:'roboto', 
                                 lineHeight: '1.5',
                             }}>
-                                Elevate your game by analyzing from thousands of players and teams. 
-                                Find patterns and trends to place the best bets for FREE.
+                                Look through previous player matches. Viewing stats and filtering via 
+                                game conditions.
                             </p>
 
                             <p style={{
@@ -71,39 +71,10 @@ export const Landing = () => {
                                 color:'#B1B1B1', fontFamily:'roboto', 
                                 lineHeight: '1.5', margin:'10px 0px -5px 0px'
                             }}>
-                                Start Your Search! NBA is always <span style={{color:'#79F4F4', fontWeight:'bold',}}>FREE</span> 🏀
+                                Start Your Search! 🏀
                             </p>
 
                             <Search length={isMobile ? '100%' : '80%'}/>
-
-                            <p style={{
-                                fontWeight:'medium', fontSize: isMobile ? '12px' : '18px', color:'#B1B1B1', fontFamily:'roboto', 
-                                lineHeight: '1.5', margin:'10px 0px -5px 0px'
-                            }}>
-                                See today's popular picks
-                            </p>
-
-                            <Link
-                                href="/home"
-                                style={{
-                                    width: isMobile ? '50px' : '100px',
-                                    height: isMobile ? '30px' : '40px',
-                                    background: '#8FC9F9',
-                                    borderRadius: '5px',
-                                    fontSize: isMobile ? '12px' : '18px',
-                                    marginTop:'10px',
-                                    textAlign: 'center',
-                                    display: 'flex', // Makes it behave like a button
-                                    alignItems: 'center', // Centers text vertically
-                                    justifyContent: 'center', // Centers text horizontally
-                                    textDecoration: 'none', // Removes default underline
-                                    fontWeight: 'bold', // Optional: makes text stand out
-                                    color:'#000'
-                                }}
-                            >
-                                Home
-                            </Link>
-
                         </div>
 
                         {/* Right Picture */}
@@ -126,24 +97,6 @@ export const Landing = () => {
                                     style={{borderRadius: '10px'}}
                                 />
                             </div>
-                        </div>
-                    </div>
-
-                    {/* 2nd Segment (Beta) */}
-                    <div style={{width:'100%', display:'flex', justifyContent:'center', textAlign:'center', marginBottom:'100px'}}>
-                        <div style={{
-                            color:'#fff', fontSize: isMobile ? '22px' : '30px', fontWeight:'bold', 
-                            marginTop: isMobile ? '125px' : '225px', 
-                            width: isMobile ? '80%' : '60%'
-                        }}>
-                            Welcome to our Beta 🤖
-
-                            <p style={{ fontSize: isMobile ? '12px' : '16px', color:'#c1cfd5'}}>
-                                Certain features will be missing and app issues may exist. Our team is hard at work addressing these problems. <br /><br />
-                                Be on the lookout for changes as new features are constantly being added! <br /><br />
-                                During beta all features will be <span style={{color:'#79F4F4'}}>FREE</span> to gather feedback. <br /><br />
-                                You can send feedback and report bugs here: <span style={{color:'#fff'}}>proreport.helper@gmail.com</span>
-                            </p>
                         </div>
                     </div>
                 </div>

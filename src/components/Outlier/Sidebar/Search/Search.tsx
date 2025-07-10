@@ -22,21 +22,23 @@ export const Search: React.FC<Props> = ({length, setSidebarVisible}) => {
     /* Initial Players to Search Startup */
     useEffect(() => {
         const func = async () => {
-            const projections = await fetchProjections();
-            const uniqueLeagues = Array.from(
-                new Set(projections.map(p => p.player?.sport).filter(Boolean))
-            );
-            const players = await fetchAllPlayers(uniqueLeagues);
-            // console.log(players.find(p => p.sport.toLowerCase() === 'mlb'))
+            /* This is og code where only players with props showed up */
+            // const projections = await fetchProjections();
+            // const uniqueLeagues = Array.from(
+            //     new Set(projections.map(p => p.player?.sport).filter(Boolean))
+            // );
+            // const players = await fetchAllPlayers(uniqueLeagues);
+            // const playersWithProps = players.filter(player =>
+            //     projections.find(prop => {
+            //         return (prop.player.name === player.name && 
+            //         prop.league.toLowerCase() === player.sport.toLowerCase())
+            //     })
+            // )
+            // setPlayersToSearch(playersWithProps);
 
-            const playersWithProps = players.filter(player =>
-                projections.find(prop => {
-                    return (prop.player.name === player.name && 
-                    prop.league.toLowerCase() === player.sport.toLowerCase())
-                })
-            )
-
-            setPlayersToSearch(playersWithProps);
+            const players = await fetchAllPlayers(['nba']);
+            console.log('pla', players)
+            setPlayersToSearch(players)
         }
 
         func();

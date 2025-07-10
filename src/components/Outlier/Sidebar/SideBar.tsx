@@ -19,8 +19,8 @@ export const SideBar: React.FC<Props> = () => {
     const isPlayerPage = router.pathname.startsWith('/player');
 
     const links: {text:string, link:string}[] = [
-        {text: 'Home', link: '/home'},
-        {text: 'Promos', link: '/promotions'},
+        // {text: 'Home', link: '/home'},
+        // {text: 'Promos', link: '/promotions'},
         {text: 'Team Rankings', link: '/team-rank'},
     ]
 

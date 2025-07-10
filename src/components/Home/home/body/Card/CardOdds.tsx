@@ -8,8 +8,9 @@ interface Props {
 export const CardOdds: React.FC<Props> = ({ popularProp }) => {
     return (
         <div style={{
-            width:'auto', display:'flex', justifyContent:'center', marginTop:'10px',
-            fontSize:'14px', color:'#A2A2A2', fontWeight:'bold'
+            width:'auto', display:'flex', justifyContent:'center',
+            fontSize:'14px', color:'#A2A2A2', fontWeight:'bold',
+            margin: '0px 1rem 0px auto'
         }}>
             {popularProp.propRef.odds !== 100 ?
                 <Image

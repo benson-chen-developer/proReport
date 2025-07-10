@@ -19,7 +19,7 @@ import { DesktopFilter } from './Filter/DesktopFilter';
 import { PropHistory } from './PropHistory/PropHistory';
 import { fetchPlayers } from '../../Context/functions/fetch/players/fetchPlayers';
 import { fetchMatches } from '../../Context/functions/fetch/matches/fetchMatches';
-import { getInitialProjection } from './Matches/functions/initialProjection';
+import { getInitialProjection, addCustomUrlParams } from './Matches/functions/initialProjection';
 import { fetchMatchUps } from '../../Context/functions/fetch/fetchMatchUps';
 import { BarInfo } from './Matches/components/BarInfo';
 import { parseBarData } from './Matches/functions/barData';
@@ -78,7 +78,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
     if (!router.isReady) {
         return null;
     }
-    const { paramPlayer, paramLeague, paramFilter, paramPropValue } = router.query;
+    const { paramPlayer, paramLeague } = router.query;
     
     const chartRef = useRef<HTMLDivElement>(null);
     const playerName = (paramPlayer as string).replace(/_/g, ' ');
@@ -127,34 +127,22 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
 
                 /* Intial Projections and Intial Stats Filters set up */
                 let activeProp = true;
+                let initialFilter: Filter = filter;
+                
                 let projections = await fetchProjections(player.sport, player.name);
-                // console.log('props', projections)
                 if(projections.length === 0){
                     activeProp = false;
                     projections = getStaticProjections(league, player);
                 }
-                // console.log('active prop', activeProp)
                 projections = PSport.sortStats(player, projections);
 
-                const initialPickedProjection = getInitialProjection(
-                    projections, 
-                    (paramFilter as string), 
-                    (paramPropValue as string)
-                );
+                const initialPickedProjection = getInitialProjection(projections, router);
                 setProjections(projections);
 
                 /* Set Filter */
-                let newFilter: Filter;
-                if(paramFilter){ /* We have a shared link */
-                    console.log('in here')
-                    newFilter = JSON.parse(paramFilter as string);
-                } else {
-                    newFilter = {
-                        ...filter, 
-                        pickedProjection: initialPickedProjection,
-                    }
-                }
-                setFilter(newFilter);
+                initialFilter.pickedProjection = initialPickedProjection;
+                initialFilter = addCustomUrlParams(filter, router);
+                setFilter(initialFilter);
 
                 /* MatchUp */
                 let matchUp;
@@ -176,7 +164,7 @@ export const Matches: React.FC<Props> = ({loading, setLoading}) => {
                 setTeams(teams);
                 
                 /* Inital Bar Setting */
-                const newData = parseBarData(allGames, newFilter, player!, teams, matchUp);
+                const newData = parseBarData(allGames, initialFilter, player!, teams, matchUp);
                 setMainBarData(newData);
 
                 /* Whether or not there are projections for this player */

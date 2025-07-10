@@ -1,0 +1,12 @@
+/* Gets the Icon fpr this btn name */
+export const btnIcon = (name: string, width: string, iconColor: string) => {
+    if(name === "Matches") return <svg xmlns="http://www.w3.org/2000/svg" width={width} height={width} viewBox="0 0 24 24">
+        <path fill={iconColor} d="M20.162 4.898c.406.49.755 1.029 1.036 1.606a2.75 2.75 0 0 1-3.789 1.148zm-1.06-1.06L16.348 6.59a2.75 2.75 0 0 1 1.147-3.789a8 8 0 0 1 1.607 1.036M22 10c0-.615-.07-1.214-.201-1.79a4.24 4.24 0 0 1-3.05 1.29a4.23 4.23 0 0 1-2.427-.761l-.761.761l5.032 5.032A7.96 7.96 0 0 0 22 10m-7.5-4.75c0-1.196.494-2.277 1.29-3.05a8.03 8.03 0 0 0-6.323 1.207L14.5 8.439l.761-.761A4.23 4.23 0 0 1 14.5 5.25m0 5.31l5.126 5.127A8 8 0 0 1 16 17.748a9.7 9.7 0 0 0-2.346-6.342zm-1.906-.214A9.7 9.7 0 0 0 6.252 8a8 8 0 0 1 2.06-3.626L13.44 9.5zM4.25 9A2.25 2.25 0 0 0 2 11.25v2A8.75 8.75 0 0 0 10.75 22h2A2.25 2.25 0 0 0 15 19.75v-2A8.75 8.75 0 0 0 6.25 9zm2.47 4.72a.75.75 0 0 1 1.06 0l2.5 2.5a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06" />
+    </svg>
+
+    if(name === "Props") return <svg xmlns="http://www.w3.org/2000/svg" width={width} height={width} viewBox="0 0 24 24"><path fill={iconColor} d="M15.58 16.8L12 14.5l-3.58 2.3l1.08-4.12L6.21 10l4.25-.26L12 5.8l1.54 3.94l4.25.26l-3.29 2.68M20 12a2 2 0 0 1 2-2V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2a2 2 0 0 1-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1-2-2"/></svg>
+    
+    if(name === "Players") return  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={width} viewBox="0 0 24 24"><path fill={iconColor} d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4"/></svg>
+
+    return <div></div>
+}

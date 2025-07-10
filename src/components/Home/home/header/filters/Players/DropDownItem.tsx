@@ -3,13 +3,14 @@ import Checkbox from '@mui/material/Checkbox';
 import { useGlobalContext } from '../../../../../../Context/store';
 import { PPlayer } from '../../../../../../Context/Types/PlayerTypes';
 import Image from 'next/image';
+import { getHeadshotUrl } from '../../../../../../Context/functions/urls/getUrls';
 
 interface Props {
     player: PPlayer,
 }
 export const DropDownItem: React.FC<Props> = ({player}) => {
-    const {homeFilter, setHomeFilter, isMobile} = useGlobalContext();
-    const selected = homeFilter.players.find(p => p.name === player.name);
+    const {popularPropsFilter, setPopularPropsFilter, isMobile} = useGlobalContext();
+    const selected = popularPropsFilter.players.find(p => p.name === player.name);
 
     const [hovered, setHovered] = useState<boolean>(false);
 
@@ -24,21 +25,21 @@ export const DropDownItem: React.FC<Props> = ({player}) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onClick={() => {
-                let prev = homeFilter.players;
+                let prev = popularPropsFilter.players;
 
                 if(selected){
                     prev = prev.filter(p => p.name !== player.name);
                 } else {
                     prev = [...prev, player];
                 }
-                setHomeFilter(p => ({...p, players: prev}));
+                setPopularPropsFilter(p => ({...p, players: prev}));
             }}
         >
             {/* The Team Logos + Names */}
             <div style={{display:'flex', alignItems:'center', marginLeft:'10px'}}>
                 {player.playerId ?
                     <Image
-                        src={`https://cdn.nba.com/headshots/nba/latest/1040x760/${player.playerId}.png`}
+                        src={getHeadshotUrl(player)}
                         alt="Profile"
                         width={35} 
                         height={25} 

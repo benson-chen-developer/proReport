@@ -7,10 +7,10 @@ interface BtnProps {
     buttonRef: React.RefObject<HTMLDivElement>
 }
 export const Btn: React.FC<BtnProps> = ({ showDropDown, setShowDropDown, buttonRef }) => {
-    const { isMobile, homeFilter } = useGlobalContext();
+    const { isMobile, popularPropsFilter } = useGlobalContext();
     const [hovered, setHovered] = useState(false);
 
-    const isOn = homeFilter.matches.length > 0;
+    const isOn = popularPropsFilter.matches.length > 0;
     const width = isMobile ? '14' : '18';
     const isPicked = hovered || isOn || showDropDown;
     const iconColor = isPicked ? "#1E1E1E" : "#fff";
@@ -21,7 +21,7 @@ export const Btn: React.FC<BtnProps> = ({ showDropDown, setShowDropDown, buttonR
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             style={{
-                height: isMobile ? '25px' : '35px',
+                height: '2rem',
                 width: 'auto',
                 borderRadius: '10px',
                 border: isPicked ? '1px solid #fff' : '1px solid #5B5B5B',
@@ -40,7 +40,7 @@ export const Btn: React.FC<BtnProps> = ({ showDropDown, setShowDropDown, buttonR
                 </svg>
             </div>
             <span style={{
-                fontSize: isMobile ? '9px' : '12px', fontWeight: 'bold',
+                fontSize: '12px', fontWeight: 'bold',
                 color: isPicked ? "#1E1E1E" : '#fff'
             }}>
                 Matches

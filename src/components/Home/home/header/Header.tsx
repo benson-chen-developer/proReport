@@ -12,38 +12,42 @@ import { MatchesFilter } from './filters/Matches/MatchesFilter';
 import { PlayersFilter } from './filters/Players/PlayersFilter';
 
 interface Props {
-    league: string,
-    setLeague: Dispatch<SetStateAction<string>>,
-
-    popularProps: PopularProp[],
-    pickedMatchUps: MatchUp[],
-    setPickedMatchUps: Dispatch<SetStateAction<MatchUp[]>>
     search: string,
     setSearch: Dispatch<SetStateAction<string>>
 }
 
 export const Header: React.FC<Props> = ({
-    league, setLeague,
-    pickedMatchUps, setPickedMatchUps, 
-    popularProps, 
     search, setSearch
 }) => {
     const [matchUps, setMatchUps] = useState<MatchUp[]>([]);
-    const {isMobile} = useGlobalContext();
+    const {isMobile, popularProps, popularPropsFilter} = useGlobalContext();
 
+    /* This fills the matchUps to be displayed in filter */
     useEffect(() => {
         const func = async () => {
-            let fetchedMatchUps = await fetchMatchUps(league, popularProps.flatMap(prop => prop.prop));
-            
+            const fetchedMatchUps = await fetchMatchUps(
+                popularPropsFilter.league,
+                popularProps.flatMap(prop => prop.propRef)
+            );
+        
             // Only keep matches that have props in the header
-            const filtered = fetchedMatchUps.filter((matchUp) => {
-                return popularProps.find((prop) => 
+            const filtered = fetchedMatchUps.filter((matchUp) =>
+                popularProps.find((prop) =>
                     isSameMatchup(prop.matchUp, matchUp)
-                );
+                )
+            );
+        
+            // Keep only unique matchups
+            const seen = new Set<string>();
+            const uniqueFiltered = filtered.filter((matchUp) => {
+                const key = `${matchUp.league}-${matchUp.time}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
             });
-
-            setMatchUps(fetchedMatchUps);
-        }
+        
+            setMatchUps(uniqueFiltered);
+        };
 
         func();
     }, [])
@@ -63,14 +67,12 @@ export const Header: React.FC<Props> = ({
 
             {/* League Selection */}
             <div style={{
-                width:'100%', display:'flex', justifyContent: isMobile ? 'center' : 'flex-start',
-                margin:'10px 15px'
+                width:'auto', display:'flex', justifyContent: 'flex-start',
+                margin: isMobile ? '5px 15px' : '10px 15px 5px 15px'
             }}>
                 {["nba", "mlb"].map((currLeague) => <LeagueBtn 
                         key={currLeague}
-                        league={league}
                         currLeague={currLeague}
-                        setLeague={setLeague} 
                     />
                 )}
             </div>
@@ -82,8 +84,9 @@ export const Header: React.FC<Props> = ({
 
             {/* Filters */}
             <div style={{
-                width:'100%', display:'flex', justifyContent: isMobile ? 'center' : 'flex-start',
-                margin:'5px 0px 10px 15px'
+                width:'auto', display:'flex', justifyContent: 'flex-start',
+                margin:'5px 0px 10px 15px', 
+                // overflowX: 'auto', overflowY:'initial'
             }}>
                 <FilterBtn />
                 
@@ -91,9 +94,11 @@ export const Header: React.FC<Props> = ({
                     matchUps={matchUps}
                 />
 
-                <ProjectionsFilter />
+                <ProjectionsFilter popularProps={popularProps}/>
 
-                <PlayersFilter />
+                <PlayersFilter 
+                    popularProps={popularProps}
+                />
             </div>
 
         </div>

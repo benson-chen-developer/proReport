@@ -11,7 +11,11 @@ interface Props {
 }
 
 export type Ranking = {
-    name: string, value: string, rank: number, teamName: string, position: string
+    name: string, 
+    value: string, 
+    rank: number, 
+    teamName: string, 
+    position: string
 }
 
 export const Rankings: React.FC<Props> = ({matchUp, teams}) => {

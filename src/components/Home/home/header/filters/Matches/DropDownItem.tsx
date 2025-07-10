@@ -9,13 +9,33 @@ interface Props {
     matchUp: MatchUp,
 }
 export const DropDownItem: React.FC<Props> = ({matchUp}) => {
-    const {homeFilter, setHomeFilter} = useGlobalContext();
-    const selected = homeFilter.matches.find(match => isSameMatchup(match, matchUp));
+    const {popularPropsFilter, setPopularPropsFilter} = useGlobalContext();
+    const selected = popularPropsFilter.matches.find(match => isSameMatchup(match, matchUp));
 
     const team1 = matchUp.teams[0];
     const team2 = matchUp.teams[1];
 
     const [hovered, setHovered] = useState<boolean>(false);
+
+    const onClick = () => {
+        setPopularPropsFilter(prev => {
+            let newMatches = [];
+
+            const exists = prev.matches.some(
+                m => m.time === matchUp.time && m.league === matchUp.league
+            );
+        
+            if (exists) { // Remove it
+                newMatches = prev.matches.filter(
+                    m => !(m.time === matchUp.time && m.league === matchUp.league)
+                );
+            } else { // Add it
+                newMatches = [...prev.matches, matchUp];
+            }
+
+            return ({...prev, matches: newMatches})
+        });
+    }
 
     return (
         <div
@@ -27,16 +47,7 @@ export const DropDownItem: React.FC<Props> = ({matchUp}) => {
             }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={() => {
-                let prevMatches = homeFilter.matches;
-
-                if(selected){
-                    prevMatches = prevMatches.filter(m => !isSameMatchup(m, matchUp));
-                } else {
-                    prevMatches = [...prevMatches, matchUp];
-                }
-                setHomeFilter(p => ({...p, matches: prevMatches}));
-            }}
+            onClick={() => onClick()}
         >
             {/* The Team Logos + Names */}
             <div style={{display:'flex', alignItems:'center', marginLeft:'10px'}}>

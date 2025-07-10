@@ -76,7 +76,9 @@ export const HomeSwitches: React.FC<Props> = ({matchUp}) => {
     flexDirection: 'column',
   };
 
+  console.log('matchup', matchUp)
   const homeGame = matchUp?.teams[0].name === player.team;
+  console.log('homeGame', homeGame)
 
   return (
       <div style={{display:'flex', marginTop:'10px'}}>

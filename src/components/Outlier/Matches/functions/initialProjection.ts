@@ -1,28 +1,21 @@
+import { NextRouter } from "next/router";
 import { Projection } from "../../../../Context/Types/ProjectionTypes";
 import { Filter } from "../../Matches";
 
 export const getInitialProjection = (
-    projections: Projection[], 
-    paramFilter?: string, paramPropValue?: string
+    projections: Projection[], router: NextRouter
 ): Projection => {
     let initalPickedProjection = null;
+    const {propName, propValue, period} = router.query;
+      
 
-    if(paramFilter && paramPropValue) {  /* If there is a filter in the url */
-        try {
-            const filterFromParam: Filter = JSON.parse(paramFilter as string);
-
-            if(paramPropValue){
-                const foundProp = projections.find(p => 
-                    p.values[p.values.length-1] === Number(paramPropValue) &&
-                    p.period === filterFromParam.period &&
-                    p.name === filterFromParam.pickedProjection?.name
-                );
-                if(foundProp) initalPickedProjection = foundProp;
-            }
-        } catch (error) {
-            /* Someone messed up the url just don;t parse it */
-            console.error("Error parsing filter:", error);
-        }
+    if(propName && propValue && period) {  /* If there is a filter in the url */
+        const foundProp = projections.find(p => 
+            p.values[p.values.length-1] === Number(propValue) &&
+            p.period === period &&
+            p.name === propName
+        );
+        if(foundProp) initalPickedProjection = foundProp;
     } 
 
     if(!initalPickedProjection){
@@ -32,28 +25,15 @@ export const getInitialProjection = (
     return initalPickedProjection;
 }
 
-// let initalPickedProjection = null;
-//                 if(paramFilter) {
-//                     try {
-//                         const filterFromParam: Filter = JSON.parse(paramFilter as string);
-//                         if(paramPropValue){
-//                             const foundProp = projections.find(p => 
-//                                 p.values[p.values.length-1] === Number(paramPropValue) &&
-//                                 p.period === filterFromParam.period &&
-//                                 p.name === filterFromParam.stat
-//                             );
-//                             if(foundProp) initalPickedProjection = foundProp;
-//                         }
-//                         setFilter(p => ({...filterFromParam}))
-//                     } catch (error) {
-//                         /* Someone messed up the url just don;t parse it */
-//                         console.error("Error parsing filter:", error);
-//                     }
-//                 }
+/* Will return default filter or filter with values if the url has queries */
+export const addCustomUrlParams = (initialFilter: Filter, router: NextRouter): Filter => {
+    let newFilter = {...initialFilter};
 
-//                 if(!initalPickedProjection){
-//                     initalPickedProjection = projections.find(p => 
-//                         p.name === newFilters.stats[0] && filter.period === p.period
-//                     );
-//                 }
-// setPickedProjection(initalPickedProjection ? initalPickedProjection : null);
+    const {lastGame, isHome, isAway } = router.query;
+ 
+    if(lastGame) initialFilter.lastGame = lastGame as string;
+    if(isHome) initialFilter.isHome = true;
+    else if(isAway) initialFilter.isHome = true;
+
+    return newFilter
+}

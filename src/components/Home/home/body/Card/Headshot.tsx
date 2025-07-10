@@ -10,7 +10,8 @@ export const Headshot: React.FC<Props> = ({ popularProp }) => {
     return (
         <div style={{ 
             position: 'relative', height: '100%', marginBottom:'.25',
-            display:'flex', alignItems:'center', marginLeft:'.5rem'
+            display:'flex', alignItems:'center', marginLeft:'.5rem',
+            width:'5%',
         }}>
             {/* Team Logo */}
             {/* <div style={{position: 'absolute', right:'.25rem'}}>
@@ -20,9 +21,10 @@ export const Headshot: React.FC<Props> = ({ popularProp }) => {
             {/* Player Picture */}
             <Image
                 src={getHeadshotUrl(popularProp.propRef.player)}
-                style={{marginTop:'-5px'}}
-                height={35}
-                width={50} 
+                width="0"
+                height="0"  
+                sizes="100vw"
+                style={{ marginTop:'-5px', width: 50, height: 'auto' }}
                 alt="Player Picture"
             />
         </div>
