@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { LeagueBtn } from '../../Shared/Buttons/LeagueBtn';
 import { SelectBtn } from '../../Shared/Buttons/SelectBtn';
 import { getRankColor, Ranking, getRank } from '../../Outlier/Matches/components/Rankings';
+import { Loading } from '../../Outlier/Loading/Loading';
 
 /*
     allRankings => {
@@ -150,9 +151,9 @@ export const TeamRanking = () => {
     const borderEdgeColor = "#2B2B2B";
     // A2A2A2 2B2B2B
 
-    if(teams.length === 0) return null;
+    if(teams.length === 0) return <Loading />;
 
-    if(!league) return null;
+    if(!league) return <Loading />;
 
     return (
         <div style={{ height: '100%', width: isMobile ? "100%" : "80%" }}>

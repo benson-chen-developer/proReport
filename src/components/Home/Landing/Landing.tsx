@@ -65,13 +65,21 @@ export const Landing = () => {
                                 Look through previous player matches. Viewing stats and filtering via 
                                 game conditions.
                             </p>
+                            <p style={{
+                                fontWeight:'medium', fontSize: isMobile ? '12px' : '18px', 
+                                color:'#fff', fontFamily:'roboto'
+                            }}>
+                                Passion project made by me to combine my love of the NBA with 
+                                software development.
+                            </p>
 
                             <p style={{
                                 fontWeight:'medium', fontSize: isMobile ? '12px' : '18px', 
                                 color:'#B1B1B1', fontFamily:'roboto', 
-                                lineHeight: '1.5', margin:'10px 0px -5px 0px'
+                                lineHeight: '1.5', margin:'50px 20px -5px 0px'
                             }}>
-                                Start Your Search! 🏀
+                                Start Your Search! Whether its Lebron James or Steph Curry, 
+                                you can look up any player to see their stats. 🏀 
                             </p>
 
                             <Search length={isMobile ? '100%' : '80%'}/>

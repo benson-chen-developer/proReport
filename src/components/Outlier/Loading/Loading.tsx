@@ -50,9 +50,12 @@ export const Loading = () => {
             <div style={{marginTop:isMobile ? '75px' : '125px'}} />
 
             <div style={{width:isMobile ? '75%' : '30%', textAlign:'center', marginBottom:'10px'}}>
-                <p style={{fontSize:'30px', margin:'20px 0px 0px 0px'}}>{randomTip.emoji}</p>
+                {/* <p style={{fontSize:'30px', margin:'20px 0px 0px 0px'}}>{randomTip.emoji}</p>
                 <p style={{color:'#fff', fontWeight:'bold', fontSize:'16px', lineHeight:'2', marginTop:'10px'}}>
                     {randomTip.text}
+                </p> */}
+                <p style={{color:'#fff', fontWeight:'bold', fontSize:'16px', lineHeight:'2', marginTop:'10px'}}>
+                    Made By Benson Chen!
                 </p>
             </div> 
             <ClipLoader color='#fff' size={40}/>
