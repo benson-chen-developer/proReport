@@ -1,36 +1,95 @@
 {
   "polyfillFiles": [
-    "static/chunks/polyfills.js"
+    "static/chunks/polyfills-42372ed130431b0a.js"
   ],
-  "devFiles": [
-    "static/chunks/react-refresh.js"
-  ],
+  "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/development/_buildManifest.js",
-    "static/development/_ssgManifest.js"
+    "static/5BIoY6v1btdwzJkUkfBYi/_buildManifest.js",
+    "static/5BIoY6v1btdwzJkUkfBYi/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
     "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/389-3817366e542c9db2.js",
+      "static/css/3927523719887ec3.css",
+      "static/chunks/pages/index-e58c59c1d3b67075.js"
+    ],
+    "/404": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/pages/404-b4b46def84a530dc.js"
     ],
     "/_app": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/_app.js"
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/css/b94f193b62290fc8.css",
+      "static/chunks/pages/_app-b402a237ab005fc8.js"
     ],
     "/_error": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/_error.js"
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/pages/_error-8352bd1cc029bde7.js"
+    ],
+    "/home": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/27-1975ad5e537f5d6e.js",
+      "static/chunks/389-3817366e542c9db2.js",
+      "static/chunks/369-f634b03fc19796c8.js",
+      "static/chunks/pages/home-a3f29ae18d14cdf6.js"
+    ],
+    "/player": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/pages/player-4f77f33522ade5ea.js"
+    ],
+    "/player/[paramLeague]": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/pages/player/[paramLeague]-244babe514fa05f8.js"
+    ],
+    "/player/[paramLeague]/[paramPlayer]": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/879-243203c23a7997f5.js",
+      "static/chunks/27-1975ad5e537f5d6e.js",
+      "static/chunks/122-80c39d3415da0733.js",
+      "static/chunks/389-3817366e542c9db2.js",
+      "static/chunks/369-f634b03fc19796c8.js",
+      "static/chunks/pages/player/[paramLeague]/[paramPlayer]-1392ad2c3e06e991.js"
+    ],
+    "/promotions": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/879-243203c23a7997f5.js",
+      "static/chunks/389-3817366e542c9db2.js",
+      "static/chunks/pages/promotions-2deca97630d07b93.js"
+    ],
+    "/team-rank": [
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/pages/team-rank-fa6633fca16a7396.js"
     ],
     "/team-rank/[paramLeague]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/team-rank/[paramLeague].js"
+      "static/chunks/webpack-b53aff8e4e705ebf.js",
+      "static/chunks/framework-e50727edcc3f8dd1.js",
+      "static/chunks/main-5ea984baea34fc99.js",
+      "static/chunks/389-3817366e542c9db2.js",
+      "static/chunks/369-f634b03fc19796c8.js",
+      "static/chunks/pages/team-rank/[paramLeague]-4a912f2f39e73854.js"
     ]
   },
   "ampFirstPages": []
